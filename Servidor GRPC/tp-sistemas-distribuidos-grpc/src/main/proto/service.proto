@@ -86,7 +86,7 @@ message AgregarProductoRequest{
   repeated Id id = 2;
 }
 
-message JwtRequest{
+message LoginRequest{
   string usuario = 1;
   string contrasenia = 2;
 }
@@ -99,7 +99,7 @@ message Token{
 
 //EDU
 service AuthService{
-  rpc authenticate(JwtRequest) returns (Token);
+  rpc Login(LoginRequest) returns (Token);
 }
 
 service UsuarioService{
