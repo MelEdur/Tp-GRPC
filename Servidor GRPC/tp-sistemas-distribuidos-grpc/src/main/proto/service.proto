@@ -23,6 +23,11 @@ message Usuario {
   string codigoTienda = 7;
 }
 
+message FiltroUsuario{
+  string nombre = 1;
+  string codigoTienda =2;
+}
+
 message Tienda {              //TiendaDTO {codigo, habilitdo}
   string codigoTienda = 1;
   string direccion = 2;
@@ -110,7 +115,7 @@ service UsuarioService{
   rpc TraerUsuario(Id) returns (Usuario);
 
   //DUDA BUSCAR POR "NOMBRE" Y Tienda
-  rpc TraerUsuariosPorFiltro(Filtro) returns(UsuariosLista);
+  rpc TraerUsuariosPorFiltro(FiltroUsuario) returns(UsuariosLista);
 }
 
 //SEBA

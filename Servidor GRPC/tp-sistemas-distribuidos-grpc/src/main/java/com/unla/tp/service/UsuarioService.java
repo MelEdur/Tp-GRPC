@@ -10,7 +10,6 @@ import org.lognet.springboot.grpc.GRpcService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @GRpcService
@@ -20,6 +19,12 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void agregarUsuario(CrearUsuarioRequest request, StreamObserver<Id> responseObserver) {
+
+
+        if(usuarioRepository.findByNombreUsuario(request.getNombreUsuario()).isPresent()){
+            responseObserver.onError(Status.ALREADY_EXISTS.withDescription("El nombre de usuario ingresado no se encuentra disponible").asRuntimeException());
+            return;
+        }
 
         Id id = Id.newBuilder()
                 .setId(usuarioRepository.save(UsuarioEntity.builder()
@@ -39,13 +44,18 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
     @Override
     public void modificarUsuario(Usuario request, StreamObserver<Id> responseObserver) {
 
-        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(request.getId());
-
-        if (usuarioOptional.isEmpty()) {
+        Optional<UsuarioEntity> usuarioModificar = usuarioRepository.findById(request.getId());
+        if (usuarioModificar.isEmpty()) {
             responseObserver.onError((Status.NOT_FOUND.withDescription("El usuario no existe").asRuntimeException()));
             return;
         }
-        UsuarioEntity usuario = usuarioOptional.get();
+
+        if(usuarioRepository.findByNombreUsuario(request.getNombreUsuario()).isPresent()){
+            responseObserver.onError(Status.ALREADY_EXISTS.withDescription("El nombre de usuario ingresado no se encuentra disponible").asRuntimeException());
+            return;
+        }
+
+        UsuarioEntity usuario = usuarioModificar.get();
 
         usuario.setNombreUsuario(request.getNombreUsuario());
         usuario.setNombre(request.getNombre());
@@ -89,8 +99,13 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
     @Override
     public void traerUsuario(Id request, StreamObserver<Usuario> responseObserver) {
 
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Usuario not found"));
+        
+        Optional<UsuarioEntity> usuarioDb = usuarioRepository.findById(request.getId());
+        if (usuarioDb.isEmpty()) {
+            responseObserver.onError((Status.NOT_FOUND.withDescription("El usuario no existe").asRuntimeException()));
+            return;
+        }
+        UsuarioEntity usuarioEntity = usuarioDb.get();
 
         Usuario usuario = Usuario.newBuilder()
                 .setNombre(usuarioEntity.getNombre())
@@ -103,4 +118,39 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
         responseObserver.onNext(usuario);
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void traerUsuariosPorFiltro(FiltroUsuario request, StreamObserver<UsuariosLista> responseObserver) {
+
+        String nombre = request.getNombre();
+        String codigoTienda = request.getCodigoTienda();
+
+        if(nombre == null){
+            nombre = "";
+        }
+        if(codigoTienda == null){
+            codigoTienda = "";
+        }
+
+        List<UsuarioEntity> usuarios= usuarioRepository
+                .findByNombreContainingAndCodigoTiendaContaining(nombre,codigoTienda);
+
+
+        UsuariosLista usuariosLista = UsuariosLista.newBuilder()
+                .addAllUsuarios(usuarios.stream()
+                        .map(usuarioEntity -> Usuario.newBuilder()
+                                .setNombre(usuarioEntity.getNombre())
+                                .setApellido(usuarioEntity.getApellido())
+                                .setNombreUsuario(usuarioEntity.getNombreUsuario())
+                                .setHabilitado(usuarioEntity.isHabilitado())
+                                .setCodigoTienda(usuarioEntity.getCodigoTienda())
+                                .build())
+                        .toList()
+                )
+                .build();
+
+        responseObserver.onNext(usuariosLista);
+        responseObserver.onCompleted();
+    }
+
 }
