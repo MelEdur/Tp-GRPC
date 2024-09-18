@@ -99,7 +99,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
     @Override
     public void traerUsuario(Id request, StreamObserver<Usuario> responseObserver) {
 
-        
+
         Optional<UsuarioEntity> usuarioDb = usuarioRepository.findById(request.getId());
         if (usuarioDb.isEmpty()) {
             responseObserver.onError((Status.NOT_FOUND.withDescription("El usuario no existe").asRuntimeException()));
@@ -122,18 +122,9 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
     @Override
     public void traerUsuariosPorFiltro(FiltroUsuario request, StreamObserver<UsuariosLista> responseObserver) {
 
-        String nombre = request.getNombre();
-        String codigoTienda = request.getCodigoTienda();
-
-        if(nombre == null){
-            nombre = "";
-        }
-        if(codigoTienda == null){
-            codigoTienda = "";
-        }
 
         List<UsuarioEntity> usuarios= usuarioRepository
-                .findByNombreContainingAndCodigoTiendaContaining(nombre,codigoTienda);
+                .findByNombreContainingAndCodigoTiendaContaining(request.getNombre(),request.getCodigoTienda());
 
 
         UsuariosLista usuariosLista = UsuariosLista.newBuilder()
