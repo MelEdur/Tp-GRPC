@@ -65,14 +65,8 @@ message TiendasLista {
   repeated Tienda tiendas = 1;
 }
 
-
-
 message ProductosLista {
   repeated Producto productos = 1;
-}
-
-message Cantidad {
-  int32 cantidad = 1;
 }
 
 message ModificarStockRequest{
@@ -127,6 +121,8 @@ service TiendaService{
   rpc ModificarStock(ModificarStockRequest) returns (Id);
 
   rpc TraerTiendasPorFiltro(Filtro) returns (TiendasLista);
+  rpc EliminarProductoDeTienda(EliminarProductoDeTiendaRequest) returns (Id);
+  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
   //ELIAN
 }
 //KEVIN
@@ -134,11 +130,7 @@ service ProductoService{
   rpc AgregarProducto(AgregarProductoRequest) returns(Id);
   rpc ModificarProducto(Producto) returns(Id);
   rpc TraerProductos(Empty) returns(ProductosLista);
-  rpc EliminarProductoDeTienda(EliminarProductoDeTiendaRequest) returns (Id);
   rpc EliminarProducto(Id) returns (Id);
-
-
-  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
   rpc TraerProductosPorFiltro(Filtro) returns(ProductosLista);
 
 }
