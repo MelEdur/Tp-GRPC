@@ -1,0 +1,136 @@
+//python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. service.proto
+//Comando para generar cliente en python
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.unla.grpc";
+option java_outer_classname = "ServicesClass";
+
+//Establecemos el contenido que pueden tener los mensajes
+message Empty{}
+
+message Id {
+  int32 id = 1;
+}
+
+message Usuario {
+  int32 id = 1;
+  string nombreUsuario = 2;
+  string contrasenia = 3;
+  string nombre = 4;
+  string apellido = 5;
+  bool habilitado = 6;
+  string codigoTienda = 7;
+}
+
+message FiltroUsuario{
+  string nombre = 1;
+  string codigoTienda =2;
+}
+
+message Tienda {              //TiendaDTO {codigo, habilitdo}
+  string codigoTienda = 1;
+  string direccion = 2;
+  string ciudad = 3;
+  string provincia = 4;
+  bool habilitada = 5;
+}
+
+message Producto{
+  string codigoProducto = 1;
+  string nombreProducto = 2;
+  string talle = 3;
+  string color = 4;
+  string foto = 5;
+}
+
+message Filtro{
+  string filtro = 1;
+}
+
+message UsuariosLista {
+  repeated Usuario usuarios =1;
+}
+
+message CrearUsuarioRequest {
+  string nombreUsuario = 1;
+  string contrasenia = 2;
+  string nombre = 3;
+  string apellido = 4;
+  bool habilitado = 5;
+  string codigoTienda = 6;
+}
+
+message TiendasLista {
+  repeated Tienda tiendas = 1;
+}
+
+message ProductosLista {
+  repeated Producto productos = 1;
+}
+
+message ModificarStockRequest{
+  int32 idTienda =1;
+  int32 idProducto =2;
+  int32 cantidad = 3;
+}
+
+message EliminarProductoDeTiendaRequest{
+  int32 idTienda =1;
+  int32 idProducto=2;
+}
+
+message AgregarProductoRequest{
+  Producto producto = 1;
+  repeated Id id = 2;
+}
+
+message LoginRequest{
+  string usuario = 1;
+  string contrasenia = 2;
+}
+
+message Token{
+  string jwt = 1;
+}
+
+//Definimos los servicios y su funcionalidad (request-response)
+
+//EDU
+service AuthService{
+  rpc Login(LoginRequest) returns (Token);
+}
+
+service UsuarioService{
+  //Devolvemos ID a modo de un OK
+  rpc AgregarUsuario(CrearUsuarioRequest) returns(Id);
+  rpc ModificarUsuario(Usuario) returns(Id);
+  rpc TraerUsuarios(Empty) returns (UsuariosLista);
+  rpc TraerUsuario(Id) returns (Usuario);
+
+  //DUDA BUSCAR POR "NOMBRE" Y Tienda
+  rpc TraerUsuariosPorFiltro(FiltroUsuario) returns(UsuariosLista);
+}
+
+//SEBA
+service TiendaService{
+  rpc AgregarTienda(Tienda) returns(Id);
+  rpc ModificarTienda(Tienda) returns(Id);
+  rpc TraerTiendas(Empty) returns(TiendasLista);
+  rpc TraerTienda(Id) returns(Tienda);
+  rpc ModificarStock(ModificarStockRequest) returns (Id);
+
+  rpc TraerTiendasPorFiltro(Filtro) returns (TiendasLista);
+  rpc EliminarProductoDeTienda(EliminarProductoDeTiendaRequest) returns (Id);
+  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
+  //ELIAN
+}
+//KEVIN
+service ProductoService{
+  rpc AgregarProducto(AgregarProductoRequest) returns(Id);
+  rpc ModificarProducto(Producto) returns(Id);
+  rpc TraerProductos(Empty) returns(ProductosLista);
+  rpc EliminarProducto(Id) returns (Id);
+  rpc TraerProductosPorFiltro(Filtro) returns(ProductosLista);
+
+}
