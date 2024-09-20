@@ -108,6 +108,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
         UsuarioEntity usuarioEntity = usuarioDb.get();
 
         Usuario usuario = Usuario.newBuilder()
+                .setId(usuarioEntity.getId())
                 .setNombre(usuarioEntity.getNombre())
                 .setApellido(usuarioEntity.getApellido())
                 .setNombreUsuario(usuarioEntity.getNombreUsuario())
