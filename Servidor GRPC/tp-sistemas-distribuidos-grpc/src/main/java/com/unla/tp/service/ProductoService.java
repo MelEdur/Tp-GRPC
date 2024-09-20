@@ -3,6 +3,7 @@ package com.unla.tp.service;
 import com.unla.tp.entity.*;
 import com.unla.grpc.*;
 import com.unla.tp.repository.*;
+import com.unla.tp.util.SecurityUtils;
 import io.grpc.stub.StreamObserver;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.lognet.springboot.grpc.GRpcService;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -21,7 +23,6 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
     private final ITiendaRepository tiendaRepository;
     @Override
     public void agregarProducto(AgregarProductoRequest request, StreamObserver<Id> responseObserver) {
-
         List<ProductoEntity> productoEntityList = productoRepository.findAll();
         String codigoProducto;
         codigoProducto = generarStringAleatorio();

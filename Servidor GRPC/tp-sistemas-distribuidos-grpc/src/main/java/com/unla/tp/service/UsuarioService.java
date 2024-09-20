@@ -3,6 +3,8 @@ package com.unla.tp.service;
 import com.unla.grpc.*;
 import com.unla.tp.entity.UsuarioEntity;
 import com.unla.tp.repository.IUsuarioRepository;
+import com.unla.tp.util.ContextKeys;
+import com.unla.tp.util.SecurityUtils;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +12,18 @@ import org.lognet.springboot.grpc.GRpcService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @GRpcService
 public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     private final IUsuarioRepository usuarioRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     public void agregarUsuario(CrearUsuarioRequest request, StreamObserver<Id> responseObserver) {
-
+       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
 
         if(usuarioRepository.findByNombreUsuario(request.getNombreUsuario()).isPresent()){
             responseObserver.onError(Status.ALREADY_EXISTS.withDescription("El nombre de usuario ingresado no se encuentra disponible").asRuntimeException());
@@ -29,7 +33,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
         Id id = Id.newBuilder()
                 .setId(usuarioRepository.save(UsuarioEntity.builder()
                         .nombreUsuario(request.getNombreUsuario())
-                        .contrasenia(request.getContrasenia())
+                        .contrasenia(securityUtils.getPasswordEncoder().encode(request.getContrasenia()))
                         .nombre(request.getNombre())
                         .apellido(request.getApellido())
                         .habilitado(request.getHabilitado())
@@ -43,7 +47,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void modificarUsuario(Usuario request, StreamObserver<Id> responseObserver) {
-
+        //if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
         Optional<UsuarioEntity> usuarioModificar = usuarioRepository.findById(request.getId());
         if (usuarioModificar.isEmpty()) {
             responseObserver.onError((Status.NOT_FOUND.withDescription("El usuario no existe").asRuntimeException()));
@@ -75,7 +79,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuarios(Empty request, StreamObserver<UsuariosLista> responseObserver) {
-
+       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
         List<UsuarioEntity> usuarioEntityList = usuarioRepository.findAll();
 
         UsuariosLista usuariosLista = UsuariosLista.newBuilder()
@@ -98,6 +102,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuario(Id request, StreamObserver<Usuario> responseObserver) {
+        //if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
 
 
         Optional<UsuarioEntity> usuarioDb = usuarioRepository.findById(request.getId());
@@ -122,7 +127,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuariosPorFiltro(FiltroUsuario request, StreamObserver<UsuariosLista> responseObserver) {
-
+       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
 
         List<UsuarioEntity> usuarios= usuarioRepository
                 .findByNombreContainingAndCodigoTiendaContaining(request.getNombre(),request.getCodigoTienda());
