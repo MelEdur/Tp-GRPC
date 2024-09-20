@@ -22,7 +22,11 @@ def create_app():
 
     @app.before_request
     def extraerToken():
-        g.token = request.headers.get('Authorization')
+        token = request.headers.get('Authorization')
+        g.metadata = None
+        if(token):
+            g.metadata = [('authorization', f'{token}')]
+
 
     @app.errorhandler(grpc.RpcError)
     def manejarErrorGrpc(e):

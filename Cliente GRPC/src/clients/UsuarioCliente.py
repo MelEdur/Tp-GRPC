@@ -26,10 +26,7 @@ class UsuarioCliente(object):
             habilitado = data['habilitado'],
             codigoTienda = data['codigoTienda']
         )
-        metadata = None
-        if(g.token):
-            metadata = [('authorization', f'Bearer {g.token}')]
-        return self.stub.AgregarUsuario(request,metadata = metadata)
+        return self.stub.AgregarUsuario(request,metadata = g.metadata)
 
 
     def modificarUsuario(self,data):
@@ -42,28 +39,15 @@ class UsuarioCliente(object):
             habilitado = data['habilitado'],
             codigoTienda = data['codigoTienda']
         )
-        metadata = None
-        if(g.token):
-            metadata = [('authorization', f'Bearer {g.token}')]
-        return self.stub.ModificarUsuario(request,metadata = metadata)
+        return self.stub.ModificarUsuario(request,metadata = g.metadata)
 
 
     def traerUsuarios(self):
         request = proto.service_pb2.Empty()
-        metadata = None
-        if(g.token):
-            metadata = [('authorization', f'Bearer {g.token}')]
-
-        return self.stub.TraerUsuarios(request,metadata = metadata)
+        return self.stub.TraerUsuarios(request,metadata = g.metadata)
 
 
     def traerUsuario(self,id):
         request = proto.service_pb2.Id(id=id)
-        #Agregado de token a la request OBLIGATORIO
-        metadata = None
-        if(g.token):
-            metadata = [('authorization', f'Bearer {g.token}')]
-        #Fin de agregado
-
-        return self.stub.TraerUsuario(request,metadata = metadata)
+        return self.stub.TraerUsuario(request,metadata = g.metadata)
 
