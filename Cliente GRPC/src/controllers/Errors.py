@@ -22,14 +22,15 @@ grpc_to_rest_mapping = {
 
 def manejarError(e):
 
-    # Extract details from the gRPC error
-    status_code = e.code().value[0]  # Get the integer value of the status code
-    description = e.details()  # Get the error message
+    #Obtener valores del mensaje de error
+    status_code = e.code().value[0]
+    description = e.details()
 
-        # Create a response with just the code and message
+    #Armar respuesta
     response = {
         'error': {
             'message': description
         }
     }
-    return jsonify(response), grpc_to_rest_mapping.get(status_code)  # Adjust the status code as needed
+    #Enviar respuesta con el código de error traducido
+    return jsonify(response), grpc_to_rest_mapping.get(status_code)
