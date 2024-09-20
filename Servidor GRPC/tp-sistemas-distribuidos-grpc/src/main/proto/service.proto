@@ -46,6 +46,13 @@ message Producto{
   bool habilitado = 7;
 }
 
+message FiltroProducto{
+  string nombreProducto = 1;
+  string codigoProducto = 2;
+  string talle = 3;
+  string color = 4;
+}
+
 message Filtro{
   string filtro = 1;
 }
@@ -69,13 +76,6 @@ message TiendasLista {
 
 message ProductosLista {
   repeated Producto productos = 1;
-}
-
-message FiltroProducto{
-  string nombreProducto = 1;
-  string codigoProducto = 2;
-  string talle = 3;
-  string color = 4;
 }
 
 message ModificarStockRequest{

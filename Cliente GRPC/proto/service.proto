@@ -37,11 +37,13 @@ message Tienda {              //TiendaDTO {codigo, habilitdo}
 }
 
 message Producto{
-  string codigoProducto = 1;
-  string nombreProducto = 2;
-  string talle = 3;
-  string color = 4;
-  string foto = 5;
+  int32 id = 1;
+  string codigoProducto = 2;
+  string nombreProducto = 3;
+  string talle = 4;
+  string color = 5;
+  string foto = 6;
+  bool habilitado = 7;
 }
 
 message Filtro{
@@ -67,6 +69,13 @@ message TiendasLista {
 
 message ProductosLista {
   repeated Producto productos = 1;
+}
+
+message FiltroProducto{
+  string nombreProducto = 1;
+  string codigoProducto = 2;
+  string talle = 3;
+  string color = 4;
 }
 
 message ModificarStockRequest{
@@ -131,6 +140,6 @@ service ProductoService{
   rpc ModificarProducto(Producto) returns(Id);
   rpc TraerProductos(Empty) returns(ProductosLista);
   rpc EliminarProducto(Id) returns (Id);
-  rpc TraerProductosPorFiltro(Filtro) returns(ProductosLista);
+  rpc TraerProductosPorFiltro(FiltroProducto) returns(ProductosLista);
 
 }
