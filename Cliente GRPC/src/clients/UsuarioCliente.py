@@ -59,9 +59,11 @@ class UsuarioCliente(object):
 
     def traerUsuario(self,id):
         request = proto.service_pb2.Id(id=id)
+        #Agregado de token a la request OBLIGATORIO
         metadata = None
         if(g.token):
             metadata = [('authorization', f'Bearer {g.token}')]
+        #Fin de agregado
 
         return self.stub.TraerUsuario(request,metadata = metadata)
 

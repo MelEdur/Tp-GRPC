@@ -10,6 +10,7 @@ from clients.UsuarioCliente import UsuarioCliente
 
 usuario_blueprint = Blueprint('usuario',__name__)
 
+#Creamos instancia de clase UsuarioCliente
 cliente = UsuarioCliente()
 
 @usuario_blueprint.route('/usuarios',methods=['POST'])
