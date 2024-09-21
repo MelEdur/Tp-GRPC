@@ -23,27 +23,16 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
 
         @Override
         public void agregarProducto(AgregarProductoRequest request, StreamObserver<Id> responseObserver) {
-
-                // FUNCIONA PERO DEVUELVE ERROR FALTA ENCONTRAR MOTIVO
-
                 // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+
                 List<ProductoEntity> productoEntityList = productoRepository.findAll();
                 String codigoProducto;
                 codigoProducto = generarStringAleatorio();
                 int contador = productoEntityList.size();
-                while (contador > 0) {
-                        contador = productoEntityList.size();
-                        for (int i = 0; i < productoEntityList.size(); i++) {
-                                if (productoEntityList.get(i).getCodigoProducto() != codigoProducto) {
-                                        contador--;
-                                }
-                        }
+                while (productoRepository.existsByCodigoProducto(codigoProducto)) {
+                        codigoProducto = generarStringAleatorio();
                 }
-                // Guarda id del nuevo objeto agregado
-
-                //ProductoEntity p = productoRepository.save(new ProductoEntity());
                 Id id = Id.newBuilder()
-
                                 // Agrega el objeto tomando los datos de la request
                                 .setId(productoRepository.save(ProductoEntity.builder()
                                                 .codigoProducto(codigoProducto)
@@ -58,19 +47,14 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                 int idProducto = id.getId();
                 // -------------
                 List<Integer> ids = new ArrayList<>();
-
                 ids = request.getIdList().stream().map(idd -> idd.getId()).toList();
-                // request.getIdList().stream().map(idTienda -> {
+                ProductoEntity producto = productoRepository.findById(idProducto)
+                                        .orElseThrow(() -> new EntityNotFoundException(
+                                                       "No existe un producto con esa id"));
                 for (int i = 0; i < ids.size(); i++) {
                         TiendaEntity tienda = tiendaRepository.findById(ids.get(i))
                                         .orElseThrow(() -> new EntityNotFoundException(
                                                         "No existe un producto con esa id"));
-                        ProductoEntity producto = productoRepository.findById(idProducto)
-                                        .orElseThrow(() -> new EntityNotFoundException(
-                                                        "No existe un producto con esa id"));
-
-                        // List<TiendaEntity> tiendaEntityAux =
-                        // tiendaRepository.findByIdtiendaContaining(ids.get(i));
                         List<StockEntity> listStock = stockRepository.findAll();
                         int lastId = listStock.size();
                         StockEntity stock = new StockEntity();
@@ -81,8 +65,6 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                         stock.setHabilitado(true);
                         stockRepository.save(stock).getIdStock();
                 }
-                // -------------
-
                 // Devuelve la id
                 responseObserver.onNext(id);
                 responseObserver.onCompleted();
@@ -216,7 +198,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                                                 .talle(request.getTalle())
                                                 .color(request.getColor())
                                                 .foto(request.getFoto())
-                                                .habilitado(request.getHabilitado())
+                                                .habilitado(true)
                                                 .build())
                                                 .getId())
                                 .build();
