@@ -53,6 +53,22 @@ message FiltroProducto{
   string color = 4;
 }
 
+message StockCompleto {
+  int32 idStockCompleto = 1;
+  string codigoProducto = 2;
+  string nombreProducto = 3;
+  string talle = 4;
+  string color = 5;
+  string foto = 6;
+  bool habilitado = 7;
+  string codigoTienda = 8;
+  int32 cantidad = 9;
+}
+
+message StocksLista {
+  repeated StockCompleto stockCompleto =1;
+}
+
 message Filtro{
   string filtro = 1;
 }
@@ -141,5 +157,5 @@ service ProductoService{
   rpc TraerProductos(Empty) returns(ProductosLista);
   rpc EliminarProducto(Id) returns (Id);
   rpc TraerProductosPorFiltro(FiltroProducto) returns(ProductosLista);
-
+  rpc TraerStocks(Empty) returns(StocksLista);
 }
