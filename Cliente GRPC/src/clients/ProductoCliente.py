@@ -17,18 +17,21 @@ class ProductoCliente(object):
         self.stub = proto.service_pb2_grpc.ProductoServiceStub(self.channel)
 
     def agregarProducto(self, data):
+        ids = [proto.service_pb2.Id(id = idItem['id']) for idItem in data['id']]
         request = proto.service_pb2.AgregarProductoRequest(
             #Recibe
             #Producto producto
             #repeated Id id
             #??????
-            codigoProducto = data['codigoProducto'],
+            producto = proto.service_pb2.Producto(
+            id = 0,
+            codigoProducto = 0,
             nombreProducto = data['nombreProducto'],
             talle = data['talle'],
             color = data['color'],
             foto = data['foto'],
-            habilitado = data['habilitado'],
-            id = data['id']
+            habilitado = data['habilitado']),
+            id = ids
         )
         return self.stub.AgregarProducto(request,metadata = g.metadata)
 

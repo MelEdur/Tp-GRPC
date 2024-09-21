@@ -79,9 +79,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                         stock.setTienda(tienda);
                         stock.setCantidad(0);
                         stock.setHabilitado(true);
-                        Id id2 = Id.newBuilder()
-                                        .setId(stockRepository.save(stock).getIdStock())
-                                        .build();
+                        stockRepository.save(stock).getIdStock();
                 }
                 // -------------
 

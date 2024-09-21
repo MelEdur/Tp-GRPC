@@ -45,13 +45,13 @@ def eliminarProducto(id):
    return MessageToJson(result)
 
 
-@producto_blueprint.route('/productos',methods=['GET'])
+@producto_blueprint.route('/productos/stocks',methods=['GET'])
 @cross_origin()
 def traerStocks():
     result = producto.traerStocks()
     return MessageToJson(result)
 
-@producto_blueprint.route('/productos',methods=['GET'])
+@producto_blueprint.route('/productos/filtrado',methods=['GET'])
 @cross_origin()
 def traerProductosPorFiltro():
 
