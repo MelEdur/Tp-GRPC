@@ -60,7 +60,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
 
                 ids = request.getIdList().stream().map(idd -> idd.getId()).toList();
                 // request.getIdList().stream().map(idTienda -> {
-                for (int i = 0; i <= ids.size(); i++) {
+                for (int i = 0; i < ids.size(); i++) {
                         TiendaEntity tienda = tiendaRepository.findById(ids.get(i))
                                         .orElseThrow(() -> new EntityNotFoundException(
                                                         "No existe un producto con esa id"));
