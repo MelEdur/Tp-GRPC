@@ -57,4 +57,4 @@ def traerProductosPorFiltro():
 
     data = request.get_json()
     result = producto.traerProductosPorFiltro(data)
-    return MessageToJson(result)
+    return MessageToJson(result,always_print_fields_with_no_presence=True)
