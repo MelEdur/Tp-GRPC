@@ -8,10 +8,9 @@ import io.grpc.stub.StreamObserver;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.lognet.springboot.grpc.GRpcService;
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import org.springframework.security.core.parameters.P;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -41,6 +40,8 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                         }
                 }
                 // Guarda id del nuevo objeto agregado
+
+                //ProductoEntity p = productoRepository.save(new ProductoEntity());
                 Id id = Id.newBuilder()
 
                                 // Agrega el objeto tomando los datos de la request
@@ -229,53 +230,25 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
 
         @Override
         public void traerStocks(Empty request, StreamObserver<StocksLista> responseObserver) {
-                // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+                // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver))
+               List<StockEntity> stockEntityList = stockRepository.findAll();
 
-
-
-
-                // Traigo la lista Stock de la DB
-                List<StockEntity> stockList = stockRepository.findAll();
-                // Creo la lista donde voy a guardar los StockCompleto
-                StocksLista stockLista = StocksLista.newBuilder()
-                                .build();
-                // LastId lo utilizo para saber cuantos registros tengo en la lista stock
-                int lastId = stockLista.getStockCompletoList().size();
-                // Utilizo el for para traer todos los datos de producto y tienda de cada stock
-                for (int i = 0; i < stockList.size(); i++) {
-                        // Traigo y guardo todos los datos de la tienda del item stockList que estoy iterando
-                        TiendaEntity tienda = tiendaRepository.findById(stockList.get(i).getTienda().getId())
-                                        .orElseThrow(() -> new EntityNotFoundException(
-                                                        "No existe un producto con esa id"));
-                        // Traigo y guardo todos los datos del producto del item stockList que estoy iterando
-                        ProductoEntity producto = productoRepository.findById(stockList.get(i).getProducto().getId())
-                                        .orElseThrow(() -> new EntityNotFoundException(
-                                                        "No existe un producto con esa id"));
-                        // Creo stockCompleto donde guardo todos los datos del stock
-                        StockCompleto stockCompleto = StockCompleto.newBuilder()
-                                        .setIdStockCompleto(lastId + i + 1)
-                                        .setCodigoProducto(producto.getCodigoProducto())
-                                        .setNombreProducto(producto.getNombreProducto())
-                                        .setTalle(producto.getTalle())
-                                        .setColor(producto.getColor())
-                                        .setFoto(producto.getFoto())
-                                        .setCodigoTienda(tienda.getCodigoTienda())
-                                        .setCantidad(stockList.get(i).getCantidad())
-                                        .setHabilitado(stockList.get(i).getHabilitado())
-                                        .build();
-                        // La idea aca es ir agregandolos a la lista stockLista
-                        // pero solo guarda el primer item y al pasar por las 
-                        // siguientes iteraciones del for sobreescribe los datos
-                        // creo que al hacer newBuilder lo que hace es resetear la lista y crearla de 0
-                        // por eso solo queda un elemento guardado al finalizar el for
-                        // P.D.: la lista stockLista la cree afuera del for porque 
-                        // si no no me deja usarla en el return
-                        stockLista = StocksLista.newBuilder()
-                                        .addStockCompleto(stockCompleto)
-                                        .build();
-                }
-                // Devuelve la lista de objetos
-                responseObserver.onNext(stockLista);
+                StocksLista stocksLista = StocksLista.newBuilder()
+                        .addAllStockCompleto(stockEntityList.stream()
+                                .map(stockEntity -> StockCompleto.newBuilder()
+                                        .setIdStockCompleto(stockEntity.getIdStock())
+                                        .setCodigoProducto(stockEntity.getProducto().getCodigoProducto())
+                                        .setNombreProducto(stockEntity.getProducto().getNombreProducto())
+                                        .setTalle(stockEntity.getProducto().getTalle())
+                                        .setColor(stockEntity.getProducto().getColor())
+                                        .setFoto(stockEntity.getProducto().getFoto())
+                                        .setHabilitado(stockEntity.isHabilitado())
+                                        .setCodigoTienda(stockEntity.getTienda().getCodigoTienda())
+                                        .setCantidad(stockEntity.getCantidad())
+                                        .build()).toList()
+                        )
+                        .build();
+                responseObserver.onNext(stocksLista);
                 responseObserver.onCompleted();
         }
 }

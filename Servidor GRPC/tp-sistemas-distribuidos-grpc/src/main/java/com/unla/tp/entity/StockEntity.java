@@ -16,15 +16,15 @@ public class StockEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idStock;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "idProducto", nullable = false)
     private ProductoEntity producto;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "idTienda", nullable = false)
     private TiendaEntity tienda;
 
     private int cantidad;
 
-    private Boolean habilitado;
+    private boolean habilitado;
 }
