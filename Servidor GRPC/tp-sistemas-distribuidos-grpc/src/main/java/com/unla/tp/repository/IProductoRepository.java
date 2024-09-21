@@ -8,5 +8,5 @@ import com.unla.tp.entity.ProductoEntity;
 @Repository
 public interface IProductoRepository extends JpaRepository<ProductoEntity, Integer>{
     List<ProductoEntity> findByCodigoProductoContainingAndNombreProductoContainingAndTalleContainingAndColorContaining(String codigoProducto, String nombreProducto, String talle, String color);
-    boolean existByCodigoProducto(String codigoProducto);
+    boolean existsByCodigoProducto(String codigoProducto);
 }
