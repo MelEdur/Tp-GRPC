@@ -51,3 +51,10 @@ class UsuarioCliente(object):
         request = proto.service_pb2.Id(id=id)
         return self.stub.TraerUsuario(request,metadata = g.metadata)
 
+    def traerUsuariosPorFiltro(self, data):
+        request = proto.service_pb2.FiltroUsuario(
+            nombre = data['nombre'],
+            codigoTienda = data['codigoTienda']
+        )
+        return self.stub.TraerUsuariosPorFiltro(request,medatada = g.metadata)
+

@@ -10,7 +10,6 @@ from clients.UsuarioCliente import UsuarioCliente
 
 usuario_blueprint = Blueprint('usuario',__name__)
 
-#Creamos instancia de clase UsuarioCliente
 cliente = UsuarioCliente()
 
 @usuario_blueprint.route('/usuarios',methods=['POST'])
@@ -35,7 +34,7 @@ def modificarUsuario():
 @cross_origin()
 def traerUsuarios():
     result = cliente.traerUsuarios()
-    return MessageToJson(result)
+    return MessageToJson(result,always_print_fields_with_no_presence=True)
 
 
 @usuario_blueprint.route('/usuarios/<int:id>', methods=['GET'])
@@ -43,5 +42,12 @@ def traerUsuarios():
 def traerUsuario(id):
 
    result = cliente.traerUsuario(id)
-   return MessageToJson(result)
+   return MessageToJson(result,always_print_fields_with_no_presence=True)
 
+@usuario_blueprint.route('/usuarios/filtro', methods=['GET'])
+@cross_origin()
+def traerUsuariosPorFiltro():
+
+    data = request.get_json()
+    result = cliente.traerUsuariosPorFiltro(data)
+    return MessageToJson(result,always_print_fields_with_no_presence=True)
