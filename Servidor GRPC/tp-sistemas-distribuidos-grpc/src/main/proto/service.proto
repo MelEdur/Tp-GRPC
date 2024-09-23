@@ -51,6 +51,7 @@ message FiltroProducto{
   string codigoProducto = 2;
   string talle = 3;
   string color = 4;
+  string codigoTienda = 5;
 }
 
 message StockCompleto {
@@ -124,6 +125,10 @@ message LoginResponse{
   string rol = 3;
 }
 
+message Codigo{
+  string codigo = 1;
+}
+
 //Definimos los servicios y su funcionalidad (request-response)
 
 //EDU
@@ -152,7 +157,7 @@ service TiendaService{
 
   rpc TraerTiendasPorFiltro(Filtro) returns (TiendasLista);
   rpc EliminarProductoDeTienda(EliminarProductoDeTiendaRequest) returns (Id);
-  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
+  rpc TraerStocksPorTienda(Codigo) returns(StocksLista);
   //ELIAN
 }
 //KEVIN

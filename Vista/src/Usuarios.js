@@ -12,6 +12,7 @@ document.getElementById('botonBuscarUsuarios').addEventListener('click', async (
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwt')}`
             },
             body: JSON.stringify({nombre,codigoTienda})
         });
@@ -21,7 +22,9 @@ document.getElementById('botonBuscarUsuarios').addEventListener('click', async (
             throw new Error(errorData.error.message || 'Ocurrió un error');
         }
 
+        console.log(localStorage.getItem('jwt'));
         const data = await response.json();
+        //Borrar resultados previos
         ul.innerHTML = '';
 
         data.usuarios.forEach(usuario =>{
