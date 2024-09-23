@@ -2,7 +2,7 @@ package com.unla.tp.service;
 
 import com.unla.grpc.AuthServiceGrpc;
 import com.unla.grpc.LoginRequest;
-import com.unla.grpc.Token;
+import com.unla.grpc.LoginResponse;
 import com.unla.tp.entity.UsuarioEntity;
 import com.unla.tp.repository.IUsuarioRepository;
 import com.unla.tp.util.SecurityUtils;
@@ -21,7 +21,7 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
     private final SecurityUtils securityUtils;
 
     @Override
-    public void login(LoginRequest request, StreamObserver<Token> responseObserver) {
+    public void login(LoginRequest request, StreamObserver<LoginResponse> responseObserver) {
 
         String nombreUsuario = request.getUsuario();
         String contrasenia = request.getContrasenia();
@@ -39,11 +39,13 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
             return;
         }
 
-        Token token = Token.newBuilder()
+        LoginResponse loginResponse = LoginResponse.newBuilder()
                 .setJwt(securityUtils.generarToken(usuario.get().getRol(),nombreUsuario))
+                .setUsuario(usuario.get().getNombreUsuario())
+                .setRol(usuario.get().getRol())
                 .build();
 
-        responseObserver.onNext(token);
+        responseObserver.onNext(loginResponse);
         responseObserver.onCompleted();
     }
 }
