@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import clients.proto.service_pb2 as service__pb2
+import proto.service_pb2 as service__pb2
 
 GRPC_GENERATED_VERSION = '1.66.1'
 GRPC_VERSION = grpc.__version__
@@ -40,7 +40,7 @@ class AuthServiceStub(object):
         self.Login = channel.unary_unary(
                 '/AuthService/Login',
                 request_serializer=service__pb2.LoginRequest.SerializeToString,
-                response_deserializer=service__pb2.Token.FromString,
+                response_deserializer=service__pb2.LoginResponse.FromString,
                 _registered_method=True)
 
 
@@ -62,7 +62,7 @@ def add_AuthServiceServicer_to_server(servicer, server):
             'Login': grpc.unary_unary_rpc_method_handler(
                     servicer.Login,
                     request_deserializer=service__pb2.LoginRequest.FromString,
-                    response_serializer=service__pb2.Token.SerializeToString,
+                    response_serializer=service__pb2.LoginResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -94,7 +94,7 @@ class AuthService(object):
             target,
             '/AuthService/Login',
             service__pb2.LoginRequest.SerializeToString,
-            service__pb2.Token.FromString,
+            service__pb2.LoginResponse.FromString,
             options,
             channel_credentials,
             insecure,

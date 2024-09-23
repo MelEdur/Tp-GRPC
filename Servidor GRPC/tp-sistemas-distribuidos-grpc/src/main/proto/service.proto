@@ -115,15 +115,17 @@ message LoginRequest{
   string contrasenia = 2;
 }
 
-message Token{
+message LoginResponse{
   string jwt = 1;
+  string usuario = 2;
+  string rol = 3;
 }
 
 //Definimos los servicios y su funcionalidad (request-response)
 
 //EDU
 service AuthService{
-  rpc Login(LoginRequest) returns (Token);
+  rpc Login(LoginRequest) returns (LoginResponse);
 }
 
 service UsuarioService{
