@@ -439,7 +439,8 @@ class TiendaServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def TraerTiendasPorFiltro(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """cambiado
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -761,7 +762,7 @@ class ProductoServiceStub(object):
                 _registered_method=True)
         self.TraerProductosPorFiltro = channel.unary_unary(
                 '/ProductoService/TraerProductosPorFiltro',
-                request_serializer=service__pb2.Filtro.SerializeToString,
+                request_serializer=service__pb2.FiltroProducto.SerializeToString,
                 response_deserializer=service__pb2.ProductosLista.FromString,
                 _registered_method=True)
 
@@ -825,7 +826,7 @@ def add_ProductoServiceServicer_to_server(servicer, server):
             ),
             'TraerProductosPorFiltro': grpc.unary_unary_rpc_method_handler(
                     servicer.TraerProductosPorFiltro,
-                    request_deserializer=service__pb2.Filtro.FromString,
+                    request_deserializer=service__pb2.FiltroProducto.FromString,
                     response_serializer=service__pb2.ProductosLista.SerializeToString,
             ),
     }
@@ -963,7 +964,7 @@ class ProductoService(object):
             request,
             target,
             '/ProductoService/TraerProductosPorFiltro',
-            service__pb2.Filtro.SerializeToString,
+            service__pb2.FiltroProducto.SerializeToString,
             service__pb2.ProductosLista.FromString,
             options,
             channel_credentials,

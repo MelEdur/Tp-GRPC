@@ -223,11 +223,13 @@ public class TiendaService extends TiendaServiceGrpc.TiendaServiceImplBase{
         responseObserver.onCompleted();
     }
 
+     
     //  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
     @Transactional
     @Override
     public void traerProductosPorTienda(Id request, StreamObserver<ProductosLista> responseObserver) {
         //Busca Objeto en la DB
+        //TODO: chequear si existe la tienda
         Optional<List<StockEntity>> stocksTienda = stockRepository.findByTiendaId(request.getId());
         List<ProductoEntity> listaProductosEntity = new ArrayList<ProductoEntity>();
 
@@ -239,11 +241,13 @@ public class TiendaService extends TiendaServiceGrpc.TiendaServiceImplBase{
         ProductosLista productoLista = ProductosLista.newBuilder()
                 .addAllProductos(listaProductosEntity.stream()
                         .map(productoEntity -> Producto.newBuilder()
+                                //agregar id
                                 .setCodigoProducto(productoEntity.getCodigoProducto())
                                 .setNombreProducto(productoEntity.getNombreProducto())
                                 .setTalle(productoEntity.getTalle())
                                 .setColor(productoEntity.getColor())
-                                .setFoto(productoEntity.getFoto())//FALTA EL HABILITADO
+                                .setFoto(productoEntity.getFoto())
+                                .setHabilitado(productoEntity.isHabilitado())
                                 .build())
                         //convertir a lista
                         .collect(Collectors.toList()))
@@ -252,5 +256,50 @@ public class TiendaService extends TiendaServiceGrpc.TiendaServiceImplBase{
         //Envía el objeto
         responseObserver.onNext(productoLista);
         responseObserver.onCompleted();
+        //TODO:Reformular para que muestre los stocks de la tienda
     }    
+
+/* 
+     @Transactional
+     @Override
+     public void traerProductosPorTienda(Id request, StreamObserver<ProductosLista> responseObserver) {
+        // Chequear si la tienda existe
+        Optional<TiendaEntity> tiendaOpt = tiendaRepository.findById(request.getId());
+        
+        if (!tiendaOpt.isPresent()) {
+                responseObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("La tienda no existe")));
+                return;
+        }
+        
+        // Obtener los stocks de la tienda
+        Optional<List<StockEntity>> stocksTiendaOpt = stockRepository.findByTiendaId(request.getId());
+
+        if (!stocksTiendaOpt.isPresent() || stocksTiendaOpt.get().isEmpty()) {
+                responseObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No hay productos disponibles en esta tienda")));
+                return;
+        }
+
+        List<StockEntity> stocksTienda = stocksTiendaOpt.get();
+        
+        // Crear lista de productos con información de stock
+        ProductosLista productoLista = ProductosLista.newBuilder()
+                .addAllProductos(stocksTienda.stream()
+                .map(stock -> Producto.newBuilder()
+                        .setCodigoProducto(stock.getProducto().getCodigoProducto())
+                        .setNombreProducto(stock.getProducto().getNombreProducto())
+                        .setTalle(stock.getProducto().getTalle())
+                        .setColor(stock.getProducto().getColor())
+                        .setFoto(stock.getProducto().getFoto())
+                        .setHabilitado(stock.getProducto().isHabilitado())
+                        .setCantidadStock(stock.getCantidad()) // Mostrar el stock de cada producto
+                        .build())
+                .collect(Collectors.toList()))
+                .build();
+
+        // Envía el objeto
+        responseObserver.onNext(productoLista);
+        responseObserver.onCompleted();
+        }
+*/
+
 }
