@@ -56,5 +56,5 @@ class UsuarioCliente(object):
             nombre = data['nombre'],
             codigoTienda = data['codigoTienda']
         )
-        return self.stub.TraerUsuariosPorFiltro(request,medatada = g.metadata)
+        return self.stub.TraerUsuariosPorFiltro(request,metadata = g.metadata)
 

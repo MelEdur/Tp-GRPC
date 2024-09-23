@@ -44,7 +44,7 @@ def traerUsuario(id):
    result = cliente.traerUsuario(id)
    return MessageToJson(result,always_print_fields_with_no_presence=True)
 
-@usuario_blueprint.route('/usuarios/filtro', methods=['GET'])
+@usuario_blueprint.route('/usuarios/filtro', methods=['POST'])
 @cross_origin()
 def traerUsuariosPorFiltro():
 

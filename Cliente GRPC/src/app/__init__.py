@@ -5,6 +5,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(CURRENT_DIR,'..'))
 
 from flask import Flask, g,request
+from flask_cors import CORS
 from controllers.usuario import usuario_blueprint
 from controllers.tienda import tienda_blueprint
 from controllers.producto import producto_blueprint
