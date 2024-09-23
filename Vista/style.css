@@ -1,0 +1,40 @@
+.card {
+    margin: 10px;
+}
+.results {
+display: block;
+margin-top: 20px;
+padding: 10px;
+background-color: white;
+border-radius: 5px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+text-align: left;
+}
+
+.results ul {
+list-style-type: none;
+padding: 0;
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+}
+
+.results li {
+position: relative;
+margin: 0 15px 20px;
+padding: 10px;
+background-color: #f9f9f9;
+border-radius: 3px;
+border-left: 4px solid #6c757d;
+width: calc(33.33% - 30px); /* Make each item one-third of the width, minus margin */
+box-sizing: border-box;
+}
+
+.results li span {
+display: block;
+margin-bottom: 5px;
+}
+
+.results li span:first-child {
+font-weight: bold;
+}
