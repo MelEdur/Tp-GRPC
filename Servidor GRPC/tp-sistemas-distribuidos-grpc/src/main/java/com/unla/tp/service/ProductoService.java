@@ -4,6 +4,8 @@ import com.unla.tp.entity.*;
 import com.unla.grpc.*;
 import com.unla.tp.repository.*;
 import com.unla.tp.util.SecurityUtils;
+
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -118,8 +120,11 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
         public void eliminarProducto(Id request, StreamObserver<Id> responseObserver) {
                 // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
                 // Busca Objeto en la DB
-                ProductoEntity producto = productoRepository.findById(request.getId())
-                                .orElseThrow(() -> new EntityNotFoundException("No existe un producto con esa id"));
+                Optional<ProductoEntity> productoAux = productoRepository.findById(request.getId());
+                if (productoAux.isEmpty()){
+                        responseObserver.onError(Status.NOT_FOUND.withDescription("El producto no existe").asRuntimeException());
+                        return;}
+                ProductoEntity producto = productoAux.get();
                 List<StockEntity> stockEntityList = stockRepository.findByProducto(producto);
 
                 for (StockEntity stockEntity : stockEntityList) {
@@ -186,9 +191,11 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
         public void modificarProducto(Producto request, StreamObserver<Id> responseObserver) {
                 // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
                 // Busca Objeto en la DB
-                ProductoEntity producto = productoRepository.findById(request.getId())
-                                .orElseThrow(() -> new EntityNotFoundException("No existe un producto con esa id"));
-
+                Optional<ProductoEntity> productoAux = productoRepository.findById(request.getId());
+                if (productoAux.isEmpty()){
+                        responseObserver.onError(Status.NOT_FOUND.withDescription("El producto no existe").asRuntimeException());
+                        return;}
+                        ProductoEntity producto = productoAux.get();
                 // Crea Objeto que puede ser enviado por grpc
                 Id id = Id.newBuilder()
                                 .setId(productoRepository.save(ProductoEntity.builder()
