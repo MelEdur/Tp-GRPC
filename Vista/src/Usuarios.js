@@ -1,6 +1,8 @@
 const ul = document.getElementById('resultados');
 document.getElementById('botonBuscarUsuarios').addEventListener('click', async (event)=>{
     event.preventDefault();
+    const searchFields = document.querySelector('.results');
+
 
     const nombre =  document.getElementById('searchUsarioNombre').value;
     const codigoTienda = document.getElementById('searchUsarioTienda').value;
@@ -34,6 +36,7 @@ document.getElementById('botonBuscarUsuarios').addEventListener('click', async (
             `;
             ul.appendChild(li);
         });
+        searchFields.style.display = 'block';
 
 
 

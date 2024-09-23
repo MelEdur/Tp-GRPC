@@ -102,7 +102,7 @@
                 </div>
                 <!-- Primer checkbox -->
                 <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" id="checkboxUsuarioNombre" onchange="checkboxInput('searchUsarioNombre', this.checked)">
+                    <input class="form-check-input" type="checkbox" checked ="checkboxUsuarioNombre" onchange="checkboxInput('searchUsarioNombre', this.checked)">
                     <label class="form-check-label" for="checkbox1">
                         Nombre
                     </label>
@@ -110,7 +110,7 @@
 
                 <!-- Segundo checkbox -->
                 <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" id="checkbox2" id="checkboxUsuarioTienda" onchange="checkboxInput('searchUsarioTienda', this.checked)">
+                    <input class="form-check-input" type="checkbox" checked id="checkbox2" id="checkboxUsuarioTienda" onchange="checkboxInput('searchUsarioTienda', this.checked)">
                     <label class="form-check-label" for="checkbox2">
                         Tienda
                     </label>
@@ -173,7 +173,7 @@
                 </div>
                 <!-- Primer checkbox -->
                 <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" id="checkboxProductosNombre" onchange="checkboxInput('searchProductosNombre', this.checked)">
+                    <input class="form-check-input" type="checkbox" checked id="checkboxProductosNombre" onchange="checkboxInput('searchProductosNombre', this.checked)">
                     <label class="form-check-label" for="checkbox1">
                         Nombre
                     </label>
@@ -181,7 +181,7 @@
 
                 <!-- Segundo checkbox -->
                 <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" id="checkbox2" id="checkboxProductosCodigo" onchange="checkboxInput('searchProductosCodigo', this.checked)">
+                    <input class="form-check-input" type="checkbox" checked id="checkbox2" id="checkboxProductosCodigo" onchange="checkboxInput('searchProductosCodigo', this.checked)">
                     <label class="form-check-label" for="checkbox2">
                         Codigo
                     </label>
@@ -189,7 +189,7 @@
 
                 <!-- Tercer checkbox -->
                 <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" id="checkbox3" id="checkboxProductosTalle" onchange="checkboxInput('searchProductosTalle', this.checked)">
+                    <input class="form-check-input" type="checkbox" checked id="checkbox3" id="checkboxProductosTalle" onchange="checkboxInput('searchProductosTalle', this.checked)">
                     <label class="form-check-label" for="checkbox2">
                         Talle
                     </label>
@@ -197,7 +197,7 @@
 
                 <!-- Cuarto checkbox -->
                 <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" id="checkbox4" id="checkboxProductosColor" onchange="checkboxInput('searchProductosColor', this.checked)">
+                    <input class="form-check-input" type="checkbox" checked id="checkbox4" id="checkboxProductosColor" onchange="checkboxInput('searchProductosColor', this.checked)">
                     <label class="form-check-label" for="checkbox2">
                         Color
                     </label>
@@ -271,6 +271,8 @@
             searchFields.forEach(field => {
                 field.style.display = 'none';
             });
+            const searchResults = document.querySelector('.results');
+            searchResults.style.display = 'none';
 
             // Mostrar el campo de búsqueda correspondiente
             document.getElementById(searchId).style.display = 'block';
@@ -284,25 +286,6 @@
                 input.value = ''; // Limpiar el valor si se desactiva
             }
         }
-
-        $(document).ready(function() {
-            $('#botonBuscarTiendas').click(function() {
-                $('#cardTiendas').show();
-                $('#cardProductos, #cardUsuarios').hide();
-            });
-
-            $('#botonBuscarUsuarios').click(function() {
-                $('#cardUsuarios').show();
-                $('#cardProductos, #cardTiendas').hide();
-
-            });
-
-            $('#botonBuscarProductos').click(function() {
-                $('#cardProductos').show();
-                $('#cardUsuarios, #cardTiendas').hide();
-
-            });
-        });
 
         // Prevenir que los formularios se envíen y recarguen la página
         document.querySelectorAll('form').forEach(form => {
