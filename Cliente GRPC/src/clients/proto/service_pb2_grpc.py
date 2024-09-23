@@ -397,10 +397,10 @@ class TiendaServiceStub(object):
                 request_serializer=service__pb2.EliminarProductoDeTiendaRequest.SerializeToString,
                 response_deserializer=service__pb2.Id.FromString,
                 _registered_method=True)
-        self.TraerProductosPorTienda = channel.unary_unary(
-                '/TiendaService/TraerProductosPorTienda',
-                request_serializer=service__pb2.Id.SerializeToString,
-                response_deserializer=service__pb2.ProductosLista.FromString,
+        self.TraerStocksPorTienda = channel.unary_unary(
+                '/TiendaService/TraerStocksPorTienda',
+                request_serializer=service__pb2.Codigo.SerializeToString,
+                response_deserializer=service__pb2.StocksLista.FromString,
                 _registered_method=True)
 
 
@@ -450,7 +450,7 @@ class TiendaServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def TraerProductosPorTienda(self, request, context):
+    def TraerStocksPorTienda(self, request, context):
         """ELIAN
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -495,10 +495,10 @@ def add_TiendaServiceServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.EliminarProductoDeTiendaRequest.FromString,
                     response_serializer=service__pb2.Id.SerializeToString,
             ),
-            'TraerProductosPorTienda': grpc.unary_unary_rpc_method_handler(
-                    servicer.TraerProductosPorTienda,
-                    request_deserializer=service__pb2.Id.FromString,
-                    response_serializer=service__pb2.ProductosLista.SerializeToString,
+            'TraerStocksPorTienda': grpc.unary_unary_rpc_method_handler(
+                    servicer.TraerStocksPorTienda,
+                    request_deserializer=service__pb2.Codigo.FromString,
+                    response_serializer=service__pb2.StocksLista.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -702,7 +702,7 @@ class TiendaService(object):
             _registered_method=True)
 
     @staticmethod
-    def TraerProductosPorTienda(request,
+    def TraerStocksPorTienda(request,
             target,
             options=(),
             channel_credentials=None,
@@ -715,9 +715,9 @@ class TiendaService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/TiendaService/TraerProductosPorTienda',
-            service__pb2.Id.SerializeToString,
-            service__pb2.ProductosLista.FromString,
+            '/TiendaService/TraerStocksPorTienda',
+            service__pb2.Codigo.SerializeToString,
+            service__pb2.StocksLista.FromString,
             options,
             channel_credentials,
             insecure,
