@@ -106,8 +106,11 @@ message EliminarProductoDeTiendaRequest{
 }
 
 message AgregarProductoRequest{
-  Producto producto = 1;
-  repeated Id id = 2;
+  string nombreProducto = 1;
+  string talle = 2;
+  string color = 3;
+  string foto = 4;
+  repeated Id id = 5;
 }
 
 message LoginRequest{

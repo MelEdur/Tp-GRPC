@@ -38,10 +38,10 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                                 // Agrega el objeto tomando los datos de la request
                                 .setId(productoRepository.save(ProductoEntity.builder()
                                                 .codigoProducto(codigoProducto)
-                                                .nombreProducto(request.getProducto().getNombreProducto())
-                                                .talle(request.getProducto().getTalle())
-                                                .color(request.getProducto().getColor())
-                                                .foto(request.getProducto().getFoto())
+                                                .nombreProducto(request.getNombreProducto())
+                                                .talle(request.getTalle())
+                                                .color(request.getColor())
+                                                .foto(request.getFoto())
                                                 .habilitado(true)
                                                 .build())
                                                 .getId())
@@ -50,13 +50,17 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                 // -------------
                 List<Integer> ids = new ArrayList<>();
                 ids = request.getIdList().stream().map(idd -> idd.getId()).toList();
-                ProductoEntity producto = productoRepository.findById(idProducto)
-                                        .orElseThrow(() -> new EntityNotFoundException(
-                                                       "No existe un producto con esa id"));
+                Optional<ProductoEntity> productoAux = productoRepository.findById(idProducto);
+                if (productoAux.isEmpty()){
+                        responseObserver.onError(Status.NOT_FOUND.withDescription("El producto no existe").asRuntimeException());
+                        return;}
+                ProductoEntity producto = productoAux.get();
                 for (int i = 0; i < ids.size(); i++) {
-                        TiendaEntity tienda = tiendaRepository.findById(ids.get(i))
-                                        .orElseThrow(() -> new EntityNotFoundException(
-                                                        "No existe un producto con esa id"));
+                        Optional<TiendaEntity> tiendaAux = tiendaRepository.findById(ids.get(i));
+                        if (tiendaAux.isEmpty()){
+                                responseObserver.onError(Status.NOT_FOUND.withDescription("La tienda no existe").asRuntimeException());
+                                return;}
+                        TiendaEntity tienda = tiendaAux.get();
                         List<StockEntity> listStock = stockRepository.findAll();
                         int lastId = listStock.size();
                         StockEntity stock = new StockEntity();
