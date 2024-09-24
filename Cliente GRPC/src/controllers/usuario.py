@@ -16,7 +16,7 @@ cliente = UsuarioCliente()
 @cross_origin()
 def agregarUsuario():
 
-    data = request.get_json()
+    data = request.get_json() 
     result = cliente.agregarUsuario(data)
     return MessageToJson(result)
 

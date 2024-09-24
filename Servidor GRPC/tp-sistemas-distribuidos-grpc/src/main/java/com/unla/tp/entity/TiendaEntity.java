@@ -15,6 +15,8 @@ public class TiendaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+
+    //@Unique probar
     private String codigoTienda;
 
     private String direccion;

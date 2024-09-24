@@ -1,35 +1,40 @@
 package com.unla.tp.service;
 
-import com.google.common.base.Joiner;
-import com.unla.tp.entity.ProductoEntity;
-import com.unla.tp.entity.StockEntity;
-import com.unla.tp.entity.TiendaEntity;
-
-import com.unla.tp.util.SearchOperation;
-import com.unla.tp.util.TiendaSpecification;
-import com.unla.tp.util.TiendaSpecificationsBuilder;
-import com.unla.tp.util.SpecSearchCriteria;
-
-import com.unla.grpc.*;
-
-import io.grpc.Status;
-import io.grpc.stub.StreamObserver;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.lognet.springboot.grpc.GRpcService;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unla.tp.repository.*;
+import com.google.common.base.Joiner;
+import com.unla.grpc.Codigo;
+import com.unla.grpc.EliminarProductoDeTiendaRequest;
+import com.unla.grpc.Empty;
+import com.unla.grpc.Filtro;
+import com.unla.grpc.Id;
+import com.unla.grpc.ModificarStockRequest;
+import com.unla.grpc.StockCompleto;
+import com.unla.grpc.StocksLista;
+import com.unla.grpc.Tienda;
+import com.unla.grpc.TiendaServiceGrpc;
+import com.unla.grpc.TiendasLista;
+import com.unla.tp.entity.ProductoEntity;
+import com.unla.tp.entity.StockEntity;
+import com.unla.tp.entity.TiendaEntity;
+import com.unla.tp.repository.IProductoRepository;
+import com.unla.tp.repository.IStockRepository;
+import com.unla.tp.repository.ITiendaRepository;
+import com.unla.tp.util.SearchOperation;
+import com.unla.tp.util.TiendaSpecificationsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.Optional;
+import io.grpc.Status;
+import io.grpc.stub.StreamObserver;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @GRpcService
@@ -225,36 +230,40 @@ public class TiendaService extends TiendaServiceGrpc.TiendaServiceImplBase{
         //Envía el objeto
         responseObserver.onNext(id);
         responseObserver.onCompleted();
-    }
+    }   
 
     //  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
     @Transactional
     @Override
-    public void traerProductosPorTienda(Id request, StreamObserver<ProductosLista> responseObserver) {
+    public void traerStocksPorTienda(Codigo request, StreamObserver<StocksLista> responseObserver) {
         //Busca Objeto en la DB
-        Optional<List<StockEntity>> stocksTienda = stockRepository.findByTiendaId(request.getId());
-        List<ProductoEntity> listaProductosEntity = new ArrayList<ProductoEntity>();
+        Optional<TiendaEntity> tiendaOptional = tiendaRepository.findByCodigoTienda(request.getCodigo());
 
-        for (StockEntity stock : stocksTienda.get()) {
-                listaProductosEntity.add(stock.getProducto());
+        if(tiendaOptional.isEmpty()){
+            responseObserver.onError((Status.NOT_FOUND.withDescription("La tienda no existe").asRuntimeException()));
         }
+        int idTienda = tiendaOptional.get().getId();
 
-        //Crea objeto que puede ser enviado por grpc
-        ProductosLista productoLista = ProductosLista.newBuilder()
-                .addAllProductos(listaProductosEntity.stream()
-                        .map(productoEntity -> Producto.newBuilder()
-                                .setCodigoProducto(productoEntity.getCodigoProducto())
-                                .setNombreProducto(productoEntity.getNombreProducto())
-                                .setTalle(productoEntity.getTalle())
-                                .setColor(productoEntity.getColor())
-                                .setFoto(productoEntity.getFoto())//FALTA EL HABILITADO
-                                .build())
-                        //convertir a lista
-                        .collect(Collectors.toList()))
+        Optional<List<StockEntity>> stocksTienda = stockRepository.findByTiendaId(idTienda);
+        
+        StocksLista stocksLista = StocksLista.newBuilder()
+                .addAllStockCompleto(stocksTienda.get().stream()
+                        .map(stockEntity -> StockCompleto.newBuilder()
+                                .setIdStockCompleto(stockEntity.getIdStock())
+                                .setCodigoProducto(stockEntity.getProducto().getCodigoProducto())
+                                .setNombreProducto(stockEntity.getProducto().getNombreProducto())
+                                .setTalle(stockEntity.getProducto().getTalle())
+                                .setColor(stockEntity.getProducto().getColor())
+                                .setFoto(stockEntity.getProducto().getFoto())
+                                .setHabilitado(stockEntity.isHabilitado())
+                                .setCodigoTienda(stockEntity.getTienda().getCodigoTienda())
+                                .setCantidad(stockEntity.getCantidad())
+                                .build()).toList()
+                )
                 .build();
 
         //Envía el objeto
-        responseObserver.onNext(productoLista);
+        responseObserver.onNext(stocksLista);
         responseObserver.onCompleted();
     }    
 }
