@@ -148,6 +148,10 @@ public class TiendaService extends TiendaServiceGrpc.TiendaServiceImplBase{
         
         Specification<TiendaEntity> spec = builder.build();
 
+        if(spec == null){
+                responseObserver.onError((Status.NOT_FOUND.withDescription("Filtro no existe").asRuntimeException()));
+        }
+        
         //Busca los Objetos en la DB
         List<TiendaEntity> tiendaEntityList = tiendaRepository.findAll(spec);
 

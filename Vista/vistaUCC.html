@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stockeate Web</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark  bg-dark ">
+        <a class="navbar-brand" href="#"> Stockeate
+            <img src="https://w7.pngwing.com/pngs/382/773/png-transparent-mover-business-computer-icons-service-inventory-shipping-angle-freight-transport-company.png" width="60" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <button class="btn btn-light ml-auto" onclick="logout()">Cerrar sesión</button>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 id="errores" style="display: none;color:crimson;" class="text-center mb-4">Errores</h1>
+        <h1 class="text-center mb-4">Bienvenido Usuario Casa Central</h1>
+
+        <div class="text-center mb-4">
+            <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-secondary" onclick="cambioSearch('searchTiendas')">Tiendas</button>
+                <button type="button" class="btn btn-secondary" onclick="cambioSearch('searchUsuarios')">Usuarios</button>
+                <button type="button" class="btn btn-secondary" onclick="cambioSearch('searchProductos')">Productos</button>
+            </div>
+
+        </div>
+
+
+        <!-- Search -->
+        <form id="searchTiendas" class="mb-4 search-field" style="display: none;">
+            <div class="input-group">
+                <input class="form-control" id="searchInputTiendas" type="search" placeholder="Buscar Tienda" aria-label="Search">
+                <button class="fas fa-search btn btn-outline-success" type="submit" id="botonBuscarTiendas"></button>
+            </div>
+
+            <!-- Checkboxes -->
+
+            <div class="d-flex align-items-center mt-3">
+
+                <!-- Botón alineado a la derecha -->
+                <div class="ms-auto">
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myTiendaModal">
+                        Agregar Tienda
+                    </button>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myTiendaModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Formulario Tienda</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="nombre">Nombre</label>
+                                        <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Direccion</label>
+                                        <input type="email" class="form-control" id="email" placeholder="Ingresa tu correo electrónico">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <form id="searchUsuarios" class="mb-4 search-field" style="display: none;">
+            <div class="input-group">
+                <input class="form-control" type="search" id="searchUsarioNombre" placeholder="Buscar por Nombre" aria-label="Search1">
+                <input class="form-control" type="search" id="searchUsarioTienda" placeholder="Buscar por Tienda" aria-label="Search2">
+                <button class="fas fa-search btn btn-outline-success" type="submit" id="botonBuscarUsuarios"></button>
+            </div>
+
+            <!-- Checkboxes -->
+
+            <div class="d-flex align-items-center mt-3">
+                <div class="form-check me-3">
+                    Filtrar por:
+                </div>
+                <!-- Primer checkbox -->
+                <div class="form-check ms-2 me-3">
+                    <input class="form-check-input" type="checkbox" checked ="checkboxUsuarioNombre" onchange="checkboxInput('searchUsarioNombre', this.checked)">
+                    <label class="form-check-label" for="checkbox1">
+                        Nombre
+                    </label>
+                </div>
+
+                <!-- Segundo checkbox -->
+                <div class="form-check ms-2 me-3">
+                    <input class="form-check-input" type="checkbox" checked id="checkbox2" id="checkboxUsuarioTienda" onchange="checkboxInput('searchUsarioTienda', this.checked)">
+                    <label class="form-check-label" for="checkbox2">
+                        Tienda
+                    </label>
+                </div>
+
+                <!-- Botón alineado a la derecha -->
+                <div class="ms-auto">
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myUsuarioModal">
+                        Agregar Usuario
+                    </button>
+                </div>
+
+                <!-- Modal CREAR USUARIO -->
+                <div class="modal fade" id="myUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Formulario Usuario</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                               <form id="crearUsuarioForm">
+                                <label for="usuario">Usuario</label>
+                                <br>
+                                <input type="text" class="form-control" id="usuarioCrearUsuario" placeholder="Ingresa un nombre" required>
+                                <br>
+                                <label for="contrasenia">Contraseña</label>
+                                <br>
+                                <input type="password" class="form-control" id="contraseniaCrearUsuario" placeholder="Ingresa una contraseña" required>
+                                <br>
+                                <label for="nombre">Nombre</label>
+                                <br>
+                                <input type="text" class="form-control" id="nombreCrearUsuario" placeholder="Ingresa el nombre del usuario" required>
+                                <br>
+                                <label for="apellido">Apellido</label>
+                                <br>
+                                <input type="text" class="form-control" id="apellidoCrearUsuario" placeholder="Ingresa el apellido del usuario" required>
+                                <br>
+                                <label for="Tienda">Tienda</label>
+                                <br>
+                                <input type="text" class="form-control" id="tiendaCrearUsuario" placeholder="Asigna una tienda al usuario" required>
+                                <br>
+                                <label for="Habilitado">Habilitado: </label>
+                                <input type="checkbox" checked id="habilitadoCrearUsuario">
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <label for="mensaje" id="mensajeCrearUsuario" style="display: none;"></label>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="button" id="botonAgregarUsuario" class="btn btn-primary">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal MODIFICAR USUARIO-->
+                <div class="modal fade" id="modificarUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Modificar Usuario</h5>
+                                <button type="button" id="cerrarModificarFormulario" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                               <form id="modificarUsuarioForm">
+                                <input type="hidden" id="idModificarUsuario">
+                                <label for="usuario">Usuario</label>
+                                <br>
+                                <input type="text" class="form-control" id="usuarioModificarUsuario" placeholder="Ingresa un nombre" required>
+                                <br>
+                                <label for="contrasenia">Contraseña</label>
+                                <br>
+                                <input type="password" class="form-control" id="contraseniaModificarUsuario" placeholder="Ingresa una contraseña" required>
+                                <br>
+                                <label for="nombre">Nombre</label>
+                                <br>
+                                <input type="text" class="form-control" id="nombreModificarUsuario" placeholder="Ingresa el nombre del usuario" required>
+                                <br>
+                                <label for="apellido">Apellido</label>
+                                <br>
+                                <input type="text" class="form-control" id="apellidoModificarUsuario" placeholder="Ingresa el apellido del usuario" required>
+                                <br>
+                                <label for="Tienda">Tienda</label>
+                                <br>
+                                <input type="text" class="form-control" id="tiendaModificarUsuario" placeholder="Asigna una tienda al usuario" required>
+                                <br>
+                                <label for="Habilitado">Habilitado: </label>
+                                <input type="checkbox" id="habilitadoModificarUsuario">
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <label for="mensaje" id="mensajeModificarUsuario" style="display: none;"></label>
+                                <button type="button" id="cerrarModificarFormulario" class="btn btn-secondary">Cerrar</button>
+                                <button type="button" id="botonModificarUsuario" class="btn btn-primary">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+        <form id="searchProductos" class="mb-4 search-field" style="display: none;">
+            <div class="input-group">
+                <input class="form-control" type="search" id="searchProductosNombre" placeholder="Buscar por Nombre" aria-label="Search1">
+                <input class="form-control" type="search" id="searchProductosCodigo" placeholder="Buscar por Codigo" aria-label="Search1">
+                <input class="form-control" type="search" id="searchProductosTalle" placeholder="Buscar por Talle" aria-label="Search1">
+                <input class="form-control" type="search" id="searchProductosColor" placeholder="Buscar por Color" aria-label="Search1">
+                <button class="fas fa-search btn btn-outline-success" type="submit" id="botonBuscarProductos"></button>
+            </div>
+
+            <!-- Checkboxes -->
+
+            <div class="d-flex align-items-center mt-3">
+                <div class="form-check me-3">
+                    Filtrar por:
+                </div>
+                <!-- Primer checkbox -->
+                <div class="form-check ms-2 me-3">
+                    <input class="form-check-input" type="checkbox" checked id="checkboxProductosNombre" onchange="checkboxInput('searchProductosNombre', this.checked)">
+                    <label class="form-check-label" for="checkbox1">
+                        Nombre
+                    </label>
+                </div>
+
+                <!-- Segundo checkbox -->
+                <div class="form-check ms-2 me-3">
+                    <input class="form-check-input" type="checkbox" checked id="checkbox2" id="checkboxProductosCodigo" onchange="checkboxInput('searchProductosCodigo', this.checked)">
+                    <label class="form-check-label" for="checkbox2">
+                        Codigo
+                    </label>
+                </div>
+
+                <!-- Tercer checkbox -->
+                <div class="form-check ms-2 me-3">
+                    <input class="form-check-input" type="checkbox" checked id="checkbox3" id="checkboxProductosTalle" onchange="checkboxInput('searchProductosTalle', this.checked)">
+                    <label class="form-check-label" for="checkbox2">
+                        Talle
+                    </label>
+                </div>
+
+                <!-- Cuarto checkbox -->
+                <div class="form-check ms-2 me-3">
+                    <input class="form-check-input" type="checkbox" checked id="checkbox4" id="checkboxProductosColor" onchange="checkboxInput('searchProductosColor', this.checked)">
+                    <label class="form-check-label" for="checkbox2">
+                        Color
+                    </label>
+                </div>
+
+                <!-- Botón alineado a la derecha -->
+                <div class="ms-auto">
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myProductoModal">
+                        Agregar Producto
+                    </button>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myProductoModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Formulario Producto</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="nombre">Nombre producto</label>
+                                        <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Color</label>
+                                        <input type="email" class="form-control" id="email" placeholder="Ingresa tu apellido">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <br>
+        <div>
+            <div class="results">
+                <ul id="resultados">
+
+                </ul>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="src/Usuarios.js"></script>
+
+    <script>
+        function cambioSearch(searchId) {
+            // Ocultar todos los campos de búsqueda
+            const searchFields = document.querySelectorAll('.search-field');
+            searchFields.forEach(field => {
+                field.style.display = 'none';
+            });
+            const searchResults = document.querySelector('.results');
+            searchResults.style.display = 'none';
+
+            // Mostrar el campo de búsqueda correspondiente
+            document.getElementById(searchId).style.display = 'block';
+        }
+
+        function checkboxInput(inputId, isChecked) {
+            const input = document.getElementById(inputId);
+
+            input.disabled = !isChecked;
+            if (!isChecked) {
+                input.value = ''; // Limpiar el valor si se desactiva
+            }
+        }
+
+        // Prevenir que los formularios se envíen y recarguen la página
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Previene la recarga de la página
+            });
+        });
+    </script>
+</body>
+</html>

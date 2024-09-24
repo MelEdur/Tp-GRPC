@@ -46,11 +46,14 @@ public class JwtInterceptor implements ServerInterceptor {
                         .parseClaimsJws(token)
                         .getBody();
 
+                String usuario = claims.getSubject();
+
                 //Extraer roles
                 String rol = claims.get("rol", String.class);
 
 
-                Context context = Context.current().withValue(ContextKeys.ROLE_CONTENT_KEY,rol);
+                Context context = Context.current()
+                        .withValues(ContextKeys.ROLE_CONTENT_KEY,rol,ContextKeys.USER_CONTENT_KEY,usuario);
                 return  Contexts.interceptCall(context,serverCall,metadata,serverCallHandler);
             }catch (Exception e){
                 serverCall.close(Status.UNAUTHENTICATED.withDescription("Token invalido"),metadata);

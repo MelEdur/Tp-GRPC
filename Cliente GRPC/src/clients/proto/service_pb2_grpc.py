@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import clients.proto.service_pb2 as service__pb2
+import proto.service_pb2 as service__pb2
 
 GRPC_GENERATED_VERSION = '1.66.1'
 GRPC_VERSION = grpc.__version__
@@ -40,7 +40,7 @@ class AuthServiceStub(object):
         self.Login = channel.unary_unary(
                 '/AuthService/Login',
                 request_serializer=service__pb2.LoginRequest.SerializeToString,
-                response_deserializer=service__pb2.Token.FromString,
+                response_deserializer=service__pb2.LoginResponse.FromString,
                 _registered_method=True)
 
 
@@ -62,7 +62,7 @@ def add_AuthServiceServicer_to_server(servicer, server):
             'Login': grpc.unary_unary_rpc_method_handler(
                     servicer.Login,
                     request_deserializer=service__pb2.LoginRequest.FromString,
-                    response_serializer=service__pb2.Token.SerializeToString,
+                    response_serializer=service__pb2.LoginResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -94,7 +94,7 @@ class AuthService(object):
             target,
             '/AuthService/Login',
             service__pb2.LoginRequest.SerializeToString,
-            service__pb2.Token.FromString,
+            service__pb2.LoginResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -397,10 +397,10 @@ class TiendaServiceStub(object):
                 request_serializer=service__pb2.EliminarProductoDeTiendaRequest.SerializeToString,
                 response_deserializer=service__pb2.Id.FromString,
                 _registered_method=True)
-        self.TraerProductosPorTienda = channel.unary_unary(
-                '/TiendaService/TraerProductosPorTienda',
-                request_serializer=service__pb2.Id.SerializeToString,
-                response_deserializer=service__pb2.ProductosLista.FromString,
+        self.TraerStocksPorTienda = channel.unary_unary(
+                '/TiendaService/TraerStocksPorTienda',
+                request_serializer=service__pb2.Codigo.SerializeToString,
+                response_deserializer=service__pb2.StocksLista.FromString,
                 _registered_method=True)
 
 
@@ -451,7 +451,7 @@ class TiendaServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def TraerProductosPorTienda(self, request, context):
+    def TraerStocksPorTienda(self, request, context):
         """ELIAN
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -496,10 +496,10 @@ def add_TiendaServiceServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.EliminarProductoDeTiendaRequest.FromString,
                     response_serializer=service__pb2.Id.SerializeToString,
             ),
-            'TraerProductosPorTienda': grpc.unary_unary_rpc_method_handler(
-                    servicer.TraerProductosPorTienda,
-                    request_deserializer=service__pb2.Id.FromString,
-                    response_serializer=service__pb2.ProductosLista.SerializeToString,
+            'TraerStocksPorTienda': grpc.unary_unary_rpc_method_handler(
+                    servicer.TraerStocksPorTienda,
+                    request_deserializer=service__pb2.Codigo.FromString,
+                    response_serializer=service__pb2.StocksLista.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -703,7 +703,7 @@ class TiendaService(object):
             _registered_method=True)
 
     @staticmethod
-    def TraerProductosPorTienda(request,
+    def TraerStocksPorTienda(request,
             target,
             options=(),
             channel_credentials=None,
@@ -716,9 +716,9 @@ class TiendaService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/TiendaService/TraerProductosPorTienda',
-            service__pb2.Id.SerializeToString,
-            service__pb2.ProductosLista.FromString,
+            '/TiendaService/TraerStocksPorTienda',
+            service__pb2.Codigo.SerializeToString,
+            service__pb2.StocksLista.FromString,
             options,
             channel_credentials,
             insecure,
@@ -765,6 +765,11 @@ class ProductoServiceStub(object):
                 request_serializer=service__pb2.FiltroProducto.SerializeToString,
                 response_deserializer=service__pb2.ProductosLista.FromString,
                 _registered_method=True)
+        self.TraerStocks = channel.unary_unary(
+                '/ProductoService/TraerStocks',
+                request_serializer=service__pb2.Empty.SerializeToString,
+                response_deserializer=service__pb2.StocksLista.FromString,
+                _registered_method=True)
 
 
 class ProductoServiceServicer(object):
@@ -801,6 +806,12 @@ class ProductoServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def TraerStocks(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ProductoServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -828,6 +839,11 @@ def add_ProductoServiceServicer_to_server(servicer, server):
                     servicer.TraerProductosPorFiltro,
                     request_deserializer=service__pb2.FiltroProducto.FromString,
                     response_serializer=service__pb2.ProductosLista.SerializeToString,
+            ),
+            'TraerStocks': grpc.unary_unary_rpc_method_handler(
+                    servicer.TraerStocks,
+                    request_deserializer=service__pb2.Empty.FromString,
+                    response_serializer=service__pb2.StocksLista.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -966,6 +982,33 @@ class ProductoService(object):
             '/ProductoService/TraerProductosPorFiltro',
             service__pb2.FiltroProducto.SerializeToString,
             service__pb2.ProductosLista.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def TraerStocks(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ProductoService/TraerStocks',
+            service__pb2.Empty.SerializeToString,
+            service__pb2.StocksLista.FromString,
             options,
             channel_credentials,
             insecure,

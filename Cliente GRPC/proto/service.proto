@@ -46,6 +46,30 @@ message Producto{
   bool habilitado = 7;
 }
 
+message FiltroProducto{
+  string nombreProducto = 1;
+  string codigoProducto = 2;
+  string talle = 3;
+  string color = 4;
+  string codigoTienda = 5;
+}
+
+message StockCompleto {
+  int32 idStockCompleto = 1;
+  string codigoProducto = 2;
+  string nombreProducto = 3;
+  string talle = 4;
+  string color = 5;
+  string foto = 6;
+  bool habilitado = 7;
+  string codigoTienda = 8;
+  int32 cantidad = 9;
+}
+
+message StocksLista {
+  repeated StockCompleto stockCompleto =1;
+}
+
 message Filtro{
   string filtro = 1;
 }
@@ -71,13 +95,6 @@ message ProductosLista {
   repeated Producto productos = 1;
 }
 
-message FiltroProducto{
-  string nombreProducto = 1;
-  string codigoProducto = 2;
-  string talle = 3;
-  string color = 4;
-}
-
 message ModificarStockRequest{
   int32 idTienda =1;
   int32 idProducto =2;
@@ -90,8 +107,11 @@ message EliminarProductoDeTiendaRequest{
 }
 
 message AgregarProductoRequest{
-  Producto producto = 1;
-  repeated Id id = 2;
+  string nombreProducto = 1;
+  string talle = 2;
+  string color = 3;
+  string foto = 4;
+  repeated Id id = 5;
 }
 
 message LoginRequest{
@@ -99,15 +119,21 @@ message LoginRequest{
   string contrasenia = 2;
 }
 
-message Token{
+message LoginResponse{
   string jwt = 1;
+  string usuario = 2;
+  string rol = 3;
+}
+
+message Codigo{
+  string codigo = 1;
 }
 
 //Definimos los servicios y su funcionalidad (request-response)
 
 //EDU
 service AuthService{
-  rpc Login(LoginRequest) returns (Token);
+  rpc Login(LoginRequest) returns (LoginResponse);
 }
 
 service UsuarioService{
@@ -130,7 +156,7 @@ service TiendaService{
   rpc ModificarStock(ModificarStockRequest) returns (Id);
   rpc TraerTiendasPorFiltro(Filtro) returns (TiendasLista); //cambiado
   rpc EliminarProductoDeTienda(EliminarProductoDeTiendaRequest) returns (Id);
-  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
+  rpc TraerStocksPorTienda(Codigo) returns(StocksLista);
   //ELIAN
 }
 //KEVIN
@@ -140,5 +166,5 @@ service ProductoService{
   rpc TraerProductos(Empty) returns(ProductosLista);
   rpc EliminarProducto(Id) returns (Id);
   rpc TraerProductosPorFiltro(FiltroProducto) returns(ProductosLista);
-
+  rpc TraerStocks(Empty) returns(StocksLista);
 }
