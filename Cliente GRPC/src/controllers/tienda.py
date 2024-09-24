@@ -13,7 +13,7 @@ tienda_blueprint = Blueprint('tienda',__name__)
 
 cliente = TiendaCliente()
 
-@tienda_blueprint.route('/tiendas',methods=['POST'])
+@tienda_blueprint.route('/tienda',methods=['POST'])
 @cross_origin()
 def agregarTienda():
 
@@ -22,7 +22,7 @@ def agregarTienda():
     return MessageToJson(result)
  
 
-@tienda_blueprint.route('/tiendas',methods=['PATCH'])
+@tienda_blueprint.route('/tienda',methods=['PATCH'])
 @cross_origin()
 def modificarTienda():
 
@@ -31,7 +31,7 @@ def modificarTienda():
     return MessageToJson(result)
 
 
-@tienda_blueprint.route('/tiendas/modificarStock',methods=['PATCH'])
+@tienda_blueprint.route('/tienda/modificarStock',methods=['PATCH'])
 @cross_origin()
 def modificarStock():
 
@@ -41,7 +41,7 @@ def modificarStock():
 
 
 
-@tienda_blueprint.route('/tiendas/<int:id>', methods=['GET'])
+@tienda_blueprint.route('/tienda/<int:id>', methods=['GET'])
 @cross_origin()
 def traerTienda(id):
 
@@ -56,15 +56,20 @@ def traerTiendas():
     result = cliente.traerTiendas()
     return MessageToJson(result,always_print_fields_with_no_presence=True)
 
-
-
-@tienda_blueprint.route('/tiendas/<string:filtro>', methods=['GET'])
+@tienda_blueprint.route('/tienda/traerStocks',methods=['GET'])
 @cross_origin()
-def traerTiendasPorFiltro(filtro):
+def traerStocksPorTienda():
+    data = request.get_json()
+    result = cliente.traerStocksPorTienda(data)
+    return MessageToJson(result,always_print_fields_with_no_presence=True)
 
-   result = cliente.traerTiendasPorFiltro(filtro)
+@tienda_blueprint.route('/tiendasPorFiltro', methods=['GET'])
+@cross_origin()
+def traerTiendasPorFiltro():
+   data = request.get_json()
+   data['filtro'] = str(data['filtro']).replace(" ", "_")
+   result = cliente.traerTiendasPorFiltro(data)
    return MessageToJson(result,always_print_fields_with_no_presence=True)
-
 
 @tienda_blueprint.route('/tienda/eliminarProducto', methods=['DELETE'])
 @cross_origin()
@@ -73,4 +78,3 @@ def eliminarProductoDeTienda():
    data = request.get_json()
    result = cliente.eliminarProductoDeTienda(data)
    return MessageToJson(result)
-
