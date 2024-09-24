@@ -23,7 +23,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void agregarUsuario(CrearUsuarioRequest request, StreamObserver<Id> responseObserver) {
-       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
 
         if(request.getNombreUsuario().isEmpty() || request.getNombre().isEmpty()
                 || request.getApellido().isEmpty() || request.getContrasenia().isEmpty() || request.getCodigoTienda().isEmpty()){
@@ -52,7 +52,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void modificarUsuario(Usuario request, StreamObserver<Id> responseObserver) {
-        //if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
 
         if(request.getNombreUsuario().isEmpty() || request.getNombre().isEmpty()
                 || request.getApellido().isEmpty() || request.getCodigoTienda().isEmpty()){
@@ -92,7 +92,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuarios(Empty request, StreamObserver<UsuariosLista> responseObserver) {
-       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
         List<UsuarioEntity> usuarioEntityList = usuarioRepository.findAll();
 
         UsuariosLista usuariosLista = UsuariosLista.newBuilder()
@@ -115,7 +115,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuario(Id request, StreamObserver<Usuario> responseObserver) {
-        //if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
 
 
         Optional<UsuarioEntity> usuarioDb = usuarioRepository.findById(request.getId());
@@ -140,7 +140,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuariosPorFiltro(FiltroUsuario request, StreamObserver<UsuariosLista> responseObserver) {
-       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
 
         List<UsuarioEntity> usuarios= usuarioRepository
                 .findByNombreContainingAndCodigoTiendaContainingOrderByHabilitadoDesc(request.getNombre(),request.getCodigoTienda());
