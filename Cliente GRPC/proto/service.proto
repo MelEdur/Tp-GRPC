@@ -154,8 +154,7 @@ service TiendaService{
   rpc TraerTiendas(Empty) returns(TiendasLista);
   rpc TraerTienda(Id) returns(Tienda);
   rpc ModificarStock(ModificarStockRequest) returns (Id);
-
-  rpc TraerTiendasPorFiltro(Filtro) returns (TiendasLista);
+  rpc TraerTiendasPorFiltro(Filtro) returns (TiendasLista); //cambiado
   rpc EliminarProductoDeTienda(EliminarProductoDeTiendaRequest) returns (Id);
   rpc TraerStocksPorTienda(Codigo) returns(StocksLista);
   //ELIAN

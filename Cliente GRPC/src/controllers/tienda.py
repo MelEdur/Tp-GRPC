@@ -6,6 +6,71 @@ from flask import Blueprint, request
 from flask_cors import cross_origin
 from google.protobuf.json_format import MessageToJson
 #Importar tu cliente de GRPC
-#from clients.UsuarioCliente import UsuarioCliente
+from clients.TiendaCliente import TiendaCliente
 
 tienda_blueprint = Blueprint('tienda',__name__)
+
+
+cliente = TiendaCliente()
+
+@tienda_blueprint.route('/tiendas',methods=['POST'])
+@cross_origin()
+def agregarTienda():
+
+    data = request.get_json() 
+    result = cliente.agregarTienda(data)
+    return MessageToJson(result)
+ 
+
+@tienda_blueprint.route('/tiendas',methods=['PATCH'])
+@cross_origin()
+def modificarTienda():
+
+    data = request.get_json()
+    result = cliente.modificarTienda(data)
+    return MessageToJson(result)
+
+
+@tienda_blueprint.route('/tiendas/modificarStock',methods=['PATCH'])
+@cross_origin()
+def modificarStock():
+
+    data = request.get_json()
+    result = cliente.modificarStock(data)
+    return MessageToJson(result)
+
+
+
+@tienda_blueprint.route('/tiendas/<int:id>', methods=['GET'])
+@cross_origin()
+def traerTienda(id):
+
+   result = cliente.traerTienda(id)
+   return MessageToJson(result,always_print_fields_with_no_presence=True)
+
+
+
+@tienda_blueprint.route('/tiendas',methods=['GET'])
+@cross_origin()
+def traerTiendas():
+    result = cliente.traerTiendas()
+    return MessageToJson(result,always_print_fields_with_no_presence=True)
+
+
+
+@tienda_blueprint.route('/tiendas/<string:filtro>', methods=['GET'])
+@cross_origin()
+def traerTiendasPorFiltro(filtro):
+
+   result = cliente.traerTiendasPorFiltro(filtro)
+   return MessageToJson(result,always_print_fields_with_no_presence=True)
+
+
+@tienda_blueprint.route('/tienda/eliminarProducto', methods=['DELETE'])
+@cross_origin()
+def eliminarProductoDeTienda():
+   
+   data = request.get_json()
+   result = cliente.eliminarProductoDeTienda(data)
+   return MessageToJson(result)
+
