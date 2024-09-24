@@ -35,7 +35,6 @@ document.getElementById('botonBuscarUsuarios').addEventListener('click', async (
             <span>Apellido: ${usuario.apellido}</span>
             <span>Tienda: ${usuario.codigoTienda}</span>
             <span>Habilitado: ${usuario.habilitado ? '✔️' : '❌'}</span>
-            <button type="button" id="botonEliminarUsuario" class="btn btn-danger" data-id=${usuario.id}">Borrar</button>
             <button type="button" id="botonModificarUsuarioFormulario" class="btn btn-primary" data-usuario='${JSON.stringify(usuario)}'>Modificar</button>
             `;
             ul.appendChild(li);
@@ -94,7 +93,7 @@ ul.addEventListener('click', function(event){
         document.getElementById('apellidoModificarUsuario').value = usuario.apellido;
         document.getElementById('tiendaModificarUsuario').value = usuario.codigoTienda;
         document.getElementById('habilitadoModificarUsuario').checked = usuario.habilitado;
-
+        document.getElementById('mensajeModificarUsuario').style.display = 'none';
         $('#modificarUsuarioModal').modal('show');
     }
 });
@@ -140,3 +139,4 @@ document.getElementById('botonModificarUsuario').addEventListener('click',async(
         document.getElementById('mensajeModificarUsuario').style.display = 'block';
     }
 });
+

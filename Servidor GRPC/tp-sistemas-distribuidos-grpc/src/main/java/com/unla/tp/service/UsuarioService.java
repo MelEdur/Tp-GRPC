@@ -143,7 +143,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
        // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
 
         List<UsuarioEntity> usuarios= usuarioRepository
-                .findByNombreContainingAndCodigoTiendaContaining(request.getNombre(),request.getCodigoTienda());
+                .findByNombreContainingAndCodigoTiendaContainingOrderByHabilitadoDesc(request.getNombre(),request.getCodigoTienda());
 
 
         UsuariosLista usuariosLista = UsuariosLista.newBuilder()

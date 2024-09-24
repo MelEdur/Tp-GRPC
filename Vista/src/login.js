@@ -1,4 +1,4 @@
-document.getElementById('loginForm').addEventListener('submit', async (event) => {
+document.getElementById('formularioLogIn').addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const usuario = document.getElementById('usuario').value;
@@ -30,7 +30,7 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         if (data.rol === 'ADMIN'){
             window.location.href = 'vistaUCC.html';
         }else if (data.rol ===  'USUARIO'){
-            window.location.href = 'user-dashboard.html'
+            window.location.href = 'vistaUsuario.html'
         }else{
             window.location.href = '/'
         }
@@ -39,6 +39,7 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
 
     //Manejo del error
     } catch(error){
+        document.getElementById('message').style.color = 'red';
         document.getElementById('message').innerText = `${error.message}`;
     }
 });
