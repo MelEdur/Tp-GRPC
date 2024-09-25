@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.List;
 
 @RequiredArgsConstructor
-//@GRpcGlobalInterceptor
+@GRpcGlobalInterceptor
 public class JwtInterceptor implements ServerInterceptor {
 
     @Value("${jwt.secret}")
@@ -31,7 +31,6 @@ public class JwtInterceptor implements ServerInterceptor {
         if (metodosExcluidos.contains(metodo)){
             return Contexts.interceptCall(Context.current(),serverCall,metadata,serverCallHandler);
         }
-
 
         //Extraemos el token
         String token = metadata.get(Metadata.Key.of("Authorization",Metadata.ASCII_STRING_MARSHALLER));
