@@ -747,7 +747,7 @@ class ProductoServiceStub(object):
                 _registered_method=True)
         self.ModificarProducto = channel.unary_unary(
                 '/ProductoService/ModificarProducto',
-                request_serializer=service__pb2.Producto.SerializeToString,
+                request_serializer=service__pb2.ProductoStockid.SerializeToString,
                 response_deserializer=service__pb2.Id.FromString,
                 _registered_method=True)
         self.TraerProductos = channel.unary_unary(
@@ -768,6 +768,16 @@ class ProductoServiceStub(object):
         self.TraerStocks = channel.unary_unary(
                 '/ProductoService/TraerStocks',
                 request_serializer=service__pb2.Empty.SerializeToString,
+                response_deserializer=service__pb2.StocksLista.FromString,
+                _registered_method=True)
+        self.EliminarStock = channel.unary_unary(
+                '/ProductoService/EliminarStock',
+                request_serializer=service__pb2.Id.SerializeToString,
+                response_deserializer=service__pb2.Id.FromString,
+                _registered_method=True)
+        self.TraerStocksPorFiltro = channel.unary_unary(
+                '/ProductoService/TraerStocksPorFiltro',
+                request_serializer=service__pb2.FiltroProducto.SerializeToString,
                 response_deserializer=service__pb2.StocksLista.FromString,
                 _registered_method=True)
 
@@ -812,6 +822,18 @@ class ProductoServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def EliminarStock(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def TraerStocksPorFiltro(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ProductoServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -822,7 +844,7 @@ def add_ProductoServiceServicer_to_server(servicer, server):
             ),
             'ModificarProducto': grpc.unary_unary_rpc_method_handler(
                     servicer.ModificarProducto,
-                    request_deserializer=service__pb2.Producto.FromString,
+                    request_deserializer=service__pb2.ProductoStockid.FromString,
                     response_serializer=service__pb2.Id.SerializeToString,
             ),
             'TraerProductos': grpc.unary_unary_rpc_method_handler(
@@ -843,6 +865,16 @@ def add_ProductoServiceServicer_to_server(servicer, server):
             'TraerStocks': grpc.unary_unary_rpc_method_handler(
                     servicer.TraerStocks,
                     request_deserializer=service__pb2.Empty.FromString,
+                    response_serializer=service__pb2.StocksLista.SerializeToString,
+            ),
+            'EliminarStock': grpc.unary_unary_rpc_method_handler(
+                    servicer.EliminarStock,
+                    request_deserializer=service__pb2.Id.FromString,
+                    response_serializer=service__pb2.Id.SerializeToString,
+            ),
+            'TraerStocksPorFiltro': grpc.unary_unary_rpc_method_handler(
+                    servicer.TraerStocksPorFiltro,
+                    request_deserializer=service__pb2.FiltroProducto.FromString,
                     response_serializer=service__pb2.StocksLista.SerializeToString,
             ),
     }
@@ -899,7 +931,7 @@ class ProductoService(object):
             request,
             target,
             '/ProductoService/ModificarProducto',
-            service__pb2.Producto.SerializeToString,
+            service__pb2.ProductoStockid.SerializeToString,
             service__pb2.Id.FromString,
             options,
             channel_credentials,
@@ -1008,6 +1040,60 @@ class ProductoService(object):
             target,
             '/ProductoService/TraerStocks',
             service__pb2.Empty.SerializeToString,
+            service__pb2.StocksLista.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def EliminarStock(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ProductoService/EliminarStock',
+            service__pb2.Id.SerializeToString,
+            service__pb2.Id.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def TraerStocksPorFiltro(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ProductoService/TraerStocksPorFiltro',
+            service__pb2.FiltroProducto.SerializeToString,
             service__pb2.StocksLista.FromString,
             options,
             channel_credentials,

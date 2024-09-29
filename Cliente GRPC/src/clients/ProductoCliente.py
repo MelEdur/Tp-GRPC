@@ -22,19 +22,20 @@ class ProductoCliente(object):
             talle = data['talle'],
             color = data['color'],
             foto = data['foto'],
-            id = [proto.service_pb2.Id(id = idItem['id']) for idItem in data['id']])
+            id = [proto.service_pb2.Id(id = idItem['id']) for idItem in data['ids']])
         return self.stub.AgregarProducto(request,metadata = g.metadata)
 
 
     def modificarProducto(self,data):
-        request = proto.service_pb2.Producto(
+        request = proto.service_pb2.ProductoStockid(
             id = data['id'],
             codigoProducto = data['codigoProducto'],
             nombreProducto = data['nombreProducto'],
             talle = data['talle'],
             color = data['color'],
             foto = data['foto'],
-            habilitado = data['habilitado']
+            habilitado = data['habilitado'],
+            idStockCompleto = data['idStockCompleto']
         )
         return self.stub.ModificarProducto(request,metadata = g.metadata)
 
@@ -44,19 +45,20 @@ class ProductoCliente(object):
         return self.stub.TraerProductos(request,metadata = g.metadata)
 
 
-    def traerProductosPorFiltro(self,data):
+    def traerStocksPorFiltro(self,data):
         request = proto.service_pb2.FiltroProducto(
             nombreProducto = data['nombreProducto'],
             codigoProducto = data['codigoProducto'],
             talle = data['talle'],
-            color = data['color']
+            color = data['color'],
+            codigoTienda = data['codigoTienda']
         )
-        return self.stub.TraerProductosPorFiltro(request,metadata = g.metadata)
+        return self.stub.TraerStocksPorFiltro(request,metadata = g.metadata)
 
     def traerStocks(self):
         request = proto.service_pb2.Empty()
         return self.stub.TraerStocks(request,metadata = g.metadata)
 
-    def eliminarProducto(self,id):
+    def eliminarStock(self,id):
         request = proto.service_pb2.Id(id=id)
-        return self.stub.EliminarProducto(request,metadata = g.metadata)
+        return self.stub.EliminarStock(request,metadata = g.metadata)

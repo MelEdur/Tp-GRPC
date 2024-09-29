@@ -1,19 +1,35 @@
 package com.unla.tp.service;
 
-import com.unla.tp.entity.*;
-import com.unla.grpc.*;
-import com.unla.tp.repository.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.lognet.springboot.grpc.GRpcService;
+
+import com.unla.grpc.AgregarProductoRequest;
+import com.unla.grpc.Empty;
+import com.unla.grpc.FiltroProducto;
+import com.unla.grpc.Id;
+import com.unla.grpc.Producto;
+import com.unla.grpc.ProductoServiceGrpc;
+import com.unla.grpc.ProductosLista;
+import com.unla.grpc.StockCompleto;
+import com.unla.grpc.StocksLista;
+import com.unla.grpc.ProductoStockid;
+import com.unla.tp.entity.ProductoEntity;
+import com.unla.tp.entity.StockEntity;
+import com.unla.tp.entity.TiendaEntity;
+import com.unla.tp.repository.IProductoRepository;
+import com.unla.tp.repository.IStockRepository;
+import com.unla.tp.repository.ITiendaRepository;
 import com.unla.tp.util.SecurityUtils;
 
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.lognet.springboot.grpc.GRpcService;
-import org.springframework.security.core.parameters.P;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @GRpcService
@@ -25,12 +41,10 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
 
         @Override
         public void agregarProducto(AgregarProductoRequest request, StreamObserver<Id> responseObserver) {
-                // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+                if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
 
-                List<ProductoEntity> productoEntityList = productoRepository.findAll();
                 String codigoProducto;
                 codigoProducto = generarStringAleatorio();
-                int contador = productoEntityList.size();
                 while (productoRepository.existsByCodigoProducto(codigoProducto)) {
                         codigoProducto = generarStringAleatorio();
                 }
@@ -56,7 +70,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                         return;}
                 ProductoEntity producto = productoAux.get();
                 for (int i = 0; i < ids.size(); i++) {
-                        Optional<TiendaEntity> tiendaAux = tiendaRepository.findById(ids.get(i));
+                        Optional<TiendaEntity> tiendaAux = tiendaRepository.findByCodigoTienda(ids.get(i).toString());
                         if (tiendaAux.isEmpty()){
                                 responseObserver.onError(Status.NOT_FOUND.withDescription("La tienda no existe").asRuntimeException());
                                 return;}
@@ -94,7 +108,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
 
         @Override
         public void traerProductos(Empty request, StreamObserver<ProductosLista> responseObserver) {
-                // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+                if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
                 // Busca los Objetos en la DB
                 List<ProductoEntity> productoEntityList = productoRepository.findAll();
 
@@ -122,7 +136,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
 
         @Override
         public void eliminarProducto(Id request, StreamObserver<Id> responseObserver) {
-                // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+                if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
                 // Busca Objeto en la DB
                 Optional<ProductoEntity> productoAux = productoRepository.findById(request.getId());
                 if (productoAux.isEmpty()){
@@ -161,8 +175,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
         // Productos: se pueden filtrar por nombre, código, talle, color.
         @Override
         public void traerProductosPorFiltro(FiltroProducto request, StreamObserver<ProductosLista> responseObserver) {
-                // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver))
-                // return;
+                if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
                 // Busca los Objetos en la DB
                 List<ProductoEntity> productoEntityList = productoRepository
                                 .findByCodigoProductoContainingAndNombreProductoContainingAndTalleContainingAndColorContaining(
@@ -170,6 +183,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                                                 request.getTalle(), request.getColor());
 
                 // Crea objeto que puede ser enviado por grpc
+
                 ProductosLista productosLista = ProductosLista.newBuilder()
                                 .addAllProductos(productoEntityList.stream()
                                                 // Recorre los objetos traidos y los convierte en una lista que puede
@@ -192,8 +206,8 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
         }
 
         @Override
-        public void modificarProducto(Producto request, StreamObserver<Id> responseObserver) {
-                // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+        public void modificarProducto(ProductoStockid request, StreamObserver<Id> responseObserver) {
+                if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
                 // Busca Objeto en la DB
                 Optional<ProductoEntity> productoAux = productoRepository.findById(request.getId());
                 if (productoAux.isEmpty()){
@@ -214,6 +228,10 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                                                 .getId())
                                 .build();
 
+                Optional<StockEntity> stockEntityaux = stockRepository.findById(request.getIdStockCompleto());
+                StockEntity stockEntity = stockEntityaux.get();
+                stockEntity.setHabilitado(true);
+                stockRepository.save(stockEntity);
                 // Envía el objeto
                 responseObserver.onNext(id);
                 responseObserver.onCompleted();
@@ -221,11 +239,12 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
 
         @Override
         public void traerStocks(Empty request, StreamObserver<StocksLista> responseObserver) {
-                // if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver))
-               List<StockEntity> stockEntityList = stockRepository.findAll();
-
-                StocksLista stocksLista = StocksLista.newBuilder()
-                        .addAllStockCompleto(stockEntityList.stream()
+                if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+ 
+                List<StockEntity> stockEntityList = stockRepository.findAll();
+       
+                        StocksLista stocksLista = StocksLista.newBuilder()
+                        .addAllStocksCompleto(stockEntityList.stream()
                                 .map(stockEntity -> StockCompleto.newBuilder()
                                         .setIdStockCompleto(stockEntity.getIdStock())
                                         .setCodigoProducto(stockEntity.getProducto().getCodigoProducto())
@@ -236,10 +255,66 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                                         .setHabilitado(stockEntity.isHabilitado())
                                         .setCodigoTienda(stockEntity.getTienda().getCodigoTienda())
                                         .setCantidad(stockEntity.getCantidad())
+                                        .setIdProducto(stockEntity.getProducto().getId())
                                         .build()).toList()
                         )
                         .build();
                 responseObserver.onNext(stocksLista);
                 responseObserver.onCompleted();
         }
+
+        @Override
+        public void eliminarStock(Id request, StreamObserver<Id> responseObserver) {
+                if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+                // Busca Objeto en la DB
+                Optional<StockEntity> stockAux = stockRepository.findById(request.getId());
+                if (stockAux.isEmpty()){
+                        responseObserver.onError(Status.NOT_FOUND.withDescription("El stock no existe").asRuntimeException());
+                        return;}
+                StockEntity stock = stockAux.get();
+                Id id = Id.newBuilder()
+                                .setId(stockRepository.save(StockEntity.builder()
+                                                .idStock(stock.getIdStock())
+                                                .producto(stock.getProducto())
+                                                .tienda(stock.getTienda())
+                                                .cantidad(stock.getCantidad())
+                                                .habilitado(false)
+                                                .build())
+                                                .getIdStock())
+                                .build();
+
+                // Envía el objeto
+                responseObserver.onNext(id);
+                responseObserver.onCompleted();
+        }
+
+        @Override
+        public void traerStocksPorFiltro(FiltroProducto request, StreamObserver<StocksLista> responseObserver) {
+                if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+
+                List<StockEntity> stockEntityList = stockRepository.findByProductoCodigoProductoContainingAndProductoNombreProductoContainingAndProductoTalleContainingAndProductoColorContainingAndTiendaCodigoTiendaContaining(request.getCodigoProducto(), request.getNombreProducto(),
+                request.getTalle(), request.getColor(), request.getCodigoTienda());
+                // Crea objeto que puede ser enviado por grpc
+       
+                        StocksLista stocksLista = StocksLista.newBuilder()
+                        .addAllStocksCompleto(stockEntityList.stream()
+                                .map(stockEntity -> StockCompleto.newBuilder()
+                                        .setIdStockCompleto(stockEntity.getIdStock())
+                                        .setCodigoProducto(stockEntity.getProducto().getCodigoProducto())
+                                        .setNombreProducto(stockEntity.getProducto().getNombreProducto())
+                                        .setTalle(stockEntity.getProducto().getTalle())
+                                        .setColor(stockEntity.getProducto().getColor())
+                                        .setFoto(stockEntity.getProducto().getFoto())
+                                        .setHabilitado(stockEntity.isHabilitado())
+                                        .setCodigoTienda(stockEntity.getTienda().getCodigoTienda())
+                                        .setCantidad(stockEntity.getCantidad())
+                                        .setIdProducto(stockEntity.getProducto().getId())
+                                        .build()).toList()
+                        )
+                        .build();
+
+                responseObserver.onNext(stocksLista);
+                responseObserver.onCompleted();
+        }
 }
+

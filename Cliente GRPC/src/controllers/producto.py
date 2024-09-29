@@ -39,9 +39,9 @@ def traerProductos():
 
 @producto_blueprint.route('/productos/<int:id>', methods=['PATCH'])
 @cross_origin()
-def eliminarProducto(id):
+def eliminarStock(id):
 
-   result = producto.eliminarProducto(id)
+   result = producto.eliminarStock(id)
    return MessageToJson(result)
 
 
@@ -51,10 +51,10 @@ def traerStocks():
     result = producto.traerStocks()
     return MessageToJson(result,always_print_fields_with_no_presence=True)
 
-@producto_blueprint.route('/productos/filtrado',methods=['GET'])
+@producto_blueprint.route('/productos/filtrado',methods=['POST'])
 @cross_origin()
-def traerProductosPorFiltro():
+def traerStocksPorFiltro():
 
     data = request.get_json()
-    result = producto.traerProductosPorFiltro(data)
+    result = producto.traerStocksPorFiltro(data)
     return MessageToJson(result,always_print_fields_with_no_presence=True)

@@ -247,7 +247,7 @@ public class TiendaService extends TiendaServiceGrpc.TiendaServiceImplBase{
         Optional<List<StockEntity>> stocksTienda = stockRepository.findByTiendaId(idTienda);
         
         StocksLista stocksLista = StocksLista.newBuilder()
-                .addAllStockCompleto(stocksTienda.get().stream()
+                .addAllStocksCompleto(stocksTienda.get().stream()
                         .map(stockEntity -> StockCompleto.newBuilder()
                                 .setIdStockCompleto(stockEntity.getIdStock())
                                 .setCodigoProducto(stockEntity.getProducto().getCodigoProducto())

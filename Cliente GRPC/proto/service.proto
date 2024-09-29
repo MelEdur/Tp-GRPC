@@ -54,6 +54,17 @@ message FiltroProducto{
   string codigoTienda = 5;
 }
 
+message ProductoStockid{
+  int32 id = 1;
+  string codigoProducto = 2;
+  string nombreProducto = 3;
+  string talle = 4;
+  string color = 5;
+  string foto = 6;
+  bool habilitado = 7;
+  int32 idStockCompleto = 8;
+}
+
 message StockCompleto {
   int32 idStockCompleto = 1;
   string codigoProducto = 2;
@@ -64,10 +75,11 @@ message StockCompleto {
   bool habilitado = 7;
   string codigoTienda = 8;
   int32 cantidad = 9;
+  int32 idProducto = 10;
 }
 
 message StocksLista {
-  repeated StockCompleto stockCompleto =1;
+  repeated StockCompleto stocksCompleto =1;
 }
 
 message Filtro{
@@ -162,9 +174,11 @@ service TiendaService{
 //KEVIN
 service ProductoService{
   rpc AgregarProducto(AgregarProductoRequest) returns(Id);
-  rpc ModificarProducto(Producto) returns(Id);
+  rpc ModificarProducto(ProductoStockid) returns(Id);
   rpc TraerProductos(Empty) returns(ProductosLista);
   rpc EliminarProducto(Id) returns (Id);
   rpc TraerProductosPorFiltro(FiltroProducto) returns(ProductosLista);
   rpc TraerStocks(Empty) returns(StocksLista);
+  rpc EliminarStock(Id) returns (Id);
+  rpc TraerStocksPorFiltro(FiltroProducto) returns(StocksLista);
 }

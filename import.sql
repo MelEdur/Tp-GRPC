@@ -1,5 +1,4 @@
 USE stockeate;
-sql insert productos:
 /*buzos*/
 INSERT INTO producto_entity VALUES(1, '9WuQ4PnYcm', 'amarillo', 'https://i.imgur.com/x49RFJf.jpeg', true, 'buzo nike', 'xl');
 INSERT INTO producto_entity VALUES(2, 'VPcNCFthT8', 'amarillo', 'https://i.imgur.com/AORQ5Qr.jpeg', true, 'buzo adidas', 'm');
