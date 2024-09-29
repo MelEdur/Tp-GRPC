@@ -62,3 +62,10 @@ class ProductoCliente(object):
     def eliminarStock(self,id):
         request = proto.service_pb2.Id(id=id)
         return self.stub.EliminarStock(request,metadata = g.metadata)
+
+    def modificarStockCantidad(self,data):
+        request = proto.service_pb2.ModificarStockCantidadRequest(
+            idStockCompleto = data['idStockCompleto'],
+            cantidad = data['cantidad']
+        )
+        return self.stub.ModificarProducto(request,metadata = g.metadata)

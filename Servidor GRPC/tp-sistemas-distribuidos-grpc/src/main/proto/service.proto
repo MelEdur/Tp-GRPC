@@ -65,6 +65,12 @@ message ProductoStockid{
   int32 idStockCompleto = 8;
 }
 
+message ModificarStockCantidadRequest {
+  int32 idStockCompleto = 1;
+  int32 cantidad = 2;
+}
+
+
 message StockCompleto {
   int32 idStockCompleto = 1;
   string codigoProducto = 2;
@@ -182,4 +188,5 @@ service ProductoService{
   rpc TraerStocks(Empty) returns(StocksLista);
   rpc EliminarStock(Id) returns (Id);
   rpc TraerStocksPorFiltro(FiltroProducto) returns(StocksLista);
+  rpc ModificarStockCantidad(ModificarStockCantidadRequest) returns (Id);
 }

@@ -9,16 +9,7 @@ import java.util.stream.Collectors;
 
 import org.lognet.springboot.grpc.GRpcService;
 
-import com.unla.grpc.AgregarProductoRequest;
-import com.unla.grpc.Empty;
-import com.unla.grpc.FiltroProducto;
-import com.unla.grpc.Id;
-import com.unla.grpc.Producto;
-import com.unla.grpc.ProductoServiceGrpc;
-import com.unla.grpc.ProductosLista;
-import com.unla.grpc.StockCompleto;
-import com.unla.grpc.StocksLista;
-import com.unla.grpc.ProductoStockid;
+import com.unla.grpc.*;
 import com.unla.tp.entity.ProductoEntity;
 import com.unla.tp.entity.StockEntity;
 import com.unla.tp.entity.TiendaEntity;
@@ -314,6 +305,31 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                         .build();
 
                 responseObserver.onNext(stocksLista);
+                responseObserver.onCompleted();
+        }
+
+        @Override
+        public void modificarStockCantidad(ModificarStockCantidadRequest request, StreamObserver<Id> responseObserver) {
+                if (!SecurityUtils.permisos(Set.of("USUARIO"), responseObserver)) return;
+                // Busca Objeto en la DB
+                Optional<StockEntity> stockAux = stockRepository.findById(request.getIdStockCompleto());
+                if (stockAux.isEmpty()){
+                        responseObserver.onError(Status.NOT_FOUND.withDescription("El stock no existe").asRuntimeException());
+                        return;}
+                StockEntity stock = stockAux.get();
+                Id id = Id.newBuilder()
+                                .setId(stockRepository.save(StockEntity.builder()
+                                                .idStock(stock.getIdStock())
+                                                .producto(stock.getProducto())
+                                                .tienda(stock.getTienda())
+                                                .cantidad(request.getCantidad())
+                                                .habilitado(stock.isHabilitado())
+                                                .build())
+                                                .getIdStock())
+                                .build();
+
+                // Envía el objeto
+                responseObserver.onNext(id);
                 responseObserver.onCompleted();
         }
 }

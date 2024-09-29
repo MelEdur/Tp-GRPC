@@ -44,6 +44,13 @@ def eliminarStock(id):
    result = producto.eliminarStock(id)
    return MessageToJson(result)
 
+@producto_blueprint.route('/productos/stock',methods=['PATCH'])
+@cross_origin()
+def modificarProducto():
+
+    data = request.get_json()
+    result = producto.modificarProducto(data)
+    return MessageToJson(result)
 
 @producto_blueprint.route('/productos/stocks',methods=['GET'])
 @cross_origin()
