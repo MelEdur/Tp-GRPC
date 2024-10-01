@@ -28,6 +28,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
         if(request.getNombreUsuario().isEmpty() || request.getNombre().isEmpty()
                 || request.getApellido().isEmpty() || request.getContrasenia().isEmpty() || request.getCodigoTienda().isEmpty()){
             responseObserver.onError((Status.INVALID_ARGUMENT.withDescription("Los campos no deben estar vacios").asRuntimeException()));
+            return;
         }
 
         if(usuarioRepository.existsByNombreUsuario(request.getNombreUsuario())){

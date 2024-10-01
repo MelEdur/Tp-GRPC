@@ -63,8 +63,9 @@ document.getElementById('botonAgregarUsuario').addEventListener('click', async (
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwt')}`
             },
-            body: JSON.stringify({nombreUsuario,contrasenia,nombre,apellido,habilitado,codigoTienda})
+            body: JSON.stringify({nombreUsuario,contrasenia,nombre,apellido,codigoTienda,habilitado})
         });
 
         if(!response.ok){
@@ -119,6 +120,7 @@ document.getElementById('botonModificarUsuario').addEventListener('click',async(
             method: 'PATCH',
             headers:{
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwt')}`
             },
             body: JSON.stringify({id,nombreUsuario,contrasenia,nombre,apellido,habilitado,codigoTienda})
         });
