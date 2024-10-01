@@ -18,4 +18,5 @@ def login():
 
     data = request.get_json()
     result = cliente.login(data)
+
     return MessageToJson(result)

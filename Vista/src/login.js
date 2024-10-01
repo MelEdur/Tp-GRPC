@@ -25,6 +25,7 @@ document.getElementById('formularioLogIn').addEventListener('submit', async (eve
         localStorage.setItem('jwt',data.jwt);
         localStorage.setItem('usuario',data.usuario);
         localStorage.setItem('rol',data.rol);
+        localStorage.setItem('codigoTienda',data.codigoTienda);
         console.log(data);
 
         if (data.rol === 'ADMIN'){

@@ -68,4 +68,4 @@ class ProductoCliente(object):
             idStockCompleto = data['idStockCompleto'],
             cantidad = data['cantidad']
         )
-        return self.stub.ModificarProducto(request,metadata = g.metadata)
+        return self.stub.ModificarStockCantidad(request,metadata = g.metadata)

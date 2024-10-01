@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+    <link rel="stylesheet" href="style.css">
     <style>
         .card {
             margin: 10px;
@@ -77,39 +77,31 @@
                         Color
                     </label>
                 </div>
-
-                <!-- Botón alineado a la derecha -->
-                <div class="ms-auto">
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myProductoModal" elemento.style.display = "none">
-                        Agregar Producto
-                    </button>
-                </div>
-
-                <!-- Modal -->
-                <div class="modal fade" id="myProductoModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                
+                <!-- Modal MODIFICAR PRODUCTO-->
+                <div class="modal fade" id="modificarProductoModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel">Formulario Producto</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <h5 class="modal-title" id="modalLabel">Modificar Producto</h5>
+                                <button type="button" id="cerrarModificarFormulario" class="close" data-dismiss="modal" aria-label="Cerrar">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="nombre">Nombre</label>
-                                        <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Apellido</label>
-                                        <input type="email" class="form-control" id="email" placeholder="Ingresa tu apellido">
-                                    </div>
+                               <form id="modificarProductoForm">
+                                <input type="hidden" id="idModificarStock">
+                                <label for="cantidad">Cantidad</label>
+                                <br>
+                                <input type="text" class="form-control" id="cantidadStockModificarStock" placeholder="Ingrese cantidad" required>
+                                <br>
+
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                <button type="button" id="botonAgregarProducto" class="btn btn-primary">Enviar</button>
+                                <label for="mensaje" id="mensajeModificarProducto" style="display: none;"></label>
+                                <button type="button" id="cerrarModificarFormulario" class="btn btn-secondary">Cerrar</button>
+                                <button type="button" id="botonModificarProducto" class="btn btn-primary">Enviar</button>
                             </div>
                         </div>
                     </div>
@@ -117,45 +109,15 @@
             </div>
 
         </form>
+        <br>
+        <div>
+            <div class="results">
+                <ul id="resultados">
 
-        <!-- Card Grid producto -->
-        <div class="row" id="cardProductos" style="display: none;">
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="Product Image">
-                    <div class="card-body">
-                        <h5 class="card-title">Product Name 1</h5>
-                        <p class="card-text"><strong>Product Code:</strong> P12345</p>
-                        <p class="card-text"><strong>Color:</strong> Red</p>
-                        <button class="btn btn-danger">Modificar Stock</button>
-                    </div>
-                </div>
+                </ul>
             </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="Product Image">
-                    <div class="card-body">
-                        <h5 class="card-title">Product Name 2</h5>
-                        <p class="card-text"><strong>Product Code:</strong> P67890</p>
-                        <p class="card-text"><strong>Color:</strong> Blue</p>
-                        <button class="btn btn-danger">Modificar Stock</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="Product Image">
-                    <div class="card-body">
-                        <h5 class="card-title">Product Name 3</h5>
-                        <p class="card-text"><strong>Product Code:</strong> P54321</p>
-                        <p class="card-text"><strong>Color:</strong> Green</p>
-                        <button class="btn btn-danger">Modificar Stock</button>
-                    </div>
-                </div>
-            </div>
+
         </div>
-
-
     </div>
 
 
@@ -165,7 +127,7 @@
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="src/ProductosUT.js"></script> -->
+    <script src="src/ProductosUT.js"></script>
 
     <script>
 
@@ -182,14 +144,26 @@
             window.location.href = 'login.html';
         }
 
-        $(document).ready(function() {
-
-            $('#botonBuscarProductos').click(function() {
-                $('#cardProductos').show();
-                $('#cardUsuarios, #cardTiendas').hide();
-
+        function cambioSearch(searchId) {
+            // Ocultar todos los campos de búsqueda
+            const searchFields = document.querySelectorAll('.search-field');
+            searchFields.forEach(field => {
+                field.style.display = 'none';
             });
-        });
+            const searchResults = document.querySelector('.results');
+            searchResults.style.display = 'none';
+
+            // Mostrar el campo de búsqueda correspondiente
+            document.getElementById(searchId).style.display = 'block';
+        }
+//        $(document).ready(function() {
+//
+//            $('#botonBuscarProductos').click(function() {
+//                $('#cardProductos').show();
+//                $('#cardUsuarios, #cardTiendas').hide();
+//
+//          });
+//        });
 
         // Prevenir que los formularios se envíen y recarguen la página
         document.querySelectorAll('form').forEach(form => {

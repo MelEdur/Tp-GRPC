@@ -303,7 +303,6 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
                                         .build()).toList()
                         )
                         .build();
-
                 responseObserver.onNext(stocksLista);
                 responseObserver.onCompleted();
         }

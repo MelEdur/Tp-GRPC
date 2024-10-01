@@ -1,7 +1,7 @@
+const ul = document.getElementById('resultados');
 document.getElementById('botonBuscarProductos').addEventListener('click', async (event)=>{
     event.preventDefault();
     const searchFields = document.querySelector('.results');
-
 
     const nombreProducto = document.getElementById('searchProductosNombre').value;
     const codigoProducto = document.getElementById('searchProductosCodigo').value;
@@ -9,12 +9,6 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
     const color = document.getElementById('searchProductosColor').value;
     const codigoTienda = localStorage.getItem('codigoTienda');
 
-
-    console.log(nombreProducto);
-    console.log(codigoProducto);
-    console.log(talle);
-    console.log(color);
-    console.log(codigoTienda);
     try {
         const response = await fetch('http://localhost:5000/productos/filtrado',{
             method: 'POST',
@@ -24,14 +18,15 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
             },
             body: JSON.stringify({nombreProducto,codigoProducto,talle,color,codigoTienda})
         });
-
+        
         if(!response.ok){
             const errorData = await response.json();
+            console.log(errorData);
             throw new Error(errorData.error.message || 'Ocurrió un error');
         }
 
         const data = await response.json();
-
+        console.log(data.stocksCompleto);
         //Borrar resultados previos
         ul.innerHTML = '';
         data.stocksCompleto.forEach(stockCompleto =>{
@@ -44,15 +39,12 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
             <span>Talle: ${stockCompleto.talle}</span><br>
             <span>Color: ${stockCompleto.color}</span><br>
             <span>Habilitado: ${stockCompleto.habilitado ? '✔️' : '❌'}</span>
-            <span>Tienda: ${stockCompleto.codigoTienda}</span><br>
             <span>Cantidad: ${stockCompleto.cantidad}</span><br>
             <button type="button" id="botonModificarProductoFormulario" class="btn btn-primary" data-producto='${JSON.stringify(stockCompleto)}'>Modificar</button>
             `;
             ul.appendChild(li);
         });
         searchFields.style.display = 'block';
-
-
 
     } catch (error) {
         document.getElementById('errores').innerText = `Error: ${error.message}`;
@@ -65,7 +57,7 @@ ul.addEventListener('click', function(event){
         const stockCompleto = JSON.parse(event.target.getAttribute('data-producto'));
         console.log(stockCompleto.idProducto);
         document.getElementById('idModificarStock').value = stockCompleto.idStockCompleto;
-        document.getElementById('cantidadtockModificarStock').value = stockCompleto.cantidad;
+        document.getElementById('cantidadStockModificarStock').value = stockCompleto.cantidad;
         document.getElementById('mensajeModificarProducto').style.display = 'none';
         $('#modificarProductoModal').modal('show');
     }
@@ -79,19 +71,19 @@ document.querySelectorAll('[id="cerrarModificarFormulario"]').forEach(button =>{
 
 document.getElementById('botonModificarProducto').addEventListener('click',async(event)=>{
     event.preventDefault();
-    const id = Number(document.getElementById('idModificarStock').value);
-    const cantidad = document.getElementById('cantidadtockModificarStock').value;
+    const idStockCompleto = Number(document.getElementById('idModificarStock').value);
+    const cantidad = Number(document.getElementById('cantidadStockModificarStock').value);
     
 
     try{
-        console.log(JSON.stringify({id,cantidad}));
+        console.log(JSON.stringify({idStockCompleto,cantidad}));
         const response = await fetch('http://localhost:5000/productos/stock',{
             method: 'PATCH',
             headers:{
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('jwt')}`
             },
-            body: JSON.stringify({id,cantidad})
+            body: JSON.stringify({idStockCompleto,cantidad})
         });
         if(!response.ok){
             const errorData = await response.json();

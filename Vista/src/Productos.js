@@ -2,22 +2,12 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
     event.preventDefault();
     const searchFields = document.querySelector('.results');
 
-    
-
     const nombreProducto = document.getElementById('searchProductosNombre').value;
     const codigoProducto = document.getElementById('searchProductosCodigo').value;
     const talle = document.getElementById('searchProductosTalle').value;
     const color = document.getElementById('searchProductosColor').value;
-    const usuarioaux = localStorage.getItem('usuario');
+    const codigoTienda = null;
 
-    const codigoTienda = document.getElementById(localStorage.getItem('usuario'));
-
-
-    console.log(nombreProducto);
-    console.log(codigoProducto);
-    console.log(talle);
-    console.log(color);
-    console.log(codigoTienda);
     try {
         const response = await fetch('http://localhost:5000/productos/filtrado',{
             method: 'POST',
@@ -27,14 +17,15 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
             },
             body: JSON.stringify({nombreProducto,codigoProducto,talle,color,codigoTienda})
         });
-
+        
         if(!response.ok){
             const errorData = await response.json();
+            console.log(errorData);
             throw new Error(errorData.error.message || 'Ocurrió un error');
         }
 
         const data = await response.json();
-
+        console.log(data.stocksCompleto);
         //Borrar resultados previos
         ul.innerHTML = '';
         data.stocksCompleto.forEach(stockCompleto =>{
@@ -55,8 +46,6 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
             ul.appendChild(li);
         });
         searchFields.style.display = 'block';
-
-
 
     } catch (error) {
         document.getElementById('errores').innerText = `Error: ${error.message}`;
@@ -128,7 +117,8 @@ ul.addEventListener('click', function(event){
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`
         }
         });
-
+        window.confirm("Stock Eliminado");
+        window.location.reload();
     }
 });
 

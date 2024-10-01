@@ -38,14 +38,25 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
             responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("Contrasenia incorrecta").asRuntimeException());
             return;
         }
-
+        if("USUARIO".equals(usuario.get().getRol())){
         LoginResponse loginResponse = LoginResponse.newBuilder()
                 .setJwt(securityUtils.generarToken(usuario.get().getRol(),nombreUsuario))
                 .setUsuario(usuario.get().getNombreUsuario())
                 .setRol(usuario.get().getRol())
+                .setCodigoTienda(usuario.get().getCodigoTienda())
                 .build();
 
         responseObserver.onNext(loginResponse);
+        responseObserver.onCompleted();}
+        else{LoginResponse loginResponse = LoginResponse.newBuilder()
+            .setJwt(securityUtils.generarToken(usuario.get().getRol(),nombreUsuario))
+            .setUsuario(usuario.get().getNombreUsuario())
+            .setRol(usuario.get().getRol())
+            .build(); 
+            
+        responseObserver.onNext(loginResponse);
         responseObserver.onCompleted();
+        }
+        
     }
 }
