@@ -58,6 +58,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
         if(request.getNombreUsuario().isEmpty() || request.getNombre().isEmpty()
                 || request.getApellido().isEmpty() || request.getCodigoTienda().isEmpty()){
             responseObserver.onError((Status.INVALID_ARGUMENT.withDescription("Complete los campos requeridos").asRuntimeException()));
+            return;
         }
 
 
