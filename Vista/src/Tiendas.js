@@ -1,46 +1,95 @@
 document.getElementById('botonBuscarTiendas').addEventListener('click', async (event)=>{
     event.preventDefault();
     const searchFields = document.querySelector('.results');
+    const inputSearch = document.getElementById("searchInputTiendas").value;
+    const checkbox = document.getElementById("boolHabilitada");
+    const isChecked = checkbox.checked;
 
-    try {
-        const response = await fetch('http://localhost:5000/tiendas',{
-            method: 'GET',
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+    if(!inputSearch){
+        try {
+            const response = await fetch('http://localhost:5000/tiendas',{
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+                }
+            });
+    
+            if(!response.ok){
+                const errorData = await response.json();
+                throw new Error(errorData.error.message || 'Ocurrió un error');
             }
-        });
-
-        if(!response.ok){
-            const errorData = await response.json();
-            throw new Error(errorData.error.message || 'Ocurrió un error');
+    
+            console.log(localStorage.getItem('jwt'));
+            const data = await response.json();
+            //Borrar resultados previos
+            ul.innerHTML = '';
+    
+            data.tiendas.forEach(tienda =>{
+                const li = document.createElement('li');
+                li.innerHTML = `
+                <span>Codigo Tienda: ${tienda.codigoTienda}</span>
+                <span>Direccion: ${tienda.direccion}</span>
+                <span>Ciudad: ${tienda.ciudad}</span>
+                <span>Provincia: ${tienda.provincia}</span>
+                <span>Habilitado: ${tienda.habilitada ? '✔️' : '❌'}</span>
+                <button type="button" id="botonModificarTiendaFormulario" class="btn btn-primary" data-tienda='${JSON.stringify(tienda)}'>Modificar</button>
+                `;
+                ul.appendChild(li);
+            });
+            searchFields.style.display = 'block';
+    
+    
+    
+        } catch (error) {
+            document.getElementById('errores').innerText = `Error: ${error.message}`;
+            document.getElementById('errores').style.display = 'block';
         }
-
-        console.log(localStorage.getItem('jwt'));
-        const data = await response.json();
-        //Borrar resultados previos
-        ul.innerHTML = '';
-
-        data.tiendas.forEach(tienda =>{
-            const li = document.createElement('li');
-            li.innerHTML = `
-            <span>Codigo Tienda: ${tienda.codigoTienda}</span>
-            <span>Direccion: ${tienda.direccion}</span>
-            <span>Ciudad: ${tienda.ciudad}</span>
-            <span>Provincia: ${tienda.provincia}</span>
-            <span>Habilitado: ${tienda.habilitada ? '✔️' : '❌'}</span>
-            <button type="button" id="botonModificarTiendaFormulario" class="btn btn-primary" data-tienda='${JSON.stringify(tienda)}'>Modificar</button>
-            `;
-            ul.appendChild(li);
-        });
-        searchFields.style.display = 'block';
-
-
-
-    } catch (error) {
-        document.getElementById('errores').innerText = `Error: ${error.message}`;
-        document.getElementById('errores').style.display = 'block';
+    }else{
+        try {
+            const filtro = `codigoTienda:${inputSearch},provincia:${inputSearch},habilitada:${isChecked}`;
+            
+            const response = await fetch('http://localhost:5000/tiendasPorFiltro',{
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+                },
+                body: JSON.stringify({filtro: filtro})
+            });
+    
+            if(!response.ok){
+                const errorData = await response.json();
+                throw new Error(errorData.error.message || 'Ocurrió un error');
+            }
+    
+            console.log(localStorage.getItem('jwt'));
+            const data = await response.json();
+            //Borrar resultados previos
+            ul.innerHTML = '';
+    
+            data.tiendas.forEach(tienda =>{
+                const li = document.createElement('li');
+                li.innerHTML = `
+                <span>Codigo Tienda: ${tienda.codigoTienda}</span>
+                <span>Direccion: ${tienda.direccion}</span>
+                <span>Ciudad: ${tienda.ciudad}</span>
+                <span>Provincia: ${tienda.provincia}</span>
+                <span>Habilitado: ${tienda.habilitada ? '✔️' : '❌'}</span>
+                <button type="button" id="botonModificarTiendaFormulario" class="btn btn-primary" data-tienda='${JSON.stringify(tienda)}'>Modificar</button>
+                `;
+                ul.appendChild(li);
+            });
+            searchFields.style.display = 'block';
+    
+    
+    
+        } catch (error) {
+            document.getElementById('errores').innerText = `Error: ${error.message}`;
+            document.getElementById('errores').style.display = 'block';
+        }
     }
+    
 });
 
 document.getElementById('botonAgregarTienda').addEventListener('click', async (event)=>{

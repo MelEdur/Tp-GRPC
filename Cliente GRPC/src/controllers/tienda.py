@@ -63,7 +63,7 @@ def traerStocksPorTienda():
     result = cliente.traerStocksPorTienda(data)
     return MessageToJson(result,always_print_fields_with_no_presence=True)
 
-@tienda_blueprint.route('/tiendasPorFiltro', methods=['GET'])
+@tienda_blueprint.route('/tiendasPorFiltro', methods=['POST'])
 @cross_origin()
 def traerTiendasPorFiltro():
    data = request.get_json()

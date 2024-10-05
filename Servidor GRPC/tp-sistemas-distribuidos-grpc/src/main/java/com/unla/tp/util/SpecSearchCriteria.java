@@ -20,10 +20,15 @@ public class SpecSearchCriteria {
 
     public SpecSearchCriteria(final String orPredicate, final String key, final SearchOperation operation, final Object value) {
         super();
-        this.orPredicate = orPredicate != null && orPredicate.equals(SearchOperation.OR_PREDICATE_FLAG);
+        this.orPredicate = true;
         this.key = key;
         this.operation = operation;
-        this.value = value;
+        if ("true".equalsIgnoreCase(value.toString()) || "false".equalsIgnoreCase(value.toString())) {
+            this.value =  Boolean.valueOf(value.toString());
+            this.orPredicate = false;
+        }else{
+            this.value = value;
+        }
     }
 
     public SpecSearchCriteria(String key, String operation, String prefix, String value, String suffix) {
@@ -44,7 +49,11 @@ public class SpecSearchCriteria {
         }
         this.key = key;
         this.operation = op;
-        this.value = value;
+        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+            this.value =  Boolean.valueOf(value);
+        }else{
+            this.value = value;
+        }
     }
 
     public String getKey() {

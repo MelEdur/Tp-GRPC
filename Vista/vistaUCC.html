@@ -41,8 +41,18 @@
             <div class="input-group">
                 <input class="form-control" id="searchInputTiendas" type="search" placeholder="Buscar Tienda" aria-label="Search">
                 <button class="fas fa-search btn btn-outline-success" type="submit" id="botonBuscarTiendas"></button>
+                
             </div>
-
+            <div class="d-flex align-items-center mt-3">
+                <div class="form-check me-3">
+                    Habilitadas:
+                </div>
+                <!-- checkbox habilitada -->
+                <div class="form-check ms-2 me-3">
+                    <input class="form-check-input" type="checkbox" checked id="boolHabilitada">
+                </div> 
+            </div>
+             
             <!-- Checkboxes -->
 
             <div class="d-flex align-items-center mt-3">
@@ -108,7 +118,7 @@
                                <form id="modificarTiendaForm">
                                     <label for="tienda">Tienda</label>
                                     <br>
-                                    <input type="text" class="form-control" id="codigoTiendaModificarTienda" placeholder="Ingresa un codTienda" required>
+                                    <input type="text" class="form-control" id="codigoTiendaModificarTienda" placeholder="Ingresa un codTienda" readonly>
                                     <br>
                                     <label for="provincia">Provincia Tienda</label>
                                     <br>
