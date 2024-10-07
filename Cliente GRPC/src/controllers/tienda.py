@@ -40,14 +40,12 @@ def modificarStock():
     return MessageToJson(result)
 
 
-
 @tienda_blueprint.route('/tiendas/<int:id>', methods=['GET'])
 @cross_origin()
 def traerTienda(id):
 
    result = cliente.traerTienda(id)
    return MessageToJson(result,always_print_fields_with_no_presence=True)
-
 
 
 @tienda_blueprint.route('/tiendas',methods=['GET'])
@@ -57,12 +55,12 @@ def traerTiendas():
     return MessageToJson(result,always_print_fields_with_no_presence=True)
 
 
-
-@tienda_blueprint.route('/tiendas/<string:filtro>', methods=['GET'])
+@tienda_blueprint.route('/tiendasPorFiltro', methods=['GET'])
 @cross_origin()
-def traerTiendasPorFiltro(filtro):
+def traerTiendasPorFiltro():
 
-   result = cliente.traerTiendasPorFiltro(filtro)
+   data = request.get_json()
+   result = cliente.traerTiendasPorFiltro(data)
    return MessageToJson(result,always_print_fields_with_no_presence=True)
 
 
