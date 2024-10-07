@@ -1,35 +1,40 @@
 package com.unla.tp.service;
 
-import com.google.common.base.Joiner;
-import com.unla.tp.entity.ProductoEntity;
-import com.unla.tp.entity.StockEntity;
-import com.unla.tp.entity.TiendaEntity;
-
-import com.unla.tp.util.SearchOperation;
-import com.unla.tp.util.TiendaSpecification;
-import com.unla.tp.util.TiendaSpecificationsBuilder;
-import com.unla.tp.util.SpecSearchCriteria;
-
-import com.unla.grpc.*;
-
-import io.grpc.Status;
-import io.grpc.stub.StreamObserver;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.lognet.springboot.grpc.GRpcService;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unla.tp.repository.*;
+import com.google.common.base.Joiner;
+import com.unla.grpc.Codigo;
+import com.unla.grpc.EliminarProductoDeTiendaRequest;
+import com.unla.grpc.Empty;
+import com.unla.grpc.Filtro;
+import com.unla.grpc.Id;
+import com.unla.grpc.ModificarStockRequest;
+import com.unla.grpc.StockCompleto;
+import com.unla.grpc.StocksLista;
+import com.unla.grpc.Tienda;
+import com.unla.grpc.TiendaServiceGrpc;
+import com.unla.grpc.TiendasLista;
+import com.unla.tp.entity.ProductoEntity;
+import com.unla.tp.entity.StockEntity;
+import com.unla.tp.entity.TiendaEntity;
+import com.unla.tp.repository.IProductoRepository;
+import com.unla.tp.repository.IStockRepository;
+import com.unla.tp.repository.ITiendaRepository;
+import com.unla.tp.util.SearchOperation;
+import com.unla.tp.util.TiendaSpecificationsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.Optional;
+import io.grpc.Status;
+import io.grpc.stub.StreamObserver;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @GRpcService
@@ -148,6 +153,10 @@ public class TiendaService extends TiendaServiceGrpc.TiendaServiceImplBase{
         
         Specification<TiendaEntity> spec = builder.build();
 
+        if(spec == null){
+                responseObserver.onError((Status.NOT_FOUND.withDescription("Filtro no existe").asRuntimeException()));
+        }
+        
         //Busca los Objetos en la DB
         List<TiendaEntity> tiendaEntityList = tiendaRepository.findAll(spec);
 
@@ -221,85 +230,40 @@ public class TiendaService extends TiendaServiceGrpc.TiendaServiceImplBase{
         //Envía el objeto
         responseObserver.onNext(id);
         responseObserver.onCompleted();
-    }
+    }   
 
-     
     //  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
     @Transactional
     @Override
-    public void traerProductosPorTienda(Id request, StreamObserver<ProductosLista> responseObserver) {
+    public void traerStocksPorTienda(Codigo request, StreamObserver<StocksLista> responseObserver) {
         //Busca Objeto en la DB
-        //TODO: chequear si existe la tienda
-        Optional<List<StockEntity>> stocksTienda = stockRepository.findByTiendaId(request.getId());
-        List<ProductoEntity> listaProductosEntity = new ArrayList<ProductoEntity>();
+        Optional<TiendaEntity> tiendaOptional = tiendaRepository.findByCodigoTienda(request.getCodigo());
 
-        for (StockEntity stock : stocksTienda.get()) {
-                listaProductosEntity.add(stock.getProducto());
+        if(tiendaOptional.isEmpty()){
+            responseObserver.onError((Status.NOT_FOUND.withDescription("La tienda no existe").asRuntimeException()));
         }
+        int idTienda = tiendaOptional.get().getId();
 
-        //Crea objeto que puede ser enviado por grpc
-        ProductosLista productoLista = ProductosLista.newBuilder()
-                .addAllProductos(listaProductosEntity.stream()
-                        .map(productoEntity -> Producto.newBuilder()
-                                //agregar id
-                                .setCodigoProducto(productoEntity.getCodigoProducto())
-                                .setNombreProducto(productoEntity.getNombreProducto())
-                                .setTalle(productoEntity.getTalle())
-                                .setColor(productoEntity.getColor())
-                                .setFoto(productoEntity.getFoto())
-                                .setHabilitado(productoEntity.isHabilitado())
-                                .build())
-                        //convertir a lista
-                        .collect(Collectors.toList()))
+        Optional<List<StockEntity>> stocksTienda = stockRepository.findByTiendaId(idTienda);
+        
+        StocksLista stocksLista = StocksLista.newBuilder()
+                .addAllStocksCompleto(stocksTienda.get().stream()
+                        .map(stockEntity -> StockCompleto.newBuilder()
+                                .setIdStockCompleto(stockEntity.getIdStock())
+                                .setCodigoProducto(stockEntity.getProducto().getCodigoProducto())
+                                .setNombreProducto(stockEntity.getProducto().getNombreProducto())
+                                .setTalle(stockEntity.getProducto().getTalle())
+                                .setColor(stockEntity.getProducto().getColor())
+                                .setFoto(stockEntity.getProducto().getFoto())
+                                .setHabilitado(stockEntity.isHabilitado())
+                                .setCodigoTienda(stockEntity.getTienda().getCodigoTienda())
+                                .setCantidad(stockEntity.getCantidad())
+                                .build()).toList()
+                )
                 .build();
 
         //Envía el objeto
-        responseObserver.onNext(productoLista);
+        responseObserver.onNext(stocksLista);
         responseObserver.onCompleted();
-        //TODO:Reformular para que muestre los stocks de la tienda
     }    
-
-/* 
-     @Transactional
-     @Override
-     public void traerProductosPorTienda(Id request, StreamObserver<ProductosLista> responseObserver) {
-        // Chequear si la tienda existe
-        Optional<TiendaEntity> tiendaOpt = tiendaRepository.findById(request.getId());
-        
-        if (!tiendaOpt.isPresent()) {
-                responseObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("La tienda no existe")));
-                return;
-        }
-        
-        // Obtener los stocks de la tienda
-        Optional<List<StockEntity>> stocksTiendaOpt = stockRepository.findByTiendaId(request.getId());
-
-        if (!stocksTiendaOpt.isPresent() || stocksTiendaOpt.get().isEmpty()) {
-                responseObserver.onError(new StatusRuntimeException(Status.NOT_FOUND.withDescription("No hay productos disponibles en esta tienda")));
-                return;
-        }
-
-        List<StockEntity> stocksTienda = stocksTiendaOpt.get();
-        
-        // Crear lista de productos con información de stock
-        ProductosLista productoLista = ProductosLista.newBuilder()
-                .addAllProductos(stocksTienda.stream()
-                .map(stock -> Producto.newBuilder()
-                        .setCodigoProducto(stock.getProducto().getCodigoProducto())
-                        .setNombreProducto(stock.getProducto().getNombreProducto())
-                        .setTalle(stock.getProducto().getTalle())
-                        .setColor(stock.getProducto().getColor())
-                        .setFoto(stock.getProducto().getFoto())
-                        .setHabilitado(stock.getProducto().isHabilitado())
-                        .setCantidadStock(stock.getCantidad()) // Mostrar el stock de cada producto
-                        .build())
-                .collect(Collectors.toList()))
-                .build();
-
-        // Envía el objeto
-        responseObserver.onNext(productoLista);
-        responseObserver.onCompleted();
-        }
-*/
-
 }

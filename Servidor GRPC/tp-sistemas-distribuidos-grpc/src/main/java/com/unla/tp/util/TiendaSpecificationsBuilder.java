@@ -15,7 +15,8 @@ public class TiendaSpecificationsBuilder {
         params = new ArrayList<>();
     }
 
-    public final TiendaSpecificationsBuilder with(final String key, final String operation, final Object value, final String prefix, final String suffix) {
+    public final TiendaSpecificationsBuilder with(final String key, final String operation, String value, final String prefix, final String suffix) {
+        value = value.replace("_", " ");
         return with(null, key, operation, value, prefix, suffix);
     }
 

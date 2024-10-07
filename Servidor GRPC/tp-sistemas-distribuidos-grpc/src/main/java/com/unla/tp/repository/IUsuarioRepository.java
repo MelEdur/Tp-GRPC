@@ -12,5 +12,7 @@ public interface IUsuarioRepository extends JpaRepository<UsuarioEntity,Integer>
 
     Optional<UsuarioEntity> findByNombreUsuario(String nombreUsuario);
 
-    List<UsuarioEntity> findByNombreContainingAndCodigoTiendaContaining(String nombre, String codigoTienda);
+    List<UsuarioEntity> findByNombreContainingAndCodigoTiendaContainingOrderByHabilitadoDesc(String nombre, String codigoTienda);
+
+    boolean existsByNombreUsuario(String nombreUsuario);
 }

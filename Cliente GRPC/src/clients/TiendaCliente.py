@@ -61,13 +61,10 @@ class TiendaCliente(object):
         return self.stub.TraerTiendas(request,metadata = g.metadata)
     
 
-    def traerTiendasPorFiltro(self,data):
-       request = proto.service_pb2.Filtro(
-            filtro = data['filtro']
-        )
+    def traerTiendasPorFiltro(self,filtro):
+       request = proto.service_pb2.Filtro(filtro = filtro)
        return self.stub.TraerTiendasPorFiltro(request,metadata = g.metadata)
     
-
     def eliminarProductoDeTienda(self, data):
        request = proto.service_pb2.EliminarProductoDeTiendaRequest(
             idTienda = data['idTienda'],

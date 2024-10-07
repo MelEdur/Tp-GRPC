@@ -23,9 +23,15 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void agregarUsuario(CrearUsuarioRequest request, StreamObserver<Id> responseObserver) {
-       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
 
-        if(usuarioRepository.findByNombreUsuario(request.getNombreUsuario()).isPresent()){
+        if(request.getNombreUsuario().isEmpty() || request.getNombre().isEmpty()
+                || request.getApellido().isEmpty() || request.getContrasenia().isEmpty() || request.getCodigoTienda().isEmpty()){
+            responseObserver.onError((Status.INVALID_ARGUMENT.withDescription("Los campos no deben estar vacios").asRuntimeException()));
+            return;
+        }
+
+        if(usuarioRepository.existsByNombreUsuario(request.getNombreUsuario())){
             responseObserver.onError(Status.ALREADY_EXISTS.withDescription("El nombre de usuario ingresado no se encuentra disponible").asRuntimeException());
             return;
         }
@@ -47,23 +53,32 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void modificarUsuario(Usuario request, StreamObserver<Id> responseObserver) {
-        //if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+
+        if(request.getNombreUsuario().isEmpty() || request.getNombre().isEmpty()
+                || request.getApellido().isEmpty() || request.getCodigoTienda().isEmpty()){
+            responseObserver.onError((Status.INVALID_ARGUMENT.withDescription("Complete los campos requeridos").asRuntimeException()));
+            return;
+        }
+
+
         Optional<UsuarioEntity> usuarioModificar = usuarioRepository.findById(request.getId());
         if (usuarioModificar.isEmpty()) {
             responseObserver.onError((Status.NOT_FOUND.withDescription("El usuario no existe").asRuntimeException()));
             return;
         }
+        UsuarioEntity usuario = usuarioModificar.get();
 
-        if(usuarioRepository.findByNombreUsuario(request.getNombreUsuario()).isPresent()){
+        if(!usuario.getNombreUsuario().equals(request.getNombreUsuario()) && usuarioRepository.existsByNombreUsuario(request.getNombreUsuario())){
             responseObserver.onError(Status.ALREADY_EXISTS.withDescription("El nombre de usuario ingresado no se encuentra disponible").asRuntimeException());
             return;
         }
 
-        UsuarioEntity usuario = usuarioModificar.get();
-
         usuario.setNombreUsuario(request.getNombreUsuario());
         usuario.setNombre(request.getNombre());
-        usuario.setContrasenia(request.getContrasenia());
+        if(!request.getContrasenia().isEmpty()){
+            usuario.setContrasenia(securityUtils.getPasswordEncoder().encode(request.getContrasenia()));
+        }
         usuario.setApellido(request.getApellido());
         usuario.setHabilitado(request.getHabilitado());
         usuario.setCodigoTienda(request.getCodigoTienda());
@@ -79,7 +94,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuarios(Empty request, StreamObserver<UsuariosLista> responseObserver) {
-       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
         List<UsuarioEntity> usuarioEntityList = usuarioRepository.findAll();
 
         UsuariosLista usuariosLista = UsuariosLista.newBuilder()
@@ -102,7 +117,7 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuario(Id request, StreamObserver<Usuario> responseObserver) {
-        //if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
 
 
         Optional<UsuarioEntity> usuarioDb = usuarioRepository.findById(request.getId());
@@ -127,15 +142,16 @@ public class UsuarioService extends UsuarioServiceGrpc.UsuarioServiceImplBase {
 
     @Override
     public void traerUsuariosPorFiltro(FiltroUsuario request, StreamObserver<UsuariosLista> responseObserver) {
-       // if (!SecurityUtils.permisos(Set.of("ADMIN","USUARIO"), responseObserver)) return;
+        if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
 
         List<UsuarioEntity> usuarios= usuarioRepository
-                .findByNombreContainingAndCodigoTiendaContaining(request.getNombre(),request.getCodigoTienda());
+                .findByNombreContainingAndCodigoTiendaContainingOrderByHabilitadoDesc(request.getNombre(),request.getCodigoTienda());
 
 
         UsuariosLista usuariosLista = UsuariosLista.newBuilder()
                 .addAllUsuarios(usuarios.stream()
                         .map(usuarioEntity -> Usuario.newBuilder()
+                                .setId(usuarioEntity.getId())
                                 .setNombre(usuarioEntity.getNombre())
                                 .setApellido(usuarioEntity.getApellido())
                                 .setNombreUsuario(usuarioEntity.getNombreUsuario())

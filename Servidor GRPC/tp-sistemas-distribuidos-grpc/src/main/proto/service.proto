@@ -51,6 +51,41 @@ message FiltroProducto{
   string codigoProducto = 2;
   string talle = 3;
   string color = 4;
+  string codigoTienda = 5;
+}
+
+message ProductoStockid{
+  int32 id = 1;
+  string codigoProducto = 2;
+  string nombreProducto = 3;
+  string talle = 4;
+  string color = 5;
+  string foto = 6;
+  bool habilitado = 7;
+  int32 idStockCompleto = 8;
+}
+
+message ModificarStockCantidadRequest {
+  int32 idStockCompleto = 1;
+  int32 cantidad = 2;
+}
+
+
+message StockCompleto {
+  int32 idStockCompleto = 1;
+  string codigoProducto = 2;
+  string nombreProducto = 3;
+  string talle = 4;
+  string color = 5;
+  string foto = 6;
+  bool habilitado = 7;
+  string codigoTienda = 8;
+  int32 cantidad = 9;
+  int32 idProducto = 10;
+}
+
+message StocksLista {
+  repeated StockCompleto stocksCompleto =1;
 }
 
 message Filtro{
@@ -90,8 +125,11 @@ message EliminarProductoDeTiendaRequest{
 }
 
 message AgregarProductoRequest{
-  Producto producto = 1;
-  repeated Id id = 2;
+  string nombreProducto = 1;
+  string talle = 2;
+  string color = 3;
+  string foto = 4;
+  repeated Id id = 5;
 }
 
 message LoginRequest{
@@ -99,15 +137,22 @@ message LoginRequest{
   string contrasenia = 2;
 }
 
-message Token{
+message LoginResponse{
   string jwt = 1;
+  string usuario = 2;
+  string rol = 3;
+  string codigoTienda = 4;
+}
+
+message Codigo{
+  string codigo = 1;
 }
 
 //Definimos los servicios y su funcionalidad (request-response)
 
 //EDU
 service AuthService{
-  rpc Login(LoginRequest) returns (Token);
+  rpc Login(LoginRequest) returns (LoginResponse);
 }
 
 service UsuarioService{
@@ -131,15 +176,18 @@ service TiendaService{
 
   rpc TraerTiendasPorFiltro(Filtro) returns (TiendasLista);
   rpc EliminarProductoDeTienda(EliminarProductoDeTiendaRequest) returns (Id);
-  rpc TraerProductosPorTienda(Id) returns(ProductosLista);
+  rpc TraerStocksPorTienda(Codigo) returns(StocksLista);
   //ELIAN
 }
 //KEVIN
 service ProductoService{
   rpc AgregarProducto(AgregarProductoRequest) returns(Id);
-  rpc ModificarProducto(Producto) returns(Id);
+  rpc ModificarProducto(ProductoStockid) returns(Id);
   rpc TraerProductos(Empty) returns(ProductosLista);
   rpc EliminarProducto(Id) returns (Id);
   rpc TraerProductosPorFiltro(FiltroProducto) returns(ProductosLista);
-
+  rpc TraerStocks(Empty) returns(StocksLista);
+  rpc EliminarStock(Id) returns (Id);
+  rpc TraerStocksPorFiltro(FiltroProducto) returns(StocksLista);
+  rpc ModificarStockCantidad(ModificarStockCantidadRequest) returns (Id);
 }

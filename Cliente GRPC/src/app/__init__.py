@@ -5,10 +5,12 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(CURRENT_DIR,'..'))
 
 from flask import Flask, g,request
+from flask_cors import CORS
 from controllers.usuario import usuario_blueprint
 from controllers.tienda import tienda_blueprint
 from controllers.producto import producto_blueprint
 from controllers.stock import stock_blueprint
+from controllers.auth import auth_blueprint
 import controllers.Errors as Errors
 
 def create_app():
@@ -19,6 +21,7 @@ def create_app():
     app.register_blueprint(tienda_blueprint)
     app.register_blueprint(producto_blueprint)
     app.register_blueprint(stock_blueprint)
+    app.register_blueprint(auth_blueprint)
 
     @app.before_request
     def extraerToken():
