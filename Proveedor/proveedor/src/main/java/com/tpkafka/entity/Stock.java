@@ -20,6 +20,8 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idStock;
 
+    private String codigo;
+
     private List<String> colores;
 
     private List<String> talles;
