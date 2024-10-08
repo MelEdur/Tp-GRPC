@@ -1,9 +1,6 @@
 package com.tpkafka.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -22,10 +19,13 @@ public class Stock {
 
     private String codigo;
 
+    @ElementCollection
     private List<String> colores;
 
+    @ElementCollection
     private List<String> talles;
 
+    @ElementCollection
     private List<String> fotos;
 
     private int cantidad;

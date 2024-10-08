@@ -21,6 +21,7 @@ import com.unla.tp.util.SecurityUtils;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
 
 @RequiredArgsConstructor
 @GRpcService
