@@ -1,17 +1,21 @@
 package com.unla.tp.service;
 
+import java.time.LocalDate;
+
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.unla.tp.entity.OrdenDeCompra;
 import com.unla.tp.entity.OrdenDeDespacho;
+import com.unla.tp.entity.RecepcionDTO;
 import com.unla.tp.repository.IOrdenDeCompraRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,7 @@ public class SolicitudesService {
 
     private final KafkaTemplate<String,String> kafkaTemplate;
     private final IOrdenDeCompraRepository ordenDeCompraRepository;
+    private final ObjectMapper objectMapper;
 
     public void actualizarSolicitud(String codigoTienda, String mensaje){
         try {
@@ -61,11 +66,16 @@ public class SolicitudesService {
     }
 
 
-    public void enviarRecepcion(){
-        //TO-DO
+    public void enviarRecepcion(int idOrdenDeDespacho, LocalDate fechaDeRecepcion){
+        String topic = ("_recepcion");
+        RecepcionDTO recepcionMensaje = new RecepcionDTO(idOrdenDeDespacho, fechaDeRecepcion);
+ 
+        try {
+            kafkaTemplate.send(topic,objectMapper.writeValueAsString(recepcionMensaje));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-        //PARA ENVIAR A UN TOPIC
-        //kafkaTemplate.send("topic a enviar","mensaje");
     }
 
     //SE EJECUTA CUANDO RECIBE ALGO POR EL TOPIC DE /novedades
