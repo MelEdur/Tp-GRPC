@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IStockRepository extends JpaRepository<Stock,Integer> {
+
+    public Stock findByCodigo(String codigo);
 }
