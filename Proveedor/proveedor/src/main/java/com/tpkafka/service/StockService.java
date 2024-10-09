@@ -1,6 +1,5 @@
 package com.tpkafka.service;
 
-import com.tpkafka.entity.Item;
 import com.tpkafka.entity.OrdenPausada;
 import com.tpkafka.entity.Stock;
 import com.tpkafka.repository.IOrdenPausadaRepository;
@@ -27,5 +26,15 @@ public class StockService {
         for(OrdenPausada ordenPausada : ordenPausadas){
             ordenesService.procesarOrden(ordenPausada.getItems(),ordenPausada.getCodigoTienda(),ordenPausada.getIdOrden(),ordenPausada.getFechaSolicitud());
         }
+    }
+
+    public List<Stock> traerTodos() {
+        return stockRepository.findAll();
+    }
+
+    public int modificarStock(Stock stock) {
+        Stock stockBd = stockRepository.findByCodigo(stock.getCodigo());
+        stockBd.setCantidad(stock.getCantidad());
+        return stockRepository.save(stockBd).getCantidad();
     }
 }
