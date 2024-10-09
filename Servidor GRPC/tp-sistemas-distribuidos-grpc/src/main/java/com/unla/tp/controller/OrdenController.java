@@ -69,4 +69,10 @@ public class OrdenController {
 
         
     }
+
+    @PostMapping("/generarOrdenDeCompra")
+    public void generarOrdenDeCompraYManejarTopics(@RequestBody String codigo, @RequestBody List<Item> items){
+        solicitudesService.enviarOrden(codigo, items);
+    }
+
 }

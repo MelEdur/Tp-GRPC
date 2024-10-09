@@ -1,17 +1,23 @@
 package com.unla.tp.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import com.unla.tp.service.KafkaTopicService;
+import com.unla.tp.service.KafkaConsumerService;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.unla.tp.entity.Item;
 import com.unla.tp.entity.OrdenDeCompra;
 import com.unla.tp.entity.OrdenDeDespacho;
+import com.unla.tp.entity.OrdenDTO;
 import com.unla.tp.entity.RecepcionDTO;
 import com.unla.tp.repository.IOrdenDeCompraRepository;
 
@@ -24,6 +30,8 @@ public class SolicitudesService {
     private final KafkaTemplate<String,String> kafkaTemplate;
     private final IOrdenDeCompraRepository ordenDeCompraRepository;
     private final ObjectMapper objectMapper;
+    
+    
 
     public void actualizarSolicitud(String codigoTienda, String mensaje){
         try {
@@ -77,6 +85,44 @@ public class SolicitudesService {
         }
 
     }
+
+    public void enviarOrden(String codigo, List<Item> items){
+        KafkaTopicService topicService = new KafkaTopicService();
+        KafkaConsumerService consumerService = new KafkaConsumerService(this);
+        //Generar una orden
+        OrdenDeCompra ordenDeCompra = new OrdenDeCompra();
+
+        ordenDeCompra.setEstado("solicitada");
+        ordenDeCompra.setCodigoTienda(codigo);
+        ordenDeCompra.setItems(items);
+        ordenDeCompra.setFechaDeSolicitud(LocalDate.now());
+
+       //Guardar en BD
+        OrdenDeCompra ordenDeCompraGenerada = ordenDeCompraRepository.save(ordenDeCompra);
+
+       //Enviar al topic de _orden-de-compra un string con formato Json mapeando antes el codigo de tienda, idODC, items y fcha solicitud
+        OrdenDTO ordenMensaje = new OrdenDTO(ordenDeCompraGenerada.getIdOrdenDeCompra(), ordenDeCompraGenerada.getCodigoTienda(),
+                                 ordenDeCompraGenerada.getItems(),ordenDeCompraGenerada.getFechaDeSolicitud());
+        
+        String topicODC = "_orden-de-compra";
+
+        try {
+            kafkaTemplate.send(topicODC, objectMapper.writeValueAsString(ordenMensaje));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        String topicSolicitud = "_"+codigo+"_solicitudes";
+        topicService.crearTopic(topicSolicitud);
+
+        String topicDespacho = "_"+codigo+"_despacho";
+        topicService.crearTopic(topicDespacho);
+
+        //Creo los consumers para solicitud y despacho
+        consumerService.addConsumer(topicSolicitud);
+        consumerService.addConsumer(topicDespacho);
+    }
+
 
     //SE EJECUTA CUANDO RECIBE ALGO POR EL TOPIC DE /novedades
     @KafkaListener(topics = "_novedades", groupId = "default")
