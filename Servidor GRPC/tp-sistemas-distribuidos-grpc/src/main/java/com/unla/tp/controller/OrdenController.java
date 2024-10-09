@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 public class OrdenController {
     private final IOrdenDeCompraRepository _ordenDeCompraRepository;
     private final IStockRepository _stockRepository;
@@ -31,6 +33,7 @@ public class OrdenController {
     private final IProductoRepository _productoRepository;
     private final SolicitudesService solicitudesService;
 
+    @CrossOrigin("http://localhost:8000")
     @GetMapping("/ordenesAceptadas")
     public List<OrdenDeCompra> enviarOdenesAceptadasyDespacho(){
 
@@ -69,4 +72,10 @@ public class OrdenController {
 
         
     }
+
+    @PostMapping("/generarOrdenDeCompra")
+    public void generarOrdenDeCompraYManejarTopics(@RequestBody String codigo, @RequestBody List<Item> items){
+        solicitudesService.enviarOrden(codigo, items);
+    }
+
 }
