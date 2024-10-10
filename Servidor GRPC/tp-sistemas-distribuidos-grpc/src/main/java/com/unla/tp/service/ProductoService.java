@@ -13,9 +13,11 @@ import com.unla.grpc.*;
 import com.unla.tp.entity.ProductoEntity;
 import com.unla.tp.entity.StockEntity;
 import com.unla.tp.entity.TiendaEntity;
+import com.unla.tp.entity.StockProveedor;
 import com.unla.tp.repository.IProductoRepository;
 import com.unla.tp.repository.IStockRepository;
 import com.unla.tp.repository.ITiendaRepository;
+import com.unla.tp.repository.IStockProveedorRepository;
 import com.unla.tp.util.SecurityUtils;
 
 import io.grpc.Status;
@@ -30,6 +32,7 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
         private final IProductoRepository productoRepository;
         private final IStockRepository stockRepository;
         private final ITiendaRepository tiendaRepository;
+	private final IStockProveedorRepository stockProveedorRepository;
 
         @Override
         public void agregarProducto(AgregarProductoRequest request, StreamObserver<Id> responseObserver) {
@@ -330,6 +333,93 @@ public class ProductoService extends ProductoServiceGrpc.ProductoServiceImplBase
 
                 // Envía el objeto
                 responseObserver.onNext(id);
+                responseObserver.onCompleted();
+        }
+
+        @Override
+        public void agregarProductoProveedor(ProductoProveedor request, StreamObserver<Id> responseObserver) {
+                if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+                
+                List<String> tallesLista = new ArrayList<>();
+                tallesLista = request.getTalleList().stream().map(talles -> talles.getTalle()).toList();
+                List<String> coloresLista = new ArrayList<>();
+                coloresLista = request.getColorList().stream().map(colores -> colores.getColor()).toList();
+                List<String> fotosLista = new ArrayList<>();
+                fotosLista = request.getFotoList().stream().map(fotos -> fotos.getFoto()).toList();
+
+                for (int i = 0; i <tallesLista.size(); i++) {
+                   for (int ii = 0; ii <coloresLista.size(); ii++) {
+                
+                Id id = Id.newBuilder()
+                                // Agrega el objeto tomando los datos de la request
+                                .setId(productoRepository.save(ProductoEntity.builder()
+                                                .codigoProducto(request.getCodigoProducto())
+                                                .nombreProducto(request.getNombreProducto())
+                                                .talle(tallesLista.get(i))
+                                                .color(coloresLista.get(ii))
+                                                .foto(fotosLista.get(ii))
+                                                .habilitado(true)
+                                                .build())
+                                                .getId())
+                                .build();
+                int idProducto = id.getId();
+                
+                List<Integer> ids = new ArrayList<>();
+                ids = request.getIdList().stream().map(idd -> idd.getId()).toList();
+                Optional<ProductoEntity> productoAux = productoRepository.findById(idProducto);
+                if (productoAux.isEmpty()){
+                        responseObserver.onError(Status.NOT_FOUND.withDescription("El producto no existe").asRuntimeException());
+                        return;}
+                ProductoEntity producto = productoAux.get();
+                for (int iii = 0; iii < ids.size(); iii++) {
+                        Optional<TiendaEntity> tiendaAux = tiendaRepository.findByCodigoTienda(ids.get(iii).toString());
+                        if (tiendaAux.isEmpty()){
+                                responseObserver.onError(Status.NOT_FOUND.withDescription("La tienda no existe").asRuntimeException());
+                                return;}
+                        TiendaEntity tienda = tiendaAux.get();
+                        StockEntity stock = new StockEntity();
+                        stock.setProducto(producto);
+                        stock.setTienda(tienda);
+                        stock.setCantidad(0);
+                        stock.setHabilitado(true);
+                        stockRepository.save(stock);
+                }}}
+                StockProveedor bajaProductoProveedor = stockProveedorRepository.findByCodigo(request.getCodigoProducto());
+                stockProveedorRepository.delete(bajaProductoProveedor);
+                Id id = Id.newBuilder()
+                .setId(1)
+                .build();
+                // Devuelve la id
+                responseObserver.onNext(id);
+                responseObserver.onCompleted();
+        }
+
+        @Override
+        public void traerProductosNuevosProveedor(Empty request, StreamObserver<ProductosProveedorLista> responseObserver) {
+                if (!SecurityUtils.permisos(Set.of("ADMIN"), responseObserver)) return;
+
+                List<StockProveedor> stockProveedorList = stockProveedorRepository.findAll();
+                // Crea objeto que puede ser enviado por grpc
+                ProductosProveedorLista productosProveedorLista = ProductosProveedorLista.newBuilder()
+                                .addAllProductosProveedor(stockProveedorList.stream()
+                                                .map(stockProveedor -> ProductosProveedor.newBuilder()
+                                                                .setId(stockProveedor.getIdStock())
+                                                                .setCodigoProducto(stockProveedor.getCodigo())
+                                                                .addAllTalle(stockProveedor.getTalles().stream()
+                                                                .map(talle -> Talle.newBuilder().setTalle(talle).build())
+                                                                .collect(Collectors.toList()))
+                                                                .addAllColor(stockProveedor.getColores().stream()
+                                                                .map(color -> Color.newBuilder().setColor(color).build())
+                                                                .collect(Collectors.toList()))
+                                                                .addAllFoto(stockProveedor.getFotos().stream()
+                                                                .map(foto -> Foto.newBuilder().setFoto(foto).build())
+                                                                .collect(Collectors.toList()))
+                                                                .build())
+                                                // convertir a lista
+                                                .collect(Collectors.toList()))
+                                .build();
+          
+                responseObserver.onNext(productosProveedorLista);
                 responseObserver.onCompleted();
         }
 }

@@ -24,4 +24,9 @@ public class StockController {
     public int modificarStock(@RequestBody Stock stock){
         return stockService.modificarStock(stock);
     }
+
+    @PostMapping("/crearProducto")
+    public void crearProducto(@RequestBody Stock nuevoStock){
+        stockService.agregarProducto(nuevoStock);
+    }
 }

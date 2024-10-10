@@ -7,6 +7,7 @@ import com.tpkafka.repository.IStockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 
@@ -36,5 +37,14 @@ public class StockService {
         Stock stockBd = stockRepository.findByCodigo(stock.getCodigo());
         stockBd.setCantidad(stock.getCantidad());
         return stockRepository.save(stockBd).getCantidad();
+    }
+
+    public void agregarProducto(Stock stock){
+            stockRepository.save(stock);
+        try {
+            kafkaTemplateString.send("_novedades",objectMapper.writeValueAsString(stock));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

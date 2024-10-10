@@ -17,6 +17,7 @@ import com.unla.tp.entity.OrdenDeCompra;
 import com.unla.tp.entity.OrdenDeDespacho;
 import com.unla.tp.entity.RecepcionDTO;
 import com.unla.tp.repository.IOrdenDeCompraRepository;
+import com.unla.tp.repository.IStockProveedorRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,7 @@ public class SolicitudesService {
     private final KafkaTemplate<String,String> kafkaTemplate;
     private final IOrdenDeCompraRepository ordenDeCompraRepository;
     private final ObjectMapper objectMapper;
+    private final IStockProveedorRepository stockProveedorRepository;
     
     
 
@@ -122,6 +124,12 @@ public class SolicitudesService {
     //SE EJECUTA CUANDO RECIBE ALGO POR EL TOPIC DE /novedades
     @KafkaListener(topics = "_novedades", groupId = "default")
     public void recibirNovedad(String message){
-        
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            StockProveedor stock = objectMapper.readValue(message, StockProveedor.class);
+            stockProveedorRepository.save(stock);
+        }catch (Exception e){
+            e.printStackTrace();
+        }        
     }
 }
