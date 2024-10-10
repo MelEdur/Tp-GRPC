@@ -1,31 +1,128 @@
 package com.unla.tp.service;
 
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import com.unla.tp.service.KafkaTopicService;
+import com.unla.tp.service.KafkaConsumerService;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.unla.tp.entity.Item;
+import com.unla.tp.entity.OrdenDeCompra;
+import com.unla.tp.entity.OrdenDeDespacho;
+import com.unla.tp.entity.OrdenDTO;
+import com.unla.tp.entity.RecepcionDTO;
+import com.unla.tp.repository.IOrdenDeCompraRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class SolicitudesService {
 
     private final KafkaTemplate<String,String> kafkaTemplate;
+    private final IOrdenDeCompraRepository ordenDeCompraRepository;
+    private final ObjectMapper objectMapper;
+    
+    
 
     public void actualizarSolicitud(String codigoTienda, String mensaje){
-        //TO-DO
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(mensaje);
+
+            OrdenDeCompra ordenDeCompra = ordenDeCompraRepository.findById(jsonNode.get("idOrdenDeCompra").asInt())
+                    .orElseThrow(()-> new RuntimeException("No existe orden de compra con tal id"));
+
+            ordenDeCompra.setEstado(jsonNode.get("estado").asText());
+            ordenDeCompra.setObservaciones(jsonNode.get("observaciones").asText());
+
+            ordenDeCompraRepository.save(ordenDeCompra);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void recibirDespacho(String codigoTienda, String mensaje){
-        //TO-DO
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            JsonNode jsonNode = objectMapper.readTree(mensaje);
+
+            OrdenDeCompra ordenDeCompra = ordenDeCompraRepository.findById(jsonNode.get("idOrdenDeCompra").asInt())
+                    .orElseThrow(()-> new RuntimeException("No existe orden de compra con tal id"));
+
+            OrdenDeDespacho ordenDeDespacho = OrdenDeDespacho.builder()
+                    .idOrdenDeCompra(jsonNode.get("idOrdenDeCompra").asInt())
+                    .fechaEstimada(LocalDate.parse(jsonNode.get("fechaEstimada").asText()))
+                    .build();
+
+            ordenDeCompra.setOrdenDeDespacho(ordenDeDespacho);
+
+            ordenDeCompraRepository.save(ordenDeCompra);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
-    public void enviarRecepcion(){
-        //TO-DO
+    public void enviarRecepcion(int idOrdenDeDespacho, LocalDate fechaDeRecepcion){
+        String topic = ("_recepcion");
+        RecepcionDTO recepcionMensaje = new RecepcionDTO(idOrdenDeDespacho, fechaDeRecepcion);
+ 
+        try {
+            kafkaTemplate.send(topic,objectMapper.writeValueAsString(recepcionMensaje));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-        //PARA ENVIAR A UN TOPIC
-        //kafkaTemplate.send("topic a enviar","mensaje");
     }
+
+    public void enviarOrden(String codigo, List<Item> items){
+        KafkaTopicService topicService = new KafkaTopicService();
+        KafkaConsumerService consumerService = new KafkaConsumerService();
+        //Generar una orden
+        OrdenDeCompra ordenDeCompra = new OrdenDeCompra();
+
+        ordenDeCompra.setEstado("solicitada");
+        ordenDeCompra.setCodigoTienda(codigo);
+        ordenDeCompra.setItems(items);
+        ordenDeCompra.setFechaDeSolicitud(LocalDate.now());
+
+       //Guardar en BD
+        OrdenDeCompra ordenDeCompraGenerada = ordenDeCompraRepository.save(ordenDeCompra);
+
+       //Enviar al topic de _orden-de-compra un string con formato Json mapeando antes el codigo de tienda, idODC, items y fcha solicitud
+        OrdenDTO ordenMensaje = new OrdenDTO(ordenDeCompraGenerada.getIdOrdenDeCompra(), ordenDeCompraGenerada.getCodigoTienda(),
+                                 ordenDeCompraGenerada.getItems(),ordenDeCompraGenerada.getFechaDeSolicitud());
+        
+        String topicODC = "_orden-de-compra";
+
+        try {
+            kafkaTemplate.send(topicODC, objectMapper.writeValueAsString(ordenMensaje));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        String topicSolicitud = "_"+codigo+"_solicitudes";
+        topicService.crearTopic(topicSolicitud);
+
+        String topicDespacho = "_"+codigo+"_despacho";
+        topicService.crearTopic(topicDespacho);
+
+        //Creo los consumers para solicitud y despacho
+        consumerService.addConsumer(topicSolicitud);
+        consumerService.addConsumer(topicDespacho);
+    }
+
 
     //SE EJECUTA CUANDO RECIBE ALGO POR EL TOPIC DE /novedades
     @KafkaListener(topics = "_novedades", groupId = "default")
