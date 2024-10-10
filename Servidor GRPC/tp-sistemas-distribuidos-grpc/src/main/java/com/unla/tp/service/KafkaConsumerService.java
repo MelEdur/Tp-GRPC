@@ -2,6 +2,7 @@ package com.unla.tp.service;
 
 import com.unla.tp.entity.Topic;
 import com.unla.tp.repository.ITopicRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,23 +23,18 @@ import java.util.Map;
 
 
 @Service
+@RequiredArgsConstructor
 public class KafkaConsumerService {
 
-
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String bootstrapServers;
-
-    @Autowired
-    private SolicitudesService solicitudesService;
-    @Autowired
-    private ITopicRepository topicRepository;
+    private final   SolicitudesService solicitudesService;
+    private final ITopicRepository topicRepository;
 
 
     //Función para crear un un consumer de un topic ingresado
     public void addConsumer(String topic){
         //Establecer configuración
         Map<String,Object> consumerProps = new HashMap<>();
-        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,bootstrapServers);
+        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
         consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG,"default");
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -51,12 +47,14 @@ public class KafkaConsumerService {
 
         //Maneja los mensajes recibidos
         containerProps.setMessageListener(new MessageListener<String,String>() {
+
+            private String codigo;
+
             @Override
             public void onMessage(ConsumerRecord<String, String> data) {
                 //Separo el topic del mensaje en código y topic ej. /AC035/solicitudes ==> "AC035","solicitudes"
                 String[] topicRecibido = data.topic().split("_");
                 String codigoTienda = topicRecibido[topicRecibido.length - 2];
-
                 //Decido qué hacer en base al topic
                 switch (topicRecibido[topicRecibido.length - 1]){
                     case "solicitudes":
@@ -80,6 +78,7 @@ public class KafkaConsumerService {
 
         for(Topic topic : topics){
             this.addConsumer(topic.getTopic());
+            System.out.println("CONSUMER PARA TOPIC "+ topic.getTopic());
         }
     }
 }

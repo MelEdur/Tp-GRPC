@@ -1,6 +1,7 @@
 package com.tpkafka.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tpkafka.entity.*;
 import com.tpkafka.repository.IOrdenDeDespachoRepository;
@@ -12,6 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class OrdenesService {
 
     public void procesarOrden(List<Item> items, String codigoTienda, int idOrden, LocalDate fechaSolicitud){
 
+
         String observaciones = "";
         String estado = "ACEPTADO";
 
@@ -37,7 +40,7 @@ public class OrdenesService {
             //REVISIÓN DE CÓDIGO
             for(Stock stock: stocks){
                 if(stock.getCodigo().equals(items.get(i).getCodigo())){
-                    index = i;
+                    index = i+1;
                     break;
                 }
             }
@@ -50,7 +53,7 @@ public class OrdenesService {
                     observaciones += ("Articulo "+ items.get(i).getCodigo()+ ": cantidad mal informada");
                 }else if(items.get(i).getCantidad()> stocks.get(index).getCantidad()){
                     //CANTIDAD CORRECTA PERO SIN STOCK
-                    if (!estado.equals("RECHAZADO")){ estado = "ACEPTADO";}
+                    //System.out.println("\n\nStock en tienda:" + stocks.get(index+1).getCantidad()+"\n\nNombre Stock:" + stocks.get(index+1).getCodigo()+ "\n\n\nCantidad pedida:"+ items.get(i).getCantidad());
                     observaciones +=("Articulo "+ items.get(i).getCodigo()+ ": sin stock");
                 }else {
                     //CANTIDAD CORRECTA Y CON STOCK
@@ -65,18 +68,31 @@ public class OrdenesService {
         }
 
         //CASO: STOCK INSUFICIENTE
-        if(estado.equals("ACEPTADO") && !observaciones.isBlank()){
+        if(estado.equals("ACEPTADO") && !observaciones.equals("")){
+
+            List<Item> itemsAux = new ArrayList<>();
+
+            for(Item item : items){
+                itemsAux.add(Item.builder()
+                                .codigo(item.getCodigo())
+                                .color(item.getColor())
+                                .talle(item.getTalle())
+                                .cantidad(item.getCantidad())
+                        .build());
+            }
+            System.out.println("\n\n\nEstado:" + estado + "\nObservaciones:"+observaciones);
             ordenPausadaRepository.save(OrdenPausada.builder()
                     .codigoTienda(codigoTienda)
                     .fechaSolicitud(fechaSolicitud)
                     .idOrden(idOrden)
-                    .items(items)
+                    .items(itemsAux)
                     .build());
         }
 
         //CASO: HAY STOCK, CÓDIGOS BIEN, CANTIDADES BIEN
-        if(estado.equals("ACEPTADO") && observaciones.isBlank()){
+        if(estado.equals("ACEPTADO") && observaciones.equals("")){
 
+            System.out.println("\n\n\n\nTODO SALIO BIEN");
             enviarOrdenDeDespacho(idOrden,codigoTienda);
             //Restar stocks
             stockRepository.saveAll(stocks);

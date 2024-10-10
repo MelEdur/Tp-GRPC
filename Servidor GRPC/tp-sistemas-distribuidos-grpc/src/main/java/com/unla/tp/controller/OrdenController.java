@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unla.tp.service.RecepcionService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,7 @@ public class OrdenController {
     private final ITiendaRepository _tiendaRepository;
     private final IProductoRepository _productoRepository;
     private final SolicitudesService solicitudesService;
+    private final RecepcionService recepcionService;
 
     @CrossOrigin("http://localhost:8000")
     @GetMapping("/ordenesAceptadas")
@@ -77,7 +79,7 @@ public class OrdenController {
     @CrossOrigin("http://localhost:8000")
     @PostMapping("/generarOrdenDeCompra")
     public void generarOrdenDeCompraYManejarTopics(@RequestBody OrdenRequest ordenRequest){
-        solicitudesService.enviarOrden(ordenRequest.getCodigo(), ordenRequest.getItems());
+        recepcionService.enviarOrden(ordenRequest.getCodigo(), ordenRequest.getItems());
     }
 
 }

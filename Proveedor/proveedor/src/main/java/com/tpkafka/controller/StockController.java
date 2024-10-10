@@ -19,7 +19,7 @@ public class StockController {
         return stockService.traerTodos();
     }
 
-    @CrossOrigin("http://localhost:8000")
+    @CrossOrigin("http://localhost:8001")
     @PutMapping("/stocks")
     public int modificarStock(@RequestBody Stock stock){
         return stockService.modificarStock(stock);

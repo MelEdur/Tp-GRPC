@@ -31,7 +31,7 @@ public class OrdenDeCompra {
 
     private String observaciones;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private OrdenDeDespacho ordenDeDespacho;
 
     private LocalDate fechaDeRecepcion;
