@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unla.tp.entity.Item;
 import com.unla.tp.entity.OrdenDeCompra;
+import com.unla.tp.entity.OrdenRequest;
 import com.unla.tp.entity.ProductoEntity;
 import com.unla.tp.entity.StockEntity;
 import com.unla.tp.entity.TiendaEntity;
@@ -73,9 +74,10 @@ public class OrdenController {
         
     }
 
+    @CrossOrigin("http://localhost:8000")
     @PostMapping("/generarOrdenDeCompra")
-    public void generarOrdenDeCompraYManejarTopics(@RequestBody String codigo, @RequestBody List<Item> items){
-        solicitudesService.enviarOrden(codigo, items);
+    public void generarOrdenDeCompraYManejarTopics(@RequestBody OrdenRequest ordenRequest){
+        solicitudesService.enviarOrden(ordenRequest.getCodigo(), ordenRequest.getItems());
     }
 
 }

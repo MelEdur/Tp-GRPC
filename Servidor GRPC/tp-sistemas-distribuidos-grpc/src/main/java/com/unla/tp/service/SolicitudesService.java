@@ -7,17 +7,14 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import com.unla.tp.service.KafkaTopicService;
-import com.unla.tp.service.KafkaConsumerService;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.unla.tp.entity.Item;
+import com.unla.tp.entity.OrdenDTO;
 import com.unla.tp.entity.OrdenDeCompra;
 import com.unla.tp.entity.OrdenDeDespacho;
-import com.unla.tp.entity.OrdenDTO;
 import com.unla.tp.entity.RecepcionDTO;
 import com.unla.tp.repository.IOrdenDeCompraRepository;
 
@@ -90,19 +87,17 @@ public class SolicitudesService {
         KafkaTopicService topicService = new KafkaTopicService();
         KafkaConsumerService consumerService = new KafkaConsumerService();
         //Generar una orden
-        OrdenDeCompra ordenDeCompra = new OrdenDeCompra();
-
-        ordenDeCompra.setEstado("solicitada");
-        ordenDeCompra.setCodigoTienda(codigo);
-        ordenDeCompra.setItems(items);
-        ordenDeCompra.setFechaDeSolicitud(LocalDate.now());
-
+        OrdenDeCompra ordenDeCompraGenerada = OrdenDeCompra.builder()
+                                                .estado("solicitada")
+                                                .codigoTienda(codigo)
+                                                .items(items)
+                                                .fechaDeSolicitud(LocalDate.now()).build();
        //Guardar en BD
-        OrdenDeCompra ordenDeCompraGenerada = ordenDeCompraRepository.save(ordenDeCompra);
+        OrdenDeCompra ordenDeCompra = ordenDeCompraRepository.save(ordenDeCompraGenerada);
 
        //Enviar al topic de _orden-de-compra un string con formato Json mapeando antes el codigo de tienda, idODC, items y fcha solicitud
-        OrdenDTO ordenMensaje = new OrdenDTO(ordenDeCompraGenerada.getIdOrdenDeCompra(), ordenDeCompraGenerada.getCodigoTienda(),
-                                 ordenDeCompraGenerada.getItems(),ordenDeCompraGenerada.getFechaDeSolicitud());
+        OrdenDTO ordenMensaje = new OrdenDTO(ordenDeCompra.getIdOrdenDeCompra(), ordenDeCompra.getCodigoTienda(),
+                                                ordenDeCompra.getItems(),ordenDeCompra.getFechaDeSolicitud());
         
         String topicODC = "_orden-de-compra";
 
