@@ -1,9 +1,12 @@
 package com.unla.tp.service;
 
+import com.unla.tp.entity.Topic;
+import com.unla.tp.repository.ITopicRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -12,10 +15,12 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.MessageListener;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@RequiredArgsConstructor
+
 @Service
 public class KafkaConsumerService {
 
@@ -23,7 +28,10 @@ public class KafkaConsumerService {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    private final SolicitudesService solicitudesService;
+    @Autowired
+    private SolicitudesService solicitudesService;
+    @Autowired
+    private ITopicRepository topicRepository;
 
 
     //Función para crear un un consumer de un topic ingresado
@@ -64,5 +72,14 @@ public class KafkaConsumerService {
         ConcurrentMessageListenerContainer<String,String> listenerContainer =
                 new ConcurrentMessageListenerContainer<>(consumerFactory, containerProps);
         listenerContainer.start();
+    }
+
+    @PostConstruct
+    public void activarConsumers(){
+        List<Topic> topics = topicRepository.findAll();
+
+        for(Topic topic : topics){
+            this.addConsumer(topic.getTopic());
+        }
     }
 }

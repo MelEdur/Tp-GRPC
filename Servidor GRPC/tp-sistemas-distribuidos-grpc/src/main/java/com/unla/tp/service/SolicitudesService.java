@@ -88,7 +88,7 @@ public class SolicitudesService {
 
     public void enviarOrden(String codigo, List<Item> items){
         KafkaTopicService topicService = new KafkaTopicService();
-        KafkaConsumerService consumerService = new KafkaConsumerService(this);
+        KafkaConsumerService consumerService = new KafkaConsumerService();
         //Generar una orden
         OrdenDeCompra ordenDeCompra = new OrdenDeCompra();
 

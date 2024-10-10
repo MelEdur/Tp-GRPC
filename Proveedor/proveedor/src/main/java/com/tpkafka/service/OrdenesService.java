@@ -7,6 +7,7 @@ import com.tpkafka.repository.IOrdenDeDespachoRepository;
 import com.tpkafka.repository.IOrdenPausadaRepository;
 import com.tpkafka.repository.IStockRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -107,6 +108,16 @@ public class OrdenesService {
         String topic = ("_"+codigoTienda+"_solicitudes");
         try {
             kafkaTemplate.send(topic,objectMapper.writeValueAsString(solicitudResponse));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @KafkaListener(topics = "_orden-de-compra", groupId = "default")
+    public void recibirOrden(String message){
+        try {
+            OrdenDTO ordenDTO = objectMapper.readValue(message,OrdenDTO.class);
+            this.procesarOrden(ordenDTO.getItems(),ordenDTO.getCodigoTienda(),ordenDTO.getIdOrdenDeCompra(),ordenDTO.getFechaSolicitud());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
