@@ -54,6 +54,40 @@ message FiltroProducto{
   string codigoTienda = 5;
 }
 
+message ProductoProveedor{
+  int32 idProductoProveedor = 1;
+  string codigoProducto = 2;
+  string nombreProducto = 3;
+  repeated Talle talle = 4;
+  repeated Color color = 5;
+  repeated Foto foto = 6;
+  repeated Id id = 7;
+}
+
+message Talle{
+  string talle = 1;
+
+}
+message Color{
+  string color = 1;
+
+}
+message Foto{
+  string foto = 1;
+}
+
+message ProductosProveedor{
+  int32 id = 1;
+  string codigoProducto = 2;
+  repeated Talle talle = 3;
+  repeated Color color = 4;
+  repeated Foto foto = 5;
+}
+
+message ProductosProveedorLista {
+  repeated ProductosProveedor productosProveedor =1;
+}
+
 message ProductoStockid{
   int32 id = 1;
   string codigoProducto = 2;
@@ -190,4 +224,7 @@ service ProductoService{
   rpc EliminarStock(Id) returns (Id);
   rpc TraerStocksPorFiltro(FiltroProducto) returns(StocksLista);
   rpc ModificarStockCantidad(ModificarStockCantidadRequest) returns (Id);
+  rpc AgregarProductoProveedor(ProductoProveedor) returns(Id);
+  rpc TraerProductosNuevosProveedor(Empty) returns(ProductosProveedorLista);
 }
+

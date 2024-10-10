@@ -785,6 +785,16 @@ class ProductoServiceStub(object):
                 request_serializer=service__pb2.ModificarStockCantidadRequest.SerializeToString,
                 response_deserializer=service__pb2.Id.FromString,
                 _registered_method=True)
+        self.AgregarProductoProveedor = channel.unary_unary(
+                '/ProductoService/AgregarProductoProveedor',
+                request_serializer=service__pb2.ProductoProveedor.SerializeToString,
+                response_deserializer=service__pb2.Id.FromString,
+                _registered_method=True)
+        self.TraerProductosNuevosProveedor = channel.unary_unary(
+                '/ProductoService/TraerProductosNuevosProveedor',
+                request_serializer=service__pb2.Empty.SerializeToString,
+                response_deserializer=service__pb2.ProductosProveedorLista.FromString,
+                _registered_method=True)
 
 
 class ProductoServiceServicer(object):
@@ -845,6 +855,18 @@ class ProductoServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AgregarProductoProveedor(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def TraerProductosNuevosProveedor(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ProductoServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -892,6 +914,16 @@ def add_ProductoServiceServicer_to_server(servicer, server):
                     servicer.ModificarStockCantidad,
                     request_deserializer=service__pb2.ModificarStockCantidadRequest.FromString,
                     response_serializer=service__pb2.Id.SerializeToString,
+            ),
+            'AgregarProductoProveedor': grpc.unary_unary_rpc_method_handler(
+                    servicer.AgregarProductoProveedor,
+                    request_deserializer=service__pb2.ProductoProveedor.FromString,
+                    response_serializer=service__pb2.Id.SerializeToString,
+            ),
+            'TraerProductosNuevosProveedor': grpc.unary_unary_rpc_method_handler(
+                    servicer.TraerProductosNuevosProveedor,
+                    request_deserializer=service__pb2.Empty.FromString,
+                    response_serializer=service__pb2.ProductosProveedorLista.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1138,6 +1170,60 @@ class ProductoService(object):
             '/ProductoService/ModificarStockCantidad',
             service__pb2.ModificarStockCantidadRequest.SerializeToString,
             service__pb2.Id.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AgregarProductoProveedor(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ProductoService/AgregarProductoProveedor',
+            service__pb2.ProductoProveedor.SerializeToString,
+            service__pb2.Id.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def TraerProductosNuevosProveedor(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ProductoService/TraerProductosNuevosProveedor',
+            service__pb2.Empty.SerializeToString,
+            service__pb2.ProductosProveedorLista.FromString,
             options,
             channel_credentials,
             insecure,

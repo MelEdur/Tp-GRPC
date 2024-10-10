@@ -69,3 +69,18 @@ class ProductoCliente(object):
             cantidad = data['cantidad']
         )
         return self.stub.ModificarStockCantidad(request,metadata = g.metadata)
+    
+    def agregarProductoProveedor(self, data):
+        request = proto.service_pb2.ProductoProveedor(
+            idProductoProveedor = 1,
+            nombreProducto = data['nombreProducto'],
+            codigoProducto = data['codigoProducto'],
+            talle = [proto.service_pb2.Talle(talle = talleItem['talle']) for talleItem in data['talles']],
+            color = [proto.service_pb2.Color(color = colorItem['color']) for colorItem in data['colores']],
+            foto = [proto.service_pb2.Foto(foto = fotoItem['foto']) for fotoItem in data['fotos']],
+            id = [proto.service_pb2.Id(id = idItem['id']) for idItem in data['ids']])
+        return self.stub.AgregarProductoProveedor(request,metadata = g.metadata)
+    
+    def traerProductosNuevosProveedor(self):
+        request = proto.service_pb2.Empty()
+        return self.stub.TraerProductosNuevosProveedor(request,metadata = g.metadata)
