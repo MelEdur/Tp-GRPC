@@ -31,6 +31,7 @@
                 <button type="button" class="btn btn-secondary" onclick="cambioSearch('searchTiendas')">Tiendas</button>
                 <button type="button" class="btn btn-secondary" onclick="cambioSearch('searchUsuarios')">Usuarios</button>
                 <button type="button" class="btn btn-secondary" onclick="cambioSearch('searchProductos')">Productos</button>
+                <button type="button" class="btn btn-secondary" onclick="cambioSearch('Novedades')">Novedades</button>
             </div>
 
         </div>
@@ -422,6 +423,41 @@
 
         </form>
         <br>
+        <form id="Novedades" class="mb-4 search-field" style="display: none;">
+            <div class="container">
+                <h1>Nuevos Productos Disponibles</h1>
+                <div id="productosContainer" class="productos-container"></div>
+            </div>
+        
+            <!-- Modal del formulario -->
+            <div id="productModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Seleccionar Talles y Colores</h2>
+                    <form id="productForm">
+                        <label for="nombre">Nombre del pedido:</label>
+                        <input type="text" id="nombre" name="nombre" required>
+        
+                        <label for="talles">Seleccionar Talles:</label>
+                        <div id="tallesContainer"></div>
+        
+                        <label for="colores">Seleccionar Colores:</label>
+                        <div id="coloresContainer"></div>
+        
+                        <label for="fotos">Seleccionar fotos:</label>
+                        <div id="fotosContainer"></div>
+        
+                        <label for="tiendas">Tiendas (separadas por coma):</label>
+                        <input type="text" id="tiendas" name="tiendas" required>
+        
+                        <input type="hidden" id="codigoProducto" name="codigoProducto">
+        
+                        <button type="button" id="botonNuevoProducto" class="btn btn-primary">Agregar Nuevos Productos</button>
+                    </form>
+                </div>
+            </div>
+        </form>
+        <br>
         <div>
             <div class="results">
                 <ul id="resultados">
@@ -444,6 +480,7 @@
     <script src="src/Usuarios.js"></script>
     <script src="src/Tiendas.js"></script>
     <script src="src/Productos.js"></script>
+    <script src="src/novedades.js"></script>
 
 
     <script>

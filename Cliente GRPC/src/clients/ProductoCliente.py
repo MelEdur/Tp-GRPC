@@ -73,8 +73,8 @@ class ProductoCliente(object):
     def agregarProductoProveedor(self, data):
         request = proto.service_pb2.ProductoProveedor(
             idProductoProveedor = 1,
-            nombreProducto = data['nombreProducto'],
             codigoProducto = data['codigoProducto'],
+            nombreProducto = data['nombreProducto'],
             talle = [proto.service_pb2.Talle(talle = talleItem['talle']) for talleItem in data['talles']],
             color = [proto.service_pb2.Color(color = colorItem['color']) for colorItem in data['colores']],
             foto = [proto.service_pb2.Foto(foto = fotoItem['foto']) for fotoItem in data['fotos']],
