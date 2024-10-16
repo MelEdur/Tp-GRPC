@@ -108,7 +108,7 @@ document.getElementById('botonNuevoProducto').addEventListener('click', async (e
     const fotosSeleccionados = Array.from(document.querySelectorAll('input[name="fotos"]:checked'))
                                        .map(foto => ({ foto: foto.value }));
 
-    const ids = document.getElementById('tiendas').value.split(',').map(tienda => ({ id: tienda.trim() }));
+    const ids = document.getElementById('tiendas').value.split(',').map(tienda => ({ id: Number(tienda.trim()) }));
 
     const data = {
         codigoProducto,
@@ -129,9 +129,7 @@ document.getElementById('botonNuevoProducto').addEventListener('click', async (e
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`
         },
-        body: JSON.stringify(data),
-        //SIN LA SIGUIENTE LINEA TIRA ERROR DE CORS
-        mode: 'no-cors'
+        body: JSON.stringify(data)
     });
     
     if(!response.ok){
@@ -143,6 +141,12 @@ document.getElementById('botonNuevoProducto').addEventListener('click', async (e
     document.getElementById('errores').innerText = `Error: ${error.message}`;
     document.getElementById('errores').style.display = 'block';
     }
+});
+
+
+document.getElementById('cerrarNuevoProducto').addEventListener('click', async (event)=>{
+    event.preventDefault();
+    modal.style.display = 'none';
 });
 
 // Cerrar modal si se hace clic fuera del modal

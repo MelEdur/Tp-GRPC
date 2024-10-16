@@ -81,6 +81,6 @@ class ProductoCliente(object):
             id = [proto.service_pb2.Id(id = idItem['id']) for idItem in data['ids']])
         return self.stub.AgregarProductoProveedor(request,metadata = g.metadata)
     
-    def traerProductosNuevosProveedor(self):
-        request = proto.service_pb2.Empty()
-        return self.stub.TraerProductosNuevosProveedor(request,metadata = g.metadata)
+#    def traerProductosNuevosProveedor(self):
+#        request = proto.service_pb2.Empty()
+#        return self.stub.TraerProductosNuevosProveedor(request,metadata = g.metadata)
