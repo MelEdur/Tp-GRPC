@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unla.tp.service.RecepcionService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,13 +20,14 @@ import com.unla.tp.repository.IOrdenDeCompraRepository;
 import com.unla.tp.repository.IProductoRepository;
 import com.unla.tp.repository.IStockRepository;
 import com.unla.tp.repository.ITiendaRepository;
+import com.unla.tp.service.RecepcionService;
 import com.unla.tp.service.SolicitudesService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin
+@CrossOrigin()
 public class OrdenController {
     private final IOrdenDeCompraRepository _ordenDeCompraRepository;
     private final IStockRepository _stockRepository;
@@ -36,7 +36,6 @@ public class OrdenController {
     private final SolicitudesService solicitudesService;
     private final RecepcionService recepcionService;
 
-    @CrossOrigin("http://localhost:8000")
     @GetMapping("/ordenesAceptadas")
     public List<OrdenDeCompra> enviarOdenesAceptadasyDespacho(){
 
@@ -76,7 +75,6 @@ public class OrdenController {
         
     }
 
-    @CrossOrigin("http://localhost:8000")
     @PostMapping("/generarOrdenDeCompra")
     public void generarOrdenDeCompraYManejarTopics(@RequestBody OrdenRequest ordenRequest){
         recepcionService.enviarOrden(ordenRequest.getCodigo(), ordenRequest.getItems());
