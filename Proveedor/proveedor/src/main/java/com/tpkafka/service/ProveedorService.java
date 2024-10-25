@@ -19,14 +19,6 @@ public class ProveedorService {
     private final KafkaTemplate<String,String> kafkaTemplate;
     private final IOrdenDeDespachoRepository _ordenDeDespachoRepository;
 
-    public void enviarDespacho(/*PARAMETROS?*/){
-        //TO-DO
-
-        //EJEMPLO PARA MANDAR ALGO AL TOPIC
-        //kafkaTemplate.send("topic a enviar","mensaje a enviar");
-    }
-
-
     //SE EJECUTA CUANDO RECIBE ALGO POR EL TOPIC DE /recepcion
     @KafkaListener(topics = "_recepcion", groupId = "default")
     public void recibirRecepcion(String mensajeRecepcion){

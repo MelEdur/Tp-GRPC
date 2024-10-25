@@ -1,5 +1,6 @@
 package com.tpkafka.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tpkafka.entity.OrdenPausada;
 import com.tpkafka.entity.Stock;
 import com.tpkafka.repository.IOrdenPausadaRepository;
@@ -19,6 +20,7 @@ public class StockService {
     private final IOrdenPausadaRepository ordenPausadaRepository;
     private final OrdenesService ordenesService;
     private final KafkaTemplate kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     public void actualizarStock(Stock stock){
         stockRepository.save(stock);
@@ -42,7 +44,7 @@ public class StockService {
     public void agregarProducto(Stock stock){
             stockRepository.save(stock);
         try {
-            kafkaTemplateString.send("_novedades",objectMapper.writeValueAsString(stock));
+            kafkaTemplate.send("_novedades",objectMapper.writeValueAsString(stock));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

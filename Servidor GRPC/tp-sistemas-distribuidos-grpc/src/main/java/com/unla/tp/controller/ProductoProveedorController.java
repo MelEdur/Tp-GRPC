@@ -14,12 +14,12 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin
+@CrossOrigin()
 public class ProductoProveedorController {
 
     private final IStockProveedorRepository stockProveedorRepository;
     
-    @CrossOrigin("http://localhost:8000")
+    //@CrossOrigin("http://localhost:8000")
     @GetMapping("/producto/proveedor")
     public List<StockProveedor> productosNuevosProveedor(){
 

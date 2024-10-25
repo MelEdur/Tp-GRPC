@@ -74,8 +74,8 @@ def agregarProductoProveedor():
     result = producto.agregarProductoProveedor(data)
     return MessageToJson(result)
 
-@producto_blueprint.route('/productos/novedades',methods=['GET'])
-@cross_origin()
-def traerProductosNuevosProveedor():
-    result = producto.traerProductosNuevosProveedor()
-    return MessageToJson(result,always_print_fields_with_no_presence=True)
+#@producto_blueprint.route('/productos/novedades',methods=['GET'])
+#@cross_origin()
+#def traerProductosNuevosProveedor():
+#    result = producto.traerProductosNuevosProveedor()
+#    return MessageToJson(result,always_print_fields_with_no_presence=True)

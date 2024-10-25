@@ -1,4 +1,5 @@
 const ul = document.getElementById('stockLista');
+const contenedor = document.querySelector('.results');
 
 fetch('http://localhost:8081/stocks')
 .then(response => response.json())
@@ -12,12 +13,19 @@ fetch('http://localhost:8081/stocks')
         <span>Codigo: ${stock.codigo}</span><br>
         <span>Colores: ${stock.colores.join(', ')}</span><br>
         <span>Talles: ${stock.talles.join(', ')}</span><br>
-        <span>Fotos: ${stock.fotos.map(foto => `<img src="${foto}" alt="foto" style="width:50px;height:50px;">`).join(' ')}</span><br>
-        <label for="cantidad-${stock.codigo}">Cantidad:</label>
-        <input type="number" id="cantidad-${stock.codigo}" name="cantidad" value="${stock.cantidad}" min="1"><br>
-        <button class="boton-actualizar" data-codigo="${stock.codigo}">Actualizar</button>
+        <span>Fotos: ${stock.fotos.map(foto => `<img src="${foto}" alt="foto" style="width:120px;height:120px;">`).join(' ')}</span><br>
+        <div class="input-group">
+            <label class="mr-3" for="cantidad-${stock.codigo}">Cantidad:</label>
+            <input class="form-control" type="number" id="cantidad-${stock.codigo}" name="cantidad" value="${stock.cantidad}" min="1">
+        </div>
+        <br><br>
+        <div style="text-align: center;">
+            <button type="button" class="boton-actualizar btn btn-primary" data-codigo="${stock.codigo}">Actualizar</button>
+        </div>
         `;
         ul.appendChild(li);
+
+        contenedor.style.display = 'block';
 
         // Add event listener to the button
         const updateButton = li.querySelector('.boton-actualizar');
