@@ -1,0 +1,32 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://stockeate"
+           targetNamespace="http://stockeate" elementFormDefault="qualified">
+
+    <!-- AGREGAR USUARIOS -->
+    <xs:element name="agregarUsuariosRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="usuarios" type="tns:usuario" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="agregarUsuariosResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errores" type="xs:string" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:complexType name="usuario">
+        <xs:sequence>
+            <xs:element name="linea" type="xs:int"/>
+            <xs:element name="nombreUsuario" type="xs:string"/>
+            <xs:element name="contrasenia" type="xs:string"/>
+            <xs:element name="nombre" type="xs:string"/>
+            <xs:element name="apellido" type="xs:string"/>
+            <xs:element name="codigoTienda" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
