@@ -32,8 +32,6 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
             const li = document.createElement('li');
             console.log(stockCompleto.idStockCompleto);
             li.innerHTML = `
-            <input type="checkbox" class="producto-select" data-id="${stockCompleto.codigoProducto}"
-            data-talle="${stockCompleto.talle}" data-color="${stockCompleto.color}">
             <span><img src="${stockCompleto.foto}" class="card-img-top" alt="Product Image" style="height:150px;width:150px;"/></span>
             <span>CodigoProducto: ${stockCompleto.codigoProducto}</span><br>
             <span>NombreProducto: ${stockCompleto.nombreProducto}</span><br>
@@ -166,33 +164,5 @@ document.getElementById('botonModificarProducto').addEventListener('click',async
         document.getElementById('mensajeModificarProducto').innerText = `Error: ${error.message}`;
         document.getElementById('mensajeModificarProducto').style.color = 'crimson';
         document.getElementById('mensajeModificarProducto').style.display = 'block';
-    }
-});
-
-document.getElementById('botonGenerarOrden').addEventListener('click', async (event)=>{
-
-    if(event.target && event.target.id === 'botonGenerarOrden'){
-
-        console.log("boton generar orden")
-
-        const selectedProductos = [];
-        document.querySelectorAll('.producto-select:checked').forEach(function(checkbox) {
-            const productoCodigo = checkbox.getAttribute('data-id');
-            const productoColor = checkbox.getAttribute('data-color');
-            const productoTalle = checkbox.getAttribute('data-talle');
-        
-            const productoData = {
-                idProducto: productoCodigo,
-                productoColor: productoColor,
-                productoTalle: productoTalle
-            };
-    
-            selectedProductos.push(productoData);
-        });
-        console.log('aca:',selectedProductos);
-    
-        localStorage.setItem("selectedProductos", JSON.stringify(selectedProductos));
-
-        window.location.href = "vistaOrden.html";
     }
 });

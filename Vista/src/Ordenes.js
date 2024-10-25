@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <span data-Talle="${productoItem.productoTalle}">Talle: ${productoItem.productoTalle}</span> 
         <span data-Color="${productoItem.productoColor}">Color: ${productoItem.productoColor}</span>
         <div class="form-group">
-            <label for="usr">Cantidad a pedir:</label>
+            <label>Cantidad a pedir:</label>
             <input type="number" class="productoCantidad">
         </div>
         `;
@@ -51,14 +51,14 @@ document.getElementById('enviarOrden').addEventListener('click', async (event)=>
             cantidad: parseInt(cantidad)
         });
     });
-
     console.log(listaItems);
+    console.log(localStorage.getItem('codigoTienda'));
 
     const request = {
-        codigoTienda: '400',
+        codigoTienda: localStorage.getItem('codigoTienda'),
         items: listaItems
     };
-
+    console.log(request);
     try {
         const response = await fetch('http://localhost:8080/generarOrdenDeCompra',{
             method: 'POST',
@@ -71,13 +71,9 @@ document.getElementById('enviarOrden').addEventListener('click', async (event)=>
         
         if(!response.ok){
             const errorData = await response.json();
-            console.log(errorData);
+            console.log("dassads");
             throw new Error(errorData.error.message || 'Ocurrió un error');
         }
-
-        const data = await response.json();
-        console.log(data.stocksCompleto);
-
     } catch (error) {
         document.getElementById('errores').innerText = `Error: ${error.message}`;
         document.getElementById('errores').style.display = 'block';
