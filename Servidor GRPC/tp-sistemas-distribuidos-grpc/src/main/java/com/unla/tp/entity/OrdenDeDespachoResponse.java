@@ -11,9 +11,8 @@ import java.time.LocalDate;
 @ToString
 public class OrdenDeDespachoResponse {
 
+    private int idOrdenDeDespacho;
     private int idOrdenDeCompra;
-
     private LocalDate fechaEstimada;
 
-    private int idOrdenDeDespacho;
 }

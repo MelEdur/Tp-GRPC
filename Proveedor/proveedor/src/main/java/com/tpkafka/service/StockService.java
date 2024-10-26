@@ -38,7 +38,9 @@ public class StockService {
     public int modificarStock(Stock stock) {
         Stock stockBd = stockRepository.findByCodigo(stock.getCodigo());
         stockBd.setCantidad(stock.getCantidad());
-        return stockRepository.save(stockBd).getCantidad();
+        int nuevaCantidad = stockRepository.save(stockBd).getCantidad();
+        actualizarStock(stockBd);
+        return nuevaCantidad;
     }
 
     public void agregarProducto(Stock stock){

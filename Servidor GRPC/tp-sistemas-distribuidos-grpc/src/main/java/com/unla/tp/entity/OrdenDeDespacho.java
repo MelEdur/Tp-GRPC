@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class OrdenDeDespacho {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

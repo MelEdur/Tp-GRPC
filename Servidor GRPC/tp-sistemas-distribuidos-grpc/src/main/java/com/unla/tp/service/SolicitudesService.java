@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.unla.tp.entity.*;
+import com.unla.tp.repository.IOrdenDeDespachoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -23,22 +25,24 @@ public class SolicitudesService {
 
     private final KafkaTemplate<String,String> kafkaTemplate;
     private final IOrdenDeCompraRepository ordenDeCompraRepository;
+    private final IOrdenDeDespachoRepository ordenDeDespachoRepository;
     private final ObjectMapper objectMapper;
     private final IStockProveedorRepository stockProveedorRepository;
 
 
-
+    @Transactional
     public void actualizarSolicitud(String codigoTienda, String mensaje){
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(mensaje);
 
-            OrdenDeCompra ordenDeCompra = ordenDeCompraRepository.findById(jsonNode.get("idOrdenDeCompra").asInt())
+            OrdenDeCompra ordenDeCompra = ordenDeCompraRepository.findByIdWithLock(jsonNode.get("idOrdenDeCompra").asInt())
                     .orElseThrow(()-> new RuntimeException("No existe orden de compra con tal id"));
 
             ordenDeCompra.setEstado(jsonNode.get("estado").asText());
             ordenDeCompra.setObservaciones(jsonNode.get("observaciones").asText());
 
+            System.out.println("\n\nACTUALIZO EL ESTADO\n\n"+ordenDeCompra.toString());
             ordenDeCompraRepository.save(ordenDeCompra);
 
         }catch (Exception e){
@@ -46,6 +50,7 @@ public class SolicitudesService {
         }
     }
 
+    @Transactional
     public void recibirDespacho(String codigoTienda, String mensaje){
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -53,17 +58,20 @@ public class SolicitudesService {
             OrdenDeDespachoResponse ordenDeDespachoResponse = objectMapper.readValue(mensaje,OrdenDeDespachoResponse.class);
             System.out.println(ordenDeDespachoResponse.toString());
 
-            OrdenDeCompra ordenDeCompra = ordenDeCompraRepository.findById(ordenDeDespachoResponse.getIdOrdenDeCompra())
+            OrdenDeCompra ordenDeCompra = ordenDeCompraRepository.findByIdWithLock(ordenDeDespachoResponse.getIdOrdenDeCompra())
                     .orElseThrow(()-> new RuntimeException("No existe orden de compra con tal id"));
 
-            OrdenDeDespacho ordenDeDespacho = OrdenDeDespacho.builder()
+
+            OrdenDeDespacho ordenDeDespacho = ordenDeDespachoRepository.save(OrdenDeDespacho.builder()
+                    .idOrdenDeDespacho(ordenDeDespachoResponse.getIdOrdenDeDespacho())
                     .idOrdenDeCompra(ordenDeDespachoResponse.getIdOrdenDeCompra())
                     .fechaEstimada(ordenDeDespachoResponse.getFechaEstimada())
-                    .build();
+                    .build());
 
             ordenDeCompra.setOrdenDeDespacho(ordenDeDespacho);
+            System.out.println("\n\nACTUALIZO EL DESPACHO\n\n"+ordenDeCompra.toString());
+            ordenDeCompraRepository.saveAndFlush(ordenDeCompra);
 
-            ordenDeCompraRepository.save(ordenDeCompra);
         }catch (Exception e){
             e.printStackTrace();
         }

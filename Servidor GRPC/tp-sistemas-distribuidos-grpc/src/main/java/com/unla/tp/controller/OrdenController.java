@@ -77,7 +77,7 @@ public class OrdenController {
 
     @PostMapping("/generarOrdenDeCompra")
     public void generarOrdenDeCompraYManejarTopics(@RequestBody OrdenRequest ordenRequest){
-        recepcionService.enviarOrden(ordenRequest.getCodigo(), ordenRequest.getItems());
+        recepcionService.enviarOrden(ordenRequest.getCodigoTienda(), ordenRequest.getItems());
     }
 
 }
