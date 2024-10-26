@@ -42,7 +42,7 @@
             <div class="input-group">
                 <input class="form-control" id="searchInputTiendas" type="search" placeholder="Buscar Tienda" aria-label="Search">
                 <button class="fas fa-search btn btn-outline-success" type="submit" id="botonBuscarTiendas"></button>
-                
+
             </div>
             <div class="d-flex align-items-center mt-3">
                 <div class="form-check me-3">
@@ -51,9 +51,9 @@
                 <!-- checkbox habilitada -->
                 <div class="form-check ms-2 me-3">
                     <input class="form-check-input" type="checkbox" checked id="boolHabilitada">
-                </div> 
+                </div>
             </div>
-             
+
             <!-- Checkboxes -->
 
             <div class="d-flex align-items-center mt-3">
@@ -181,6 +181,35 @@
                     <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myUsuarioModal" onclick="document.getElementById('mensajeCrearUsuario').style.display = 'none';">
                         Agregar Usuario
                     </button>
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#cargarUsuariosModal" onclick="document.getElementById('mensajeCargarUsuarios').style.display = 'none';">
+                        Cargar Usuarios
+                    </button>
+                </div>
+                <!-- Modal CargarUsuarios -->
+                <div class="modal fade" id="cargarUsuariosModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel">Cargar Usuarios</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                               <form id="cargarUsuariosForm" enctype="multipart/form-data">
+                                <label for="archivo">Archivo .csv 📄</label>
+                                <br>
+                                <input type="file" class="form-control" id="csvFile" accept=".csv" required>
+                                <br>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <label for="mensaje" id="mensajeCargarUsuarios" style="display: none;"></label>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="button" id="botonCargarUsuarios" class="btn btn-primary">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Modal CREAR USUARIO -->
@@ -330,7 +359,7 @@
                         Agregar Producto
                     </button>
                 </div> -->
-                
+
                 <!-- Modal Agregar Producto-->
                 <div class="modal fade" id="myProductoModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -428,7 +457,7 @@
                 <h1>Nuevos Productos Disponibles</h1>
                 <div id="productosContainer" class="productos-container"></div>
             </div>
-        
+
             <!-- Modal del formulario -->
             <div id="productModal" class="modal">
                 <div class="modal-content">
@@ -437,23 +466,23 @@
                     <form id="productForm">
                         <label for="nombre">Nombre del pedido:</label>
                         <input type="text" id="nombre" name="nombre" required>
-        
+
                         <label for="talles">Seleccionar Talles:</label>
                         <div id="tallesContainer"></div>
-        
+
                         <label for="colores">Seleccionar Colores:</label>
                         <div id="coloresContainer"></div>
-        
+
                         <label for="fotos">Seleccionar fotos:</label>
                         <div id="fotosContainer"></div>
-        
+
                         <label for="tiendas">Tiendas (separadas por coma):</label>
                         <input type="text" id="tiendas" name="tiendas" required>
-        
+
                         <input type="hidden" id="codigoProducto" name="codigoProducto">
-                        
+
                         <button type="button" id="cerrarNuevoProducto" class="btn btn-secondary">Cerrar</button>
-                        <button type="button" id="botonNuevoProducto" class="btn btn-primary">Agregar Nuevos Productos</button>      
+                        <button type="button" id="botonNuevoProducto" class="btn btn-primary">Agregar Nuevos Productos</button>
                     </form>
                 </div>
             </div>
