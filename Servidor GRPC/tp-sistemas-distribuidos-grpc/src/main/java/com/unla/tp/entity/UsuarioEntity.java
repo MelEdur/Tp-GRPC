@@ -1,10 +1,10 @@
 package com.unla.tp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -29,6 +29,10 @@ public class UsuarioEntity {
     private boolean habilitado;
 
     private String codigoTienda;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_usuario")
+    private List<Filtro> filtros = new ArrayList<>();
 
     private String rol;
 }
