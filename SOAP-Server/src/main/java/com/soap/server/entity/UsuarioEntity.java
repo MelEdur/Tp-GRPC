@@ -1,4 +1,4 @@
-package com.unla.tp.entity;
+package com.soap.server.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
