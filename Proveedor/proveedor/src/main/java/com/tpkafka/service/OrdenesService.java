@@ -38,9 +38,9 @@ public class OrdenesService {
             int index = -1;
 
             //REVISIÓN DE CÓDIGO
-            for(Stock stock: stocks){
-                if(stock.getCodigo().equals(items.get(i).getCodigo())){
-                    index = i+1;
+            for(int j = 0; j< stocks.size();j++){
+                if(stocks.get(j).getCodigo().equals(items.get(i).getCodigo())){
+                    index = j;
                     break;
                 }
             }
@@ -53,7 +53,7 @@ public class OrdenesService {
                     observaciones += ("Articulo "+ items.get(i).getCodigo()+ ": cantidad mal informada");
                 }else if(items.get(i).getCantidad()> stocks.get(index).getCantidad()){
                     //CANTIDAD CORRECTA PERO SIN STOCK
-                    //System.out.println("\n\nStock en tienda:" + stocks.get(index+1).getCantidad()+"\n\nNombre Stock:" + stocks.get(index+1).getCodigo()+ "\n\n\nCantidad pedida:"+ items.get(i).getCantidad());
+                    //System.out.println("\n\nStock en tienda:" + stocks.get(index).getCantidad()+"\n\nNombre Stock:" + stocks.get(index).getCodigo()+ "\n\n\nCantidad pedida:"+ items.get(i).getCantidad()+"\n\n Pedido:"+items.get(i).getCodigo());
                     observaciones +=("Articulo "+ items.get(i).getCodigo()+ ": sin stock");
                 }else {
                     //CANTIDAD CORRECTA Y CON STOCK
@@ -110,7 +110,7 @@ public class OrdenesService {
                 .fechaEstimada(fechaEstimada)
                 .build()).getIdOrdenDeDespacho();
 
-        DespachoResponse despachoResponse = new DespachoResponse(idOrdenDeCompra,idOrdenDeDespacho,fechaEstimada);
+        DespachoResponse despachoResponse = new DespachoResponse(idOrdenDeDespacho,idOrdenDeCompra,fechaEstimada);
         String topic = ("_"+codigoTienda+"_despacho");
         try {
             kafkaTemplate.send(topic,objectMapper.writeValueAsString(despachoResponse));
