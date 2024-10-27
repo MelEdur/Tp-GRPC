@@ -22,12 +22,13 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
 });
 
 document.getElementById('botonGenerarCatalogo').addEventListener('click',async(event)=>{
+    document.getElementById('errores').style.display = 'hidden';
     if(event.target && event.target.id === 'botonGenerarCatalogo'){
 
         const selectedProducts = [];
         document.querySelectorAll('.producto-select:checked').forEach(function(checkbox){
 
-            const productoCodigo = checkbox.getAttribute('data-id');
+            const productoCodigo = checkbox.getAttribute('data-idproducto');
             const productoColor = checkbox.getAttribute('data-color');
             const productoTalle = checkbox.getAttribute('data-talle');
             const productoNombre = checkbox.getAttribute('data-nombre');
@@ -43,7 +44,11 @@ document.getElementById('botonGenerarCatalogo').addEventListener('click',async(e
         });
 
         localStorage.setItem("selectedProductos", JSON.stringify(selectedProducts));
-
-        window.location.href = "vistaCatalogo.html";
+        if(document.querySelectorAll('.producto-select:checked').length >0){
+            window.location.href = "vistaCatalogo.html";
+        }else{
+            document.getElementById('errores').innerText = `Debe seleccionar al menos 1 producto para generar un catálogo`;
+            document.getElementById('errores').style.display = 'block';
+        }
     }
 });

@@ -31,7 +31,8 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
             const li = document.createElement('li');
             li.innerHTML = `
             <input type="checkbox" class="producto-select" data-id="${stockCompleto.codigoProducto}"
-            data-talle="${stockCompleto.talle}" data-color="${stockCompleto.color}" data-nombre="${stockCompleto.nombreProducto}">
+            data-talle="${stockCompleto.talle}" data-color="${stockCompleto.color}" data-nombre="${stockCompleto.nombreProducto}"
+            data-idproducto="${stockCompleto.idProducto}">
             <span><img src="${stockCompleto.foto}" class="card-img-top" alt="Product Image" style="height:150px;width:150px;"/></span>
             <span>CodigoProducto: ${stockCompleto.codigoProducto}</span><br>
             <span>NombreProducto: ${stockCompleto.nombreProducto}</span><br>
