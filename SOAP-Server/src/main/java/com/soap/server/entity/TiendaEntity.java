@@ -1,5 +1,6 @@
 package com.soap.server.entity;
-
+import java.util.List;
+import java.util.ArrayList;
 import jakarta.persistence.*;
 import lombok.*;
 
