@@ -1,11 +1,11 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://stockeate"
-           targetNamespace="http://stockeate" elementFormDefault="qualified">
+    targetNamespace="http://stockeate" elementFormDefault="qualified">
 
     <!-- AGREGAR USUARIOS -->
     <xs:element name="agregarUsuariosRequest">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="usuarios" type="tns:usuario" maxOccurs="unbounded"/>
+                <xs:element name="usuarios" type="tns:usuario" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -13,7 +13,7 @@
     <xs:element name="agregarUsuariosResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="errores" type="xs:string" maxOccurs="unbounded"/>
+                <xs:element name="errores" type="xs:string" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -21,12 +21,59 @@
 
     <xs:complexType name="usuario">
         <xs:sequence>
-            <xs:element name="linea" type="xs:int"/>
-            <xs:element name="nombreUsuario" type="xs:string"/>
-            <xs:element name="contrasenia" type="xs:string"/>
-            <xs:element name="nombre" type="xs:string"/>
-            <xs:element name="apellido" type="xs:string"/>
-            <xs:element name="codigoTienda" type="xs:string"/>
+            <xs:element name="linea" type="xs:int" />
+            <xs:element name="nombreUsuario" type="xs:string" />
+            <xs:element name="contrasenia" type="xs:string" />
+            <xs:element name="nombre" type="xs:string" />
+            <xs:element name="apellido" type="xs:string" />
+            <xs:element name="codigoTienda" type="xs:string" />
         </xs:sequence>
     </xs:complexType>
-</xs:schema>
+
+    <!-- Informe Orden de Compra -->
+
+    <xs:element name="getOrdenDeCompraRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="codigoProducto" type="xs:string" />
+                <xs:element name="fechaDesde" type="xs:string" />
+                <xs:element name="fechaHasta" type="xs:string" />
+                <xs:element name="estado" type="xs:string" />
+                <xs:element name="codigoTienda" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getOrdenDeCompraResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ordenDeCompraResponse" type="tns:ordenDeCompra"
+                    minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="item">
+        <xs:sequence>
+            <xs:element name="idItem" type="xs:int" />
+            <xs:element name="codigo" type="xs:string" />
+            <xs:element name="color" type="xs:string" />
+            <xs:element name="talle" type="xs:string" />
+            <xs:element name="cantidad" type="xs:int" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ordenDeCompra">
+        <xs:sequence>
+            <xs:element name="idOrdenDeCompra" type="xs:int" />
+            <xs:element name="codigoTienda" type="xs:string" />
+            <xs:element name="items" type="tns:item" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="fechaDeSolicitud" type="xs:string" />
+            <xs:element name="estado" type="xs:string" />
+            <xs:element name="observaciones" type="xs:string" />
+            <xs:element name="fechaDeRecepcion" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+
+</xs:schema>        
