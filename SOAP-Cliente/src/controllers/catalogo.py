@@ -8,6 +8,13 @@ catalogo_blueprint = Blueprint('catalogo',__name__)
 #Instancio cliente de soap
 cliente= Cliente()
 
+@catalogo_blueprint.route('/catalogos', methods=['POST'])
+def agregarCatalogo():
+    data = request.get_json()
+    result = cliente.agregarCatalogo(data)
+
+    return result,200
+
 @catalogo_blueprint.route('/catalogos/pdf/<int:id>', methods=['GET'])
 def descargarPdf(id):
     try:

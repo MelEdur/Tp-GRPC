@@ -59,7 +59,7 @@ public class CatalogoService {
                                         .productos(productos)
                                         .tienda(tienda)
                                         .build());
-
+        response.setErrores("No hubo errores");
         return response;
     }
     @Transactional
