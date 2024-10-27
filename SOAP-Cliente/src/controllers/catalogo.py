@@ -15,6 +15,19 @@ def agregarCatalogo():
 
     return result,200
 
+@catalogo_blueprint.route('/catalogos', methods=['PATCH'])
+def modificarCatalogo():
+    data = request.get_json()
+    result = cliente.modificarCatalogo(data)
+
+    return result,200
+
+@catalogo_blueprint.route('/catalogos/<int:id>', methods=['DELETE'])
+def eliminarCatalogo(id):
+    result = cliente.eliminarCatalogo(id)
+
+    return result,200
+
 @catalogo_blueprint.route('/catalogos/pdf/<int:id>', methods=['GET'])
 def descargarPdf(id):
     try:
