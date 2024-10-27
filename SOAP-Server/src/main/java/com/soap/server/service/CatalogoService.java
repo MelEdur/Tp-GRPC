@@ -54,7 +54,7 @@ public class CatalogoService {
                                         .productos(productos)
                                         .tienda(tienda)
                                         .build());
-        response.setErrores("No hubo errores");
+        response.setErrores("Agregado correctamente");
         return response;
     }
     @Transactional
