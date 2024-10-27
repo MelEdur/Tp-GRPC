@@ -33,17 +33,17 @@ public class CatalogoEndPoint {
     public AgregarCatalogoResponse agregarCatalogo(@RequestPayload AgregarCatalogoRequest request){
         return catalogoService.agregarCatalogo(request.getNombre(),request.getCodigoTienda(),request.getIds());
     }
-/*
+
     @PayloadRoot(namespace = NAMESPACE_URL, localPart = "modificarCatalogoRequest")
     @ResponsePayload
     public ModificarCatalogoResponse modificarCatalogo(@RequestPayload ModificarCatalogoRequest request){
-        return catalogoService.modificarCatalogo(request.getId(), request.getIdProducto());
+        return catalogoService.modificarCatalogo(request.getIdCatalogo(), request.getNombre(),request.getCodigoTienda(),request.getIds());
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URL, localPart = "eliminarCatalogosRequest")
+    @PayloadRoot(namespace = NAMESPACE_URL, localPart = "eliminarCatalogoRequest")
     @ResponsePayload
-    public EliminarCatalogoResponse eliminarCatalogos(@RequestPayload EliminarCatalogoRequest request){
-        return catalogoService.eliminarCatalogos(request.getCodigoTienda());
+    public EliminarCatalogoResponse eliminarCatalogo(@RequestPayload EliminarCatalogoRequest request){
+        return catalogoService.eliminarCatalogo(request.getId());
     }
 
     @PayloadRoot(namespace = NAMESPACE_URL, localPart = "traerCatalogosRequest")
@@ -51,7 +51,7 @@ public class CatalogoEndPoint {
     public TraerCatalogosResponse traerCatalogos(@RequestPayload TraerCatalogosRequest request){
         return catalogoService.traerCatalogos(request.getCodigoTienda());
     }
-*/
+
     @PayloadRoot(namespace = NAMESPACE_URL, localPart = "pdfCatalogoRequest")
     @ResponsePayload
     public PdfCatalogoResponse pdfCatalogo(@RequestPayload PdfCatalogoRequest request){

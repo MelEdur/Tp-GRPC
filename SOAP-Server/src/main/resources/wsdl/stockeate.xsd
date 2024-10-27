@@ -36,6 +36,7 @@
             <xs:element name="idCatalogo" type="xs:int"/>
             <xs:element name="nombre" type="xs:string"/>
             <xs:element name="productos" type="tns:producto" maxOccurs="unbounded"/>
+            <xs:element name="tienda" type="tns:tienda"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="producto">
@@ -47,6 +48,16 @@
             <xs:element name="color" type="xs:string"/>
             <xs:element name="foto" type="xs:string"/>
             <xs:element name="habilitado" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="tienda">
+        <xs:sequence>
+            <xs:element name="idTienda" type="xs:int"/>
+            <xs:element name="codigoTienda" type="xs:string"/>
+            <xs:element name="direccion" type="xs:string"/>
+            <xs:element name="ciudad" type="xs:string"/>
+            <xs:element name="provincia" type="xs:string"/>
+            <xs:element name="habilitada" type="xs:boolean"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="productoCatalogo">
@@ -78,6 +89,7 @@
     <xs:element name="modificarCatalogoRequest">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="idCatalogo" type="xs:int"/>
                 <xs:element name="nombre" type="xs:string"/>
                 <xs:element name="codigoTienda" type="xs:string"/>
                 <xs:element name="ids" type="xs:int" maxOccurs="unbounded"/>

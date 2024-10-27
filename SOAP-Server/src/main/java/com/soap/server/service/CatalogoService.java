@@ -9,16 +9,18 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import com.itextpdf.text.*;
+import org.springframework.stereotype.Service;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import jakarta.persistence.EntityNotFoundException;
-import org.apache.el.stream.Optional;
-import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
-import org.springframework.ws.server.endpoint.annotation.RequestPayload;
-import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-
 import com.soap.server.entity.CatalogoEntity;
 import com.soap.server.entity.ProductoEntity;
 import com.soap.server.entity.TiendaEntity;
@@ -26,17 +28,14 @@ import com.soap.server.repository.ICatalogoRepository;
 import com.soap.server.repository.IProductoRepository;
 import com.soap.server.repository.ITiendaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
-import stockeate.AgregarCatalogoRequest;
 import stockeate.AgregarCatalogoResponse;
 import stockeate.EliminarCatalogoResponse;
+import stockeate.ModificarCatalogoResponse;
 import stockeate.PdfCatalogoRequest;
 import stockeate.PdfCatalogoResponse;
-import stockeate.ProductoCatalogo;
 import stockeate.TraerCatalogosResponse;
 
 @Service
@@ -63,30 +62,26 @@ public class CatalogoService {
 
         return response;
     }
-/* 
-    @Override
-    public AgregarProductoCatalogoResponse agregarProductoCatalogo(ProductoCatalogo productoCatalogo){
-        AgregarProductoCatalogoResponse response = new AgregarProductoCatalogoResponse();
-        Optional<ProductoEntity> productoOpt = productoRepository.findById(productoCatalogo.getIdProducto());
-        ProductoEntity producto = productoOpt;
-        catalogoRepository.save(CatalogoEntity.builder()
-                                .id(productoCatalogo.getId())
-                                .producto(producto)
-                                .build());
+    @Transactional
+    public ModificarCatalogoResponse modificarCatalogo(int idCatalogo, String nombre, String codigoTienda, List<Integer> ids){
+        ModificarCatalogoResponse response = new ModificarCatalogoResponse();
+        TiendaEntity tienda = tiendaRepository.findByCodigoTienda(codigoTienda).get();
+        List<ProductoEntity> productos = new ArrayList<>();
+        CatalogoEntity catalogo = catalogoRepository.findById(idCatalogo).get();
+        for(int id: ids){
+            productos.add(productoRepository.findById(id).get());
+        }
+        catalogo.setNombre(nombre);
+        catalogo.setProductos(productos);
+        catalogoRepository.save(catalogo);
+
         return response;
     }
 
-    public EliminarProductoCatalogoResponse eliminarProductoCatalogo(){
-        EliminarProductoCatalogoResponse response = new EliminarProductoCatalogoResponse();
-        
-        return response;
-    }
-
-
+    @Transactional
     public EliminarCatalogoResponse eliminarCatalogo(int id){
         EliminarCatalogoResponse response = new EliminarCatalogoResponse();
-        Optional<CatalogoEntity> catalogoAux = catalogoRepository.findById(id);
-        CatalogoEntity catalogo = catalogoAux;
+        CatalogoEntity catalogo = catalogoRepository.findById(id).get();
         catalogoRepository.delete(catalogo);
         return response;
     }
@@ -94,10 +89,13 @@ public class CatalogoService {
 
     public TraerCatalogosResponse traerCatalogos(String codigoTienda){
         TraerCatalogosResponse response = new TraerCatalogosResponse();
-        response = catalogoRepository.findByCodigoTienda(codigoTienda);
+        TiendaEntity tienda = tiendaRepository.findByCodigoTienda(codigoTienda).get();
+        List<CatalogoEntity> catalogos = catalogoRepository.findByTienda(tienda);
+        for(CatalogoEntity catalogo:catalogos){
+        //response.getCatalogos().add(catalogo); //como pasar a response la lista de catalogos?
+        }
         return response;
     }
-*/
 
     public PdfCatalogoResponse pdfCatalogo(@RequestPayload PdfCatalogoRequest request){
         CatalogoEntity catalogo = catalogoRepository.findById(request.getId())
