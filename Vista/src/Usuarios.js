@@ -130,7 +130,7 @@ document.getElementById('botonModificarUsuario').addEventListener('click',async(
         }
 
         const data = await response.json();
-        document.getElementById('mensajeModificarUsuario').innerText = `Usuario modificado correctamente`;
+        document.getElementById('mensajeModificarUsuario').innerText = 'Usuario modificado correctamente';
         document.getElementById('mensajeModificarUsuario').style.color = 'green';
         document.getElementById('mensajeModificarUsuario').style.display = 'block';
         ul.innerHTML = '';
@@ -142,3 +142,76 @@ document.getElementById('botonModificarUsuario').addEventListener('click',async(
     }
 });
 
+document.getElementById('botonCargarUsuarios').addEventListener('click',function(){
+
+    const fileInput = document.getElementById('csvFile');
+    const file = fileInput.files[0];
+
+    if(file && file.type == 'text/csv' && file.name.endsWith('.csv')){
+        const reader = new FileReader();
+
+        reader.onload = function (e){
+            const csvData = e.target.result;
+            const jsonData = convertCsvToJson(csvData);
+            console.log(jsonData);
+            enviarUsuarios(jsonData);
+        };
+
+        reader.readAsText(file);
+    }else{
+        alert('Debes seleccionar un archivo CSV para subir');
+    }
+});
+
+function convertCsvToJson(csv) {
+    const lines = csv.split('\n'); // Split CSV into lines
+    const jsonArray = [];
+
+    lines.forEach((line, index) => {
+        if (line.trim()) { // Ensure the line is not empty
+            const [nombreUsuario, contrasenia, nombre, apellido, codigoTienda] = line.split(';');
+            jsonArray.push({
+                linea: index + 1, // Line number (1-indexed)
+                nombreUsuario: nombreUsuario.trim(),
+                contrasenia: contrasenia.trim(),
+                nombre: nombre.trim(),
+                apellido: apellido.trim(),
+                codigoTienda: codigoTienda.trim(),
+            });
+        }
+    });
+
+    return jsonArray;
+}
+
+function enviarUsuarios(data) {
+    fetch('http://localhost:5050/usuarios', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('No se pudo enviar el archivo');
+    })
+    .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+            const errores = data.join('\n');
+            alert(errores);
+        }
+        document.getElementById('csvFile').value = null;
+        document.getElementById('mensajeCargarUsuarios').innerText = 'Se han agregado los usuarios validos';
+        document.getElementById('mensajeCargarUsuarios').style.color = 'green';
+        document.getElementById('mensajeCargarUsuarios').style.display = 'block';
+
+    })
+    .catch((error) => {
+        document.getElementById('mensajeModificarUsuario').innerText = `Error: ${error.message}`;
+        document.getElementById('mensajeModificarUsuario').style.color = 'crimson';
+        document.getElementById('mensajeModificarUsuario').style.display = 'block';
+    });
+}

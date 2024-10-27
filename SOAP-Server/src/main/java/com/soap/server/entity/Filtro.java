@@ -1,4 +1,4 @@
-package com.unla.tp.entity;
+package com.soap.server.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,14 +14,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
-public class OrdenDeDespacho {
+public class Filtro {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idOrdenDeDespacho;
+    private int id;
 
-    private int idOrdenDeCompra;
+    private String codigoProducto;
 
-    private LocalDate fechaEstimada;
+    private LocalDate fechaDesde;
+
+    private LocalDate fechaHasta;
+
+    private boolean estado;
+
+    private String codigoTienda;
 }
-

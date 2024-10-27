@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class OrdenRequest {
-    public String codigo;
+    public String codigoTienda;
     public List<Item> items;
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "orden_de_compra")
+@ToString
 public class OrdenDeCompra {
 
     @Id
@@ -31,7 +32,8 @@ public class OrdenDeCompra {
 
     private String observaciones;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_orden_de_despacho")
     private OrdenDeDespacho ordenDeDespacho;
 
     private LocalDate fechaDeRecepcion;
