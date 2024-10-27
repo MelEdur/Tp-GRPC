@@ -1,7 +1,19 @@
 package com.soap.server.service;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.el.stream.Optional;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -85,12 +97,77 @@ public class CatalogoService {
         response = catalogoRepository.findByCodigoTienda(codigoTienda);
         return response;
     }
-
+*/
 
     public PdfCatalogoResponse pdfCatalogo(@RequestPayload PdfCatalogoRequest request){
+        CatalogoEntity catalogo = catalogoRepository.findById(request.getId())
+                .orElseThrow(()->new EntityNotFoundException("No existe un catalogo cone esa id"));
+
         PdfCatalogoResponse response = new PdfCatalogoResponse();
-        
+
+        Document documento = new Document();
+        ByteArrayOutputStream salida = new ByteArrayOutputStream();
+
+        try{
+            PdfWriter.getInstance(documento, salida);
+            documento.open();
+
+            documento.add(new Paragraph("Productos:"));
+            documento.add(Chunk.NEWLINE);
+
+
+            for(ProductoEntity producto : catalogo.getProductos()){
+
+                PdfPTable table = new PdfPTable(2);
+                table.setWidthPercentage(100);
+                table.setWidths(new float[]{1,2});
+
+                try {
+                    Image image = Image.getInstance(new URL(producto.getFoto()));
+                    image.scaleToFit(150,150);
+                    PdfPCell imageCell = new PdfPCell(image);
+                    imageCell.setBorder(Rectangle.NO_BORDER);
+                    table.addCell(imageCell);
+                }catch (MalformedURLException e){
+                    documento.add(new Paragraph("No se ha encontrado una imagen"));
+                }catch (IOException e){
+                    documento.add(new Paragraph("No se ha encontrado una imagen"));
+                }
+                PdfPCell detailsCell = new PdfPCell();
+                detailsCell.addElement(new Paragraph("Nombre: "+ producto.getNombreProducto()));
+                detailsCell.addElement(new Paragraph("Talle: "+ producto.getTalle()));
+                detailsCell.addElement(new Paragraph("Color: "+ producto.getColor()));
+                detailsCell.setBorder(Rectangle.NO_BORDER);
+
+                table.addCell(detailsCell);
+                documento.add(table);
+                documento.add(Chunk.NEWLINE);
+            }
+
+            documento.close();
+
+        } catch (DocumentException e){
+            e.printStackTrace();
+        }
+        String base64Pdf = encodePdfToBase64(new ByteArrayInputStream(salida.toByteArray()));
+
+        response.setNombre("Catalogo "+ catalogo.getNombre());
+        response.setPdf(base64Pdf.getBytes());
+
         return response;
     }
-*/
+
+    private String encodePdfToBase64(InputStream pdfInputStream) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = pdfInputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, length);
+            }
+            return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to encode PDF to Base64", e);
+        }
+    }
+
 }

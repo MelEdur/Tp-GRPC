@@ -10,3 +10,7 @@ class Cliente(object):
         #Realizo envio al servidor soap
         response = self.client.service.agregarUsuarios(usuarios=data)
         return response
+
+    def pdfCatalogo(self,id):
+        response = self.client.service.pdfCatalogo(id=id)
+        return response

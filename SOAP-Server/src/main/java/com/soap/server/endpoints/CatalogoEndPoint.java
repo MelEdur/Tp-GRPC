@@ -51,11 +51,11 @@ public class CatalogoEndPoint {
     public TraerCatalogosResponse traerCatalogos(@RequestPayload TraerCatalogosRequest request){
         return catalogoService.traerCatalogos(request.getCodigoTienda());
     }
-
+*/
     @PayloadRoot(namespace = NAMESPACE_URL, localPart = "pdfCatalogoRequest")
     @ResponsePayload
     public PdfCatalogoResponse pdfCatalogo(@RequestPayload PdfCatalogoRequest request){
-        return catalogoService.pdfCatalogo(request.getId());
+        return catalogoService.pdfCatalogo(request);
     }
-*/
+
 }

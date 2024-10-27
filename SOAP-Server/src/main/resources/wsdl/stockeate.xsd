@@ -136,7 +136,8 @@
     <xs:element name="pdfCatalogoResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="catalogo" type="tns:catalogo" maxOccurs="unbounded"/><!-- ???PDF??? -->
+                <xs:element name="nombre" type="xs:string"/>
+                <xs:element name="pdf" type="xs:base64Binary"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
