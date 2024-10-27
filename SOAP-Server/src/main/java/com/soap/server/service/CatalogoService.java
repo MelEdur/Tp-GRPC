@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import com.soap.server.entity.CatalogoEntity;
+import com.soap.server.entity.ProductoEntity;
+import com.soap.server.entity.TiendaEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 
@@ -21,9 +24,6 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.soap.server.entity.CatalogoEntity;
-import com.soap.server.entity.ProductoEntity;
-import com.soap.server.entity.TiendaEntity;
 import com.soap.server.repository.ICatalogoRepository;
 import com.soap.server.repository.IProductoRepository;
 import com.soap.server.repository.ITiendaRepository;
@@ -31,12 +31,7 @@ import com.soap.server.repository.ITiendaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import stockeate.AgregarCatalogoResponse;
-import stockeate.EliminarCatalogoResponse;
-import stockeate.ModificarCatalogoResponse;
-import stockeate.PdfCatalogoRequest;
-import stockeate.PdfCatalogoResponse;
-import stockeate.TraerCatalogosResponse;
+import stockeate.*;
 
 @Service
 @RequiredArgsConstructor
@@ -91,8 +86,29 @@ public class CatalogoService {
         TraerCatalogosResponse response = new TraerCatalogosResponse();
         TiendaEntity tienda = tiendaRepository.findByCodigoTienda(codigoTienda).get();
         List<CatalogoEntity> catalogos = catalogoRepository.findByTienda(tienda);
-        for(CatalogoEntity catalogo:catalogos){
-        //response.getCatalogos().add(catalogo); //como pasar a response la lista de catalogos?
+        for(CatalogoEntity catalogo :catalogos){
+
+            //Creamos catalogo del tipo que usa la response
+            Catalogo auxCatalogo = new Catalogo();
+            //Le cargamos el nombre e id
+            auxCatalogo.setNombre(catalogo.getNombre());
+            auxCatalogo.setIdCatalogo(catalogo.getId());
+            //Le cargamos los productos
+            for(ProductoEntity producto: catalogo.getProductos()){
+                Producto auxProducto = new Producto();
+                auxProducto.setIdproducto(producto.getId());
+                auxProducto.setNombre(producto.getNombreProducto());
+                auxProducto.setCodigo(producto.getCodigoProducto());
+                auxProducto.setTalle(producto.getTalle());
+                auxProducto.setFoto(producto.getFoto());
+                auxProducto.setColor(producto.getColor());
+                auxProducto.setHabilitado(producto.isHabilitado());
+
+                auxCatalogo.getProductos().add(auxProducto);
+            }
+
+
+            response.getCatalogos().add(auxCatalogo);
         }
         return response;
     }
