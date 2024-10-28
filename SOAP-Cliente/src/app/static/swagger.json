@@ -21,6 +21,10 @@
     {
       "name": "OrdenesDeCompra",
       "description": "Manejo de las Ordenes de Compra"
+    },
+    {
+      "name": "Filtros",
+      "description": "Manejo de filtros personalizados"
     }
   ],
   "paths": {
@@ -193,22 +197,6 @@
           "Catálogos"
         ],
         "summary": "Eliminar un catálogo de una tienda específica",
-        "requestBody": {
-          "description": "Eliminar Catalogo",
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "idCatalogo": {
-                    "description": "id del catálogo",
-                    "type": "integer",
-                    "example": 1
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Mensaje de estado",
@@ -466,6 +454,270 @@
             }
           }
         }
+      }
+    },
+    "/filtros": {
+      "post": {
+        "tags": [
+          "Filtros"
+        ],
+        "summary": "Guarda un filtro personalizado para un usuario especifico",
+        "description": "Guarda un nuevo filtro personalizado",
+        "requestBody": {
+          "description": "Un filtro personalizado con id de usuario asignado",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "codigoProducto": {
+                    "type": "string",
+                    "example": "oiujsdnfD"
+                  },
+                  "fechaDesde": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2020-10-26T00:00:00.000Z"
+                  },
+                  "fechaHasta": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2020-10-28T00:00:00.000Z"
+                  },
+                  "estado": {
+                    "type": "string",
+                    "example": "ACEPTADO"
+                  },
+                  "codigoTienda": {
+                    "type": "string",
+                    "example": 400
+                  },
+                  "idUsuario": {
+                    "type": "integer",
+                    "example": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Operación exitosa. Datos del filtro devueltos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "codigoProducto": {
+                      "type": "string",
+                      "example": "oiujsdnfD",
+                      "description": "Código del producto"
+                    },
+                    "codigoTienda": {
+                      "type": "string",
+                      "example": "400",
+                      "description": "Código de la tienda"
+                    },
+                    "estado": {
+                      "type": "string",
+                      "example": "ACEPTADO",
+                      "description": "Estado de la orden de compra"
+                    },
+                    "fechaDesde": {
+                      "type": "string",
+                      "format": "date",
+                      "example": "2020-10-25",
+                      "description": "Fecha de inicio de la aplicación del filtro"
+                    },
+                    "fechaHasta": {
+                      "type": "string",
+                      "format": "date",
+                      "example": "2020-10-27",
+                      "description": "Fecha de finalización de la aplicación del filtro"
+                    },
+                    "idFiltro": {
+                      "type": "integer",
+                      "example": 17,
+                      "description": "Identificador único del filtro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Filtros"
+        ],
+        "summary": "Edita un filtro personalizado",
+        "description": "Edita un filtro personalizado ya existente.",
+        "requestBody": {
+          "description": "Datos necesarios para editar el filtro",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "codigoProducto": {
+                    "type": "string",
+                    "example": "WasDTGpt",
+                    "description": "Código único del producto"
+                  },
+                  "fechaDesde": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2020-10-28",
+                    "description": "Fecha de inicio de la aplicación del filtro"
+                  },
+                  "fechaHasta": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2020-10-28",
+                    "description": "Fecha de finalización de la aplicación del filtro"
+                  },
+                  "estado": {
+                    "type": "string",
+                    "example": "ACEPTADO",
+                    "description": "Estado de la orden de compra"
+                  },
+                  "codigoTienda": {
+                    "type": "string",
+                    "example": "400",
+                    "description": "Código de la tienda donde se aplica el filtro"
+                  },
+                  "idFiltro": {
+                    "type": "integer",
+                    "example": 7,
+                    "description": "Identificador único del filtro"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filtro editado con exito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensaje": {
+                      "type": "string",
+                      "example": "Filtro editado correctamente.",
+                      "description": "Mensaje de confirmacion de edición del filtro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/filtrosTraer": {
+      "post": {
+        "tags": [
+          "Filtros"
+        ],
+        "summary": "Trae los filtros personalizados del usuario",
+        "description": "Retorna una lista de filtros personalizados disponibles para un usuario especifico.",
+        "requestBody": {
+          "description": "Identificador del usuario",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idUsuario": {
+                    "type": "integer",
+                    "example": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lista de filtros disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "codigoProducto": {
+                        "type": "string",
+                        "example": "oiujsdnfD"
+                      },
+                      "codigoTienda": {
+                        "type": "string",
+                        "example": "400"
+                      },
+                      "estado": {
+                        "type": "string",
+                        "example": "ACEPTADO"
+                      },
+                      "fechaDesde": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-10-26"
+                      },
+                      "fechaHasta": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2020-10-28"
+                      },
+                      "idFiltro": {
+                        "type": "integer",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/filtros/{idFiltro}": {
+      "delete": {
+        "tags": [
+          "Filtros"
+        ],
+        "summary": "Elimina un filtro de un usuario",
+        "description": "Elimina un filtro personalizado para un usuario específico.",
+        "responses": {
+          "200": {
+            "description": "Filtro eliminado",
+            "content": {
+              "application/json": {
+                "example": null
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "idFiltro",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del filtro personalizado a eliminar"
+          }
+        ]
       }
     }
   }
