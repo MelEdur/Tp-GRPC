@@ -130,6 +130,128 @@
             }
           }
         }
+      },
+      "patch": {
+        "tags": [
+          "Catálogos"
+        ],
+        "summary": "Modificar un catálogo de una tienda específica",
+        "requestBody": {
+          "description": "Datos del catálogo que se desea añadir",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "idCatalogo": {
+                    "description": "id del catálogo",
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "nombre": {
+                    "description": "Nombre del catálogo",
+                    "type": "string",
+                    "example": "Remeras"
+                  },
+                  "codigoTienda": {
+                    "description": "Tienda a la que pertenecerá el catálogo",
+                    "type": "string",
+                    "example": "T034"
+                  },
+                  "ids": {
+                    "description": "Ids de los productos que estarán en el catálogo",
+                    "type": "array",
+                    "example": [
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mensaje de estado",
+            "content": {
+              "application/json": {
+                "example": "Catalogo Reebuk cambio nombre del catalogo a Reebok"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogos/<int:id>": {
+      "delete": {
+        "tags": [
+          "Catálogos"
+        ],
+        "summary": "Eliminar un catálogo de una tienda específica",
+        "requestBody": {
+          "description": "Eliminar Catalogo",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "idCatalogo": {
+                    "description": "id del catálogo",
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mensaje de estado",
+            "content": {
+              "application/json": {
+                "example": "Catalogo Eliminado"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogoslista": {
+      "post": {
+        "tags": [
+          "Catálogos"
+        ],
+        "summary": "Traer Catalogos de la tienda especifica",
+        "requestBody": {
+          "description": "Traer Catalogos",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "idCatalogo": {
+                    "description": "CodigoTienda",
+                    "type": "string",
+                    "example": "350"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lista de Catalogos",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "ListaCatalogos"
+                }
+              }
+            }
+            }
+          }
+        }
       }
     },
     "/catalogos/pdf/{id}": {
