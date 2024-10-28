@@ -183,7 +183,7 @@
         }
       }
     },
-    "/catalogos/<int:id>": {
+    "/catalogos/{id}": {
       "delete": {
         "tags": [
           "Catálogos"
@@ -214,7 +214,18 @@
               }
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del catálogo a eliminar"
+          }
+        ]
       }
     },
     "/catalogoslista": {
@@ -243,12 +254,72 @@
           "200": {
             "description": "Lista de Catalogos",
             "content": {
-              "application/pdf": {
+              "application/json": {
                 "schema": {
-                  "type": "ListaCatalogos"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "linea": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "nombre": {
+                        "description": "Nombre del catálogo",
+                        "type": "string",
+                        "example": "Remeras"
+                      },
+                      "codigoTienda": {
+                        "description": "Tienda a la que pertenecerá el catálogo",
+                        "type": "string",
+                        "example": "350"
+                      },
+                      "productos": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "linea": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "nombre": {
+                              "description": "Nombre del producto",
+                              "type": "string",
+                              "example": "buzo nike"
+                            },
+                            "codigo": {
+                              "description": "codigo del producto",
+                              "type": "string",
+                              "example": "FXHGFPHBBE"
+                            },
+                            "talle": {
+                              "description": "talle del producto",
+                              "type": "string",
+                              "example": "m"
+                            },
+                            "color": {
+                              "description": "color del producto",
+                              "type": "string",
+                              "example": "blanco"
+                            },
+                            "foto": {
+                              "description": "url foto del producto",
+                              "type": "string",
+                              "example": "https://i.imgur.com/zIYY6h0.jpeg"
+                            },
+                            "habilitado": {
+                              "description": "boolean habilitado del producto",
+                              "type": "boolean",
+                              "example": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
-            }
             }
           }
         }
