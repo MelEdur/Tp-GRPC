@@ -36,6 +36,10 @@ class Cliente(object):
         response = self.client.service.pdfCatalogo(id=id)
         return response
     
-    def traerInformeOrdenDeCompra(self,data):
-        response = self.client.service.traerInformeOrdenDeCompra(filtros=data)
+    def getInformeDeCompra(self,data):
+        response = self.client.service.getInformeDeCompra(codigoProducto=data['codigoProducto'],
+                                                       fechaDesde=data['fechaDesde'],
+                                                       fechaHasta=data['fechaHasta'],
+                                                       estado=data['estado'],
+                                                       codigoTienda=data['codigoTienda'])
         return response

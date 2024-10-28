@@ -25,12 +25,12 @@ public class OrdenDeCompraService {
 
     @Transactional
     public GetInformeDeCompraResponse GetInformesDeCompraPorFiltro(
-        String codigoTienda, String estado, LocalDate fechaDeSolicitud, String codigoProducto){
+        String codigoTienda, String estado, LocalDate fechaDesde, LocalDate fechaHasta, String codigoProducto){
 
         GetInformeDeCompraResponse response = new GetInformeDeCompraResponse();
         //tengo q merter los filtros, filtro de rango de fechas solo por fechadesolicitud
         List<com.soap.server.entity.OrdenDeCompra> ordenesDeCompraDB = ordenDeCompraRepository.
-            findByFilters(codigoTienda, estado, fechaDeSolicitud, codigoProducto);
+            findByFilters(codigoTienda, estado, fechaDesde, fechaHasta, codigoProducto);
 
         for (com.soap.server.entity.OrdenDeCompra ordenDeCompraDB : ordenesDeCompraDB) {
             InformeDeCompra auxInformeDeCompra = new InformeDeCompra();
