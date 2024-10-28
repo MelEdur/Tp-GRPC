@@ -9,15 +9,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import com.itextpdf.text.*;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -132,7 +127,12 @@ public class CatalogoService {
         try{
             PdfWriter.getInstance(documento, salida);
             documento.open();
-
+            Paragraph titulo = new Paragraph(catalogo.getNombre());
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            documento.add(titulo);
+            documento.add(Chunk.NEWLINE);
+            documento.add(Chunk.NEWLINE);
+            documento.add(Chunk.NEWLINE);
             documento.add(new Paragraph("Productos:"));
             documento.add(Chunk.NEWLINE);
 
