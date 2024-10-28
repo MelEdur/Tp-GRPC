@@ -17,6 +17,10 @@
     {
       "name": "Catálogos",
       "description": "Manejo de los catalogos de cada tienda"
+    },
+    {
+      "name": "OrdenesDeCompra",
+      "description": "Manejo de las Ordenes de Compra"
     }
   ],
   "paths": {
@@ -358,6 +362,110 @@
             "description": "ID del catálogo a descargar"
           }
         ]
+      }
+    },
+    "/ordenDeCompras": {
+      "post": {
+        "tags": [
+          "OrdenesDeCompra"
+        ],
+        "summary": "Traer ordenDeCompras por filtro",
+        "requestBody": {
+          "description": "Traer ordenes De Compras segun filtro puesto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "codigoProducto": {
+                    "description": "codigoProducto",
+                    "type": "string",
+                    "example": "122"
+                  },
+                  "fechaDesde": {
+                    "description": "fechaDesde",
+                    "type": "string",
+                    "example": "2024-10-22"
+                  },
+                  "fechaHasta": {
+                    "description": "fechaHasta",
+                    "type": "string",
+                    "example": "2024-10-25"
+                  },
+                  "estado": {
+                    "description": "estado",
+                    "type": "string",
+                    "example": "RECHAZADO"
+                  },
+                  "codigoTienda": {
+                    "description": "CodigoTienda",
+                    "type": "string",
+                    "example": "400"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lista de ordenes De Compras",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "codigoTienda": {
+                        "type": "string",
+                        "example": "400"
+                      },
+                      "estado": {
+                        "description": "estado de la orden de compra",
+                        "type": "string",
+                        "example": "RECHAZADO"
+                      },
+                      "fechaDeSolicitud": {
+                        "type": "string",
+                        "example": "2024-10-25"
+                      },
+                      "idOrdenDeCompra": {
+                        "type": "integer",
+                        "example": 10
+                      },
+                      "productos": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "cantidadPedida": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "cantidadPedidaTotal": {
+                              "type": "integer",
+                              "example": 50
+                            },
+                            "nombre": {
+                              "description": "Nombre del producto",
+                              "type": "string",
+                              "example": "buzo nike"
+                            },
+                            "codigoProducto": {
+                              "description": "codigo del producto",
+                              "type": "string",
+                              "example": "FXHGFPHBBE"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
