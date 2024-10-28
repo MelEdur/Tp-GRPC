@@ -133,6 +133,6 @@ document.getElementById('botonModificarProducto').addEventListener('click',async
 
 document.getElementById('botonInformeDeCompras').addEventListener('click',async(event)=>{
     if(event.target && event.target.id === 'botonInformeDeCompras'){
-        window.location.href = "vistaInformenDeCompras.html"    
+        window.location.href = "vistaInformeDeCompras.html"    
     }
 });

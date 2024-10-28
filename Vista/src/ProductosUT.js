@@ -127,3 +127,9 @@ document.getElementById('botonGenerarOrden').addEventListener('click', async (ev
         window.location.href = "vistaOrden.html";
     }
 });
+
+document.getElementById('botonInformeDeCompras').addEventListener('click',async(event)=>{
+    if(event.target && event.target.id === 'botonInformeDeCompras'){
+        window.location.href = "vistaInformeDeCompras.html"    
+    }
+});
