@@ -30,51 +30,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <!-- Informe Orden de Compra -->
-
-    <xs:element name="getOrdenDeCompraRequest">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="codigoProducto" type="xs:string" />
-                <xs:element name="fechaDesde" type="xs:string" />
-                <xs:element name="fechaHasta" type="xs:string" />
-                <xs:element name="estado" type="xs:string" />
-                <xs:element name="codigoTienda" type="xs:string" />
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="getOrdenDeCompraResponse">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="ordenDeCompraResponse" type="tns:ordenDeCompra"
-                    minOccurs="0" maxOccurs="unbounded" />
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:complexType name="item">
-        <xs:sequence>
-            <xs:element name="idItem" type="xs:int" />
-            <xs:element name="codigo" type="xs:string" />
-            <xs:element name="color" type="xs:string" />
-            <xs:element name="talle" type="xs:string" />
-            <xs:element name="cantidad" type="xs:int" />
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="ordenDeCompra">
-        <xs:sequence>
-            <xs:element name="idOrdenDeCompra" type="xs:int" />
-            <xs:element name="codigoTienda" type="xs:string" />
-            <xs:element name="items" type="tns:item" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="fechaDeSolicitud" type="xs:string" />
-            <xs:element name="estado" type="xs:string" />
-            <xs:element name="observaciones" type="xs:string" />
-            <xs:element name="fechaDeRecepcion" type="xs:string" />
-        </xs:sequence>
-    </xs:complexType>
-
     <!-- CATALOGO -->
     <xs:complexType name="catalogo">
         <xs:sequence>
@@ -189,5 +144,48 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <!-- Informe Orden de Compra -->
+
+    <xs:element name="getInformeDeCompraRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="codigoProducto" type="xs:string" />
+                <xs:element name="fechaDesde" type="xs:string" />
+                <xs:element name="fechaHasta" type="xs:string" />
+                <xs:element name="estado" type="xs:string" />
+                <xs:element name="codigoTienda" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getInformeDeCompraResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="informeDeCompraResponse" type="tns:informeDeCompra"
+                    minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="productoInforme">
+        <xs:sequence>
+            <xs:element name="codigoProducto" type="xs:string" />
+            <xs:element name="nombre" type="xs:string" />
+            <xs:element name="cantidadPedida" type="xs:int" />
+            <xs:element name="cantidadPedidaTotal" type="xs:int" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="informeDeCompra">
+        <xs:sequence>
+            <xs:element name="idOrdenDeCompra" type="xs:int" />
+            <xs:element name="codigoTienda" type="xs:string" />
+            <xs:element name="items" type="tns:productoInforme" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="estado" type="xs:string" />
+            <xs:element name="fechaDeSolicitud" type="xs:string" />
+            <xs:element name="fechaDeRecepcion" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
 
 </xs:schema>

@@ -20,3 +20,7 @@ class Cliente(object):
     def pdfCatalogo(self,id):
         response = self.client.service.pdfCatalogo(id=id)
         return response
+    
+    def traerInformeOrdenDeCompra(self,data):
+        response = self.client.service.traerInformeOrdenDeCompra(filtros=data)
+        return response
