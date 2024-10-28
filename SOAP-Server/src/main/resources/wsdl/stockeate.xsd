@@ -212,7 +212,7 @@
     <xs:element name="guardarFiltroResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="filtros" type="tns:filtro" maxOccurs="unbounded" />
+                <xs:element name="filtro" type="tns:filtro"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
