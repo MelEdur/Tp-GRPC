@@ -32,12 +32,13 @@ document.addEventListener("DOMContentLoaded", function() {
         sel.addEventListener('change', (event) => {
             const valorSeleccionado = event.target.value; // Obtiene el valor de la opción seleccionada
             const valores = obtenerCamposDeFiltro(valorSeleccionado);
-            document.getElementById('searchInformeCodProducto').value= valores.codigoProducto;
+
+            document.getElementById('searchInformeCodProducto').value= valores.codigoProducto == 'null ' ? '' : valores.codigoProducto.replace(/\s+/g, '');
             document.getElementById('searchInformeFechaDesde').value= valores.fechaDesde.replace(/\s+/g, '');
             document.getElementById('searchInformeFechaHasta').value= valores.fechaHasta.replace(/\s+/g, '');
             document.getElementById('searchInformeEstado').value= valores.estado.replace(/\s+/g, '');
             if(rolActual != "USUARIO"){
-                document.getElementById('searchInformeCodTienda').value= valores.codigoTienda;
+                document.getElementById('searchInformeCodTienda').value= valores.codigoTienda == ' null ' ? '' : valores.codigoTienda.replace(/\s+/g, '');
             }
         });
     })
@@ -52,7 +53,7 @@ document.getElementById('botonAgregarFiltro').addEventListener('click', async(ev
     const fechaHasta = document.getElementById('searchInformeFechaHasta').value;
     const estado = document.getElementById('searchInformeEstado').value;
 
-    const codigoTienda = "";
+    let codigoTienda = "";
     if(rolActual == "USUARIO"){
         const tiendaActual = localStorage.getItem('codigoTienda');
         codigoTienda = tiendaActual;
@@ -96,7 +97,7 @@ document.getElementById('botonEditarFiltro').addEventListener('click', function(
     const fechaHasta = document.getElementById('searchInformeFechaHasta').value;
     const estado = document.getElementById('searchInformeEstado').value;
 
-    const codigoTienda = "";
+    let codigoTienda = "";
     if(rolActual == "USUARIO"){
         const tiendaActual = localStorage.getItem('codigoTienda');
         codigoTienda = tiendaActual;

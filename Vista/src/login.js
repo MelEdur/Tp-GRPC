@@ -30,6 +30,7 @@ document.getElementById('formularioLogIn').addEventListener('submit', async (eve
         console.log(data);
 
         if (data.rol === 'ADMIN'){
+            localStorage.setItem('idUsuario',1);
             window.location.href = 'vistaUCC.html';
         }else if (data.rol ===  'USUARIO'){
             window.location.href = 'vistaUsuario.html'

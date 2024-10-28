@@ -1,10 +1,8 @@
 const ul = document.getElementById('resultados');
-const rolActual = localStorage.getItem('rol');
 
 document.getElementById('botonBuscarInformes').addEventListener('click', async (event)=>{
     event.preventDefault();
     const searchFields = document.querySelector('.results');
-    const rolActual = localStorage.getItem('rol');
 
     const codigoProducto =  document.getElementById('searchInformeCodProducto').value;
     const codigoTienda = document.getElementById('searchInformeCodTienda').value;
