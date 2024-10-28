@@ -52,12 +52,14 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
                     <label>Nuevo Nombre: <input type="text" id="newCatalogName${catalogo.idCatalogo}" value="${catalogo.nombre}"></label>
                     <button id="addProduct${catalogo.idCatalogo}">Modificar Productos del catalogo</button>
                     <button id="saveChanges${catalogo.idCatalogo}">Guardar Cambios</button>
+                    <h1 class="text-center mb-4">Seleccione los Productos que desea que contenga el Catalogo</h1>
                 `;
                 //Modificar para poder seleccionar productos del stock 
                 // Handle adding products (extend as needed)
                 const addProductButton = editForm.querySelector(`#addProduct${catalogo.idCatalogo}`);
-                addProductButton.addEventListener('click', () => {
+                addProductButton.addEventListener('click', async() => {
                     // Code for adding a new product
+                    /*
                     const newProductDiv = document.createElement('div');
                     newProductDiv.innerHTML = `
                         <label>Nombre Producto: <input type="text"></label>
@@ -65,7 +67,61 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
                         <label>Color: <input type="text"></label>
                         <label>Foto URL: <input type="text"></label>
                     `;
-                    editForm.appendChild(newProductDiv);
+                    editForm.appendChild(newProductDiv);*/
+                    //const searchFields = document.querySelector('.results');
+
+    const nombreProducto = null;
+    const codigoProducto = null;
+    const talle = null;
+    const color = null;
+    const codigoTienda = localStorage.getItem('codigoTienda');
+
+    try {
+        const response = await fetch('http://localhost:5000/productos/filtrado',{
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+            },
+            body: JSON.stringify({nombreProducto,codigoProducto,talle,color,codigoTienda})
+        });
+
+        if(!response.ok){
+            const errorData = await response.json();
+            throw new Error(errorData.error.message || 'Ocurrió un error');
+        }
+
+        const data = await response.json();
+        //Borrar resultados previos
+        //ul.innerHTML = '';
+        
+        data.stocksCompleto.forEach(stockCompleto =>{
+
+            const li = document.createElement('li');
+            li.innerHTML = `
+            <input type="checkbox" class="producto-select" data-id="${stockCompleto.codigoProducto}"
+            data-talle="${stockCompleto.talle}" data-color="${stockCompleto.color}" data-nombre="${stockCompleto.nombreProducto}"
+            data-idproducto="${stockCompleto.idProducto}">
+            <span><img src="${stockCompleto.foto}" class="card-img-top" alt="Product Image" style="height:150px;width:150px;"/></span>
+            <span>CodigoProducto: ${stockCompleto.codigoProducto}</span><br>
+            <span>NombreProducto: ${stockCompleto.nombreProducto}</span><br>
+            <span>Talle: ${stockCompleto.talle}</span><br>
+            <span>Color: ${stockCompleto.color}</span><br>
+            <span>Habilitado: ${stockCompleto.habilitado ? '✔️' : '❌'}</span>
+            <span>Cantidad: ${stockCompleto.cantidad}</span><br>
+            `;
+            editForm.appendChild(li);
+            
+        });
+        
+        //searchFields.style.display = 'block';
+
+    } catch (error) {
+        document.getElementById('errores').innerText = `Error: ${error.message}`;
+        document.getElementById('errores').style.display = 'block';
+    }
+
+
                 });
 
                 // Handle saving changes
@@ -74,8 +130,29 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
                     const nombre = document.getElementById(`newCatalogName${catalogo.idCatalogo}`).value;
                     const idCatalogo = catalogo.idCatalogo;
                     const codigoTienda = localStorage.getItem('codigoTienda');
-                    const ids = [10,11,12];
+                    const ids = [];
+                    const selectedProductos = [];
+        document.querySelectorAll('.producto-select:checked').forEach(function(checkbox) {
+            const idProducto = checkbox.getAttribute('data-idproducto');
+            const productoColor = checkbox.getAttribute('data-color');
+            const productoTalle = checkbox.getAttribute('data-talle');
+
+            const productoData = {
+                idProducto: idProducto,
+                productoColor: productoColor,
+                productoTalle: productoTalle
+            };
+
+            selectedProductos.push(productoData);
+
+        });
+        console.log(JSON.stringify({selectedProductos}));
+        localStorage.setItem("selectedProductos", JSON.stringify(selectedProductos));
+        JSON.parse(localStorage.getItem("selectedProductos")).forEach(producto =>{
+            ids.push(Number(producto.idProducto));
+        });
                     //guardar la lista de ids de los productos en ids
+                    console.log(JSON.stringify({idCatalogo, nombre, codigoTienda, ids}));
                     try {
                         await fetch('http://localhost:5050/catalogos', {
                             method: 'PATCH',
