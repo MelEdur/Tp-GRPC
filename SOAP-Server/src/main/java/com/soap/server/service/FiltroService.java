@@ -76,7 +76,8 @@ public class FiltroService {
                                 .build();
 
                 // Guarda el filtro en la base de datos
-                filtroRepository.save(nuevoFiltro);
+                Filtro filtroGuardado = filtroRepository.save(nuevoFiltro);
+                
                 List<Filtro> listaFiltros = usuario.getFiltros();
                 listaFiltros.add(nuevoFiltro);
                 usuario.setFiltros(listaFiltros);
@@ -84,13 +85,14 @@ public class FiltroService {
 
                 // Mapeo a xsd
                 stockeate.Filtro filtroAux = new stockeate.Filtro();
-                filtroAux.setCodigoProducto(nuevoFiltro.getCodigoProducto());
-                filtroAux.setFechaDesde(nuevoFiltro.getFechaDesde().toString());
-                filtroAux.setFechaHasta(nuevoFiltro.getFechaHasta().toString());
-                filtroAux.setEstado(nuevoFiltro.isEstado());
-                filtroAux.setCodigoTienda(nuevoFiltro.getCodigoTienda());
+                filtroAux.setIdFiltro(filtroGuardado.getId());
+                filtroAux.setCodigoProducto(filtroGuardado.getCodigoProducto());
+                filtroAux.setFechaDesde(filtroGuardado.getFechaDesde().toString());
+                filtroAux.setFechaHasta(filtroGuardado.getFechaHasta().toString());
+                filtroAux.setEstado(filtroGuardado.isEstado());
+                filtroAux.setCodigoTienda(filtroGuardado.getCodigoTienda());
                 
-                response.getFiltros().add(filtroAux);
+                response.setFiltro(filtroAux);
 
                 return response;
         }
