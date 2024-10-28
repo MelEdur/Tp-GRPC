@@ -353,59 +353,20 @@
                     </label>
                 </div>
 
+                <div class="ms-auto">
+                    <button type="button" class="btn btn-secondary" id="botonInformeDeCompras">
+
+                        Administrar Informes
+                    </button>
+                </div>
+
                 <!-- Botón alineado a la derecha -->
                 <!-- <div class="ms-auto">
                     <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#myProductoModal">
                         Agregar Producto
                     </button>
                 </div> -->
-
-                <!-- Modal Agregar Producto-->
-                <div class="modal fade" id="myProductoModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel">Formulario Producto</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="nombre">Nombre producto:</label>
-                                        <input type="text" class="form-control" id="nombreProducto" placeholder="Ingresa Nombre">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Color:</label>
-                                        <input type="text" class="form-control" id="color" placeholder="Ingresa Color">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Talle:</label>
-                                        <input type="text" class="form-control" id="talle" placeholder="Ingresa Talle">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Foto (URL):</label>
-                                        <input type="text" class="form-control" id="foto" placeholder="Ingresa URL Foto">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Codigo tienda</label>
-                                        <input type="number" class="form-control" id="id1" placeholder="Ingresa Codigo tienda">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Codigo tienda</label>
-                                        <input type="number" class="form-control" id="id2" placeholder="Ingresa Codigo tienda">
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <label for="mensaje" id="mensajeCrearProducto" style="display: none;"></label>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                <button type="button" id="botonAgregarProducto" class="btn btn-primary">Enviar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                 <!-- Modal MODIFICAR PRODUCTO-->
                 <div class="modal fade" id="modificarProductoModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
