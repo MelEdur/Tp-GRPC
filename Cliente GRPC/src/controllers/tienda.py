@@ -49,7 +49,6 @@ def traerTienda(id):
    return MessageToJson(result,always_print_fields_with_no_presence=True)
 
 
-
 @tienda_blueprint.route('/tiendas',methods=['GET'])
 @cross_origin()
 def traerTiendas():

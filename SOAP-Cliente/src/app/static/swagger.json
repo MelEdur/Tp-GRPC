@@ -1,0 +1,171 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Stockeate - Gestion de tiendas 3.0",
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "http://localhost/5050"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Usuarios",
+      "description": "Manejo de los usuarios del sistema"
+    },
+    {
+      "name": "Catálogos",
+      "description": "Manejo de los catalogos de cada tienda"
+    }
+  ],
+  "paths": {
+    "/usuarios": {
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Intenta agregar una serie de usuarios",
+        "description": "Intenta agregar una lista de usuarios e informa de los que no se pudieron agregar",
+        "requestBody": {
+          "description": "Una lista de usuarios",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "linea": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "nombreUsuario": {
+                      "type": "string",
+                      "example": "JhonyYhea"
+                    },
+                    "contrasenia": {
+                      "type": "string",
+                      "example": "SuperSecretPassword"
+                    },
+                    "nombre": {
+                      "type": "string",
+                      "example": "Jhon"
+                    },
+                    "apellido": {
+                      "type": "string",
+                      "example": "Doe"
+                    },
+                    "codigoTienda": {
+                      "type": "string",
+                      "example": "T034"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Arreglo de mensajes de errores ocurridos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "example": "Error en la línea 1 : No puede enviar campos vacíos"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogos": {
+      "post": {
+        "tags": [
+          "Catálogos"
+        ],
+        "summary": "Agrega un catálogo a una tienda específica",
+        "requestBody": {
+          "description": "Datos del catálogo que se desea añadir",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "nombre": {
+                    "description": "Nombre del catálogo",
+                    "type": "string",
+                    "example": "Remeras"
+                  },
+                  "codigoTienda": {
+                    "description": "Tienda a la que pertenecerá el catálogo",
+                    "type": "string",
+                    "example": "T034"
+                  },
+                  "ids": {
+                    "description": "Ids de los productos que estarán en el catálogo",
+                    "type": "array",
+                    "example": [
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mensaje de estado",
+            "content": {
+              "application/json": {
+                "example": "Agregado correctamente"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogos/pdf/{id}": {
+      "get": {
+        "tags": [
+          "Catálogos"
+        ],
+        "summary": "Descarga el catalogo pedido como pdf",
+        "responses": {
+          "200": {
+            "description": "Descarga del archivo exitosa",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "El catálogo indicado no se encuentra"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del catálogo a descargar"
+          }
+        ]
+      }
+    }
+  }
+}

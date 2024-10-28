@@ -168,6 +168,93 @@
         </xs:complexType>
     </xs:element>
 
+    <!--  FILTROS -->
+    <xs:complexType name="filtro">
+        <xs:sequence>
+            <xs:element name="idFiltro" type="xs:int" />
+            <xs:element name="codigoProducto" type="xs:string" />
+            <xs:element name="fechaDesde" type="xs:string" />
+            <xs:element name="fechaHasta" type="xs:string" />
+            <xs:element name="estado" type="xs:boolean" />
+            <xs:element name="codigoTienda" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="traerFiltrosRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="idUsuario" type="xs:int" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="traerFiltrosResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="filtros" type="tns:filtro" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="guardarFiltroRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="codigoProducto" type="xs:string" />
+                <xs:element name="fechaDesde" type="xs:string" />
+                <xs:element name="fechaHasta" type="xs:string" />
+                <xs:element name="estado" type="xs:boolean" />
+                <xs:element name="codigoTienda" type="xs:string" />
+                <xs:element name="idUsuario" type="xs:int" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="guardarFiltroResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="filtros" type="tns:filtro" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="editarFiltroRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="codigoProducto" type="xs:string" />
+                <xs:element name="fechaDesde" type="xs:string" />
+                <xs:element name="fechaHasta" type="xs:string" />
+                <xs:element name="estado" type="xs:boolean" />
+                <xs:element name="codigoTienda" type="xs:string" />
+                <xs:element name="idFiltro" type="xs:int" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="editarFiltroResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="mensaje" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="eliminarFiltroRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="idFiltro" type="xs:int" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="eliminarFiltroResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="mensaje" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
     <xs:complexType name="productoInforme">
         <xs:sequence>
             <xs:element name="codigoProducto" type="xs:string" />
