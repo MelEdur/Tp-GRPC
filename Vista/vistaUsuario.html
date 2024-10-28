@@ -171,6 +171,7 @@
         }
 
         function cambioSearch(searchId) {
+            document.getElementById('catalogoList').style.display = 'none'
             // Ocultar todos los campos de búsqueda
             const searchFields = document.querySelectorAll('.search-field');
             searchFields.forEach(field => {

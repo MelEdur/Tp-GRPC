@@ -15,9 +15,10 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
         const data = await response.json();
         const ul = document.getElementById('catalogoList');
         ul.innerHTML = '';
+        ul.style.display = 'block';
         // Loop through each catalog
         data.forEach(catalogo => {
-            
+
             // Create a list item for each catalog
             const catalogoItem = document.createElement('li');
             catalogoItem.textContent = catalogo.nombre;
@@ -41,7 +42,7 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
                 }
             });
             catalogoItem.appendChild(deleteButton);
-            
+
             const pdfButton = document.createElement('button');
             pdfButton.textContent = 'PDF';
             pdfButton.addEventListener('click', async () => {
@@ -68,7 +69,7 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
                     <button id="saveChanges${catalogo.idCatalogo}">Guardar Cambios</button>
                     <h1 class="text-center mb-4">Seleccione los Productos que desea que contenga el Catalogo</h1>
                 `;
-                //Modificar para poder seleccionar productos del stock 
+                //Modificar para poder seleccionar productos del stock
                 // Handle adding products (extend as needed)
                 const addProductButton = editForm.querySelector(`#addProduct${catalogo.idCatalogo}`);
                 addProductButton.addEventListener('click', async() => {
@@ -95,7 +96,7 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
                         }
 
                         const data = await response.json();
-        
+
                         data.stocksCompleto.forEach(stockCompleto =>{
 
                             const li = document.createElement('li');
@@ -112,7 +113,7 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
                             <span>Cantidad: ${stockCompleto.cantidad}</span><br>
                             `;
                             editForm.appendChild(li);
-            
+
                         });
 
                     } catch (error) {
@@ -178,13 +179,13 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
             catalogo.productos.forEach(producto => {
                 // Create a list item for each product
                 const productItem = document.createElement('li');
-                
+
                 // Create a div for product details
                 productItem.innerHTML = `
                     <strong>${producto.nombre}</strong> - Talle: ${producto.talle} - Color: ${producto.color}
                     <br><img src="${producto.foto}" alt="${producto.nombre}" width="100">
                 `;
-                
+
                 productList.appendChild(productItem);
             });
         });
