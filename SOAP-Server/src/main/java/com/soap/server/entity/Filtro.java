@@ -26,7 +26,7 @@ public class Filtro {
 
     private LocalDate fechaHasta;
 
-    private boolean estado;
+    private String estado;
 
     private String codigoTienda;
 }

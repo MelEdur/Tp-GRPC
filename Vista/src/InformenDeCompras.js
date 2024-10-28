@@ -7,8 +7,8 @@ document.getElementById('botonBuscarInformes').addEventListener('click', async (
     const codigoProducto =  document.getElementById('searchInformeCodProducto').value;
     const codigoTienda = document.getElementById('searchInformeCodTienda').value;
     const estado =  document.getElementById('searchInformeEstado').value;
-    const fechaDesde = "2024-10-22";
-    const fechaHasta = "2024-10-25";
+    const fechaDesde = document.getElementById('searchInformeFechaDesde').value;
+    const fechaHasta = document.getElementById('searchInformeFechaHasta').value;
 
     try {
         const response = await fetch('http://localhost:5050/ordenDeCompras',{

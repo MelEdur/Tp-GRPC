@@ -29,29 +29,37 @@ class Cliente(object):
     def eliminarCatalogo(self,id):
         response = self.client.service.eliminarCatalogo(id=id)
         return response
-    
+
     def traerCatalogos(self,data):
         response = self.client.service.traerCatalogos(codigoTienda=data['codigoTienda'])
         return response
-    
+
     def pdfCatalogo(self,id):
         response = self.client.service.pdfCatalogo(id=id)
         return response
-    
+
     #INFORMES DE COMPRA
     def getInformeDeCompra(self,data):
-        response = self.client.service.getInformeDeCompra(codigoProducto=data['codigoProducto'],
-                                                       fechaDesde=data['fechaDesde'],
-                                                       fechaHasta=data['fechaHasta'],
-                                                       estado=data['estado'],
-                                                       codigoTienda=data['codigoTienda'])
+        params = {}
+        if data['codigoProducto']:
+            params['codigoProducto'] = data['codigoProducto']
+        if data['fechaDesde']:
+            params['fechaDesde'] = data['fechaDesde']
+        if data['fechaHasta']:
+            params['fechaHasta'] = data['fechaHasta']
+        if data['estado']:
+            params['estado'] = data['estado']
+        if data['codigoTienda']:
+            params['codigoTienda'] = data['codigoTienda']
+
+        response = self.client.service.getInformeDeCompra(**params)
         return response
-    
+
     #FILTROS
     def traerFiltros(self,data):
         response = self.client.service.traerFiltros(idUsuario=data['idUsuario'])
         return response
-    
+
     def guardarFiltro(self,data):
         response = self.client.service.guardarFiltro(codigoProducto=data['codigoProducto'],
                                                        fechaDesde=data['fechaDesde'],
@@ -60,7 +68,7 @@ class Cliente(object):
                                                        codigoTienda=data['codigoTienda'],
                                                        idUsuario=data['idUsuario'])
         return response
-    
+
     def editarFiltro(self,data):
         response = self.client.service.editarFiltro(codigoProducto=data['codigoProducto'],
                                                        fechaDesde=data['fechaDesde'],
@@ -69,7 +77,7 @@ class Cliente(object):
                                                        codigoTienda=data['codigoTienda'],
                                                        idFiltro=data['idFiltro'])
         return response
-    
+
     def eliminarFiltro(self,id):
         response = self.client.service.eliminarFiltro(idFiltro=id)
         return response

@@ -44,6 +44,7 @@ public class AuthService extends AuthServiceGrpc.AuthServiceImplBase {
                 .setUsuario(usuario.get().getNombreUsuario())
                 .setRol(usuario.get().getRol())
                 .setCodigoTienda(usuario.get().getCodigoTienda())
+                .setIdUsuario(usuario.get().getId())
                 .build();
 
         responseObserver.onNext(loginResponse);

@@ -12,7 +12,7 @@ filtro_blueprint = Blueprint('filtro',__name__)
 #Instancio cliente de soap
 cliente= Cliente()
 
-@filtro_blueprint.route('/filtros', methods=['GET'])
+@filtro_blueprint.route('/filtrosTraer', methods=['POST'])
 def traerFiltros():
     data = request.get_json()
     result = cliente.traerFiltros(data)
@@ -30,7 +30,7 @@ def guardarFiltro():
 def editarFiltro():
     data = request.get_json()
     result = cliente.editarFiltro(data)
-    
+
     return jsonify(result), 200
 
 @filtro_blueprint.route('/filtros/<int:id>', methods=['DELETE'])

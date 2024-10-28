@@ -32,13 +32,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 const li = document.createElement('li');
                 numeroData = numeroData+1;
                 li.innerHTML = `
-                <input type="checkbox" class="order-select" data-id="${ordenDeCompra.idOrdenDeCompra}" data-tienda="${ordenDeCompra.codigoTienda}" data-fecha-solicitud="${ordenDeCompra.fechaDeSolicitud}" 
+                <input type="checkbox" class="order-select" data-id="${ordenDeCompra.idOrdenDeCompra}" data-tienda="${ordenDeCompra.codigoTienda}" data-fecha-solicitud="${ordenDeCompra.fechaDeSolicitud}"
                 data-estado="${ordenDeCompra.estado}" data-fecha-estimada-recepcion="${ordenDeCompra.ordenDeDespacho.fechaEstimada}" data-observaciones="${ordenDeCompra.observaciones}"
                 data-ordenDeDespacho-id="${ordenDeCompra.ordenDeDespacho.idOrdenDeDespacho}" data-ordenDeDespacho-idOrdenDeCompra="${ordenDeCompra.ordenDeDespacho.idOrdenDeCompra}"
                 >
-                <span >Pedido: Orden ${ordenDeCompra.idOrdenDeCompra}</span>  
+                <span >Pedido: Orden ${ordenDeCompra.idOrdenDeCompra}</span>
                 <span id="${ordenDeCompra.codigoTienda}">Codigo de Tienda: ${ordenDeCompra.codigoTienda}</span>
-                <span>Estado: ${ordenDeCompra.estado}</span> 
+                <span>Estado: ${ordenDeCompra.estado}</span>
                 <span>Fecha De Solicitud: ${ordenDeCompra.fechaDeSolicitud}</span>
                 <span>Observaciones: ${ordenDeCompra.observaciones}</span>
                 <span>Fecha Estimada Recepcion: ${ordenDeCompra.ordenDeDespacho.fechaEstimada}</span>
@@ -47,10 +47,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     <ul class="itemsUl">
                         ${ordenDeCompra.items.map(item => `
                             <li>
-                                <span style="display:none">IdItem: ${item.idItem}</span> 
-                                <span>Código: ${item.codigo}</span> 
+                                <span style="display:none">IdItem: ${item.idItem}</span>
+                                <span>Código: ${item.codigo}</span>
                                 <span>Color: ${item.color}</span>
-                                <span>Talle: ${item.talle}</span> 
+                                <span>Talle: ${item.talle}</span>
                                 <span>Cantidad: ${item.cantidad}</span>
                             </li>
                         `).join('')}
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
             resultados.style.display = 'block';
         }
-        
+
     })
     .catch(error => {
         console.error('Error al cargar los pedidos:', error); // Manejo de errores
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function getCurrentDate() {
     const today = new Date();
-    
+
     const year = today.getFullYear(); // Get the full year (e.g., 2024)
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Get the month (0-indexed, so add 1). Use padStart to ensure two digits.
     const day = String(today.getDate()).padStart(2, '0'); // Get the day and pad it to 2 digits.
@@ -95,21 +95,21 @@ document.getElementById('procesarOrdenes').addEventListener('click', function() 
         const items = [];
         document.querySelectorAll('.itemsUl').forEach(function(itemElement) {
 
-            const idItem = itemElement.querySelector('span:nth-child(1)').textContent.split(': ')[1]; 
-            const codigo = itemElement.querySelector('span:nth-child(2)').textContent.split(': ')[1]; 
-            const color = itemElement.querySelector('span:nth-child(3)').textContent.split(': ')[1]; 
-            const talle = itemElement.querySelector('span:nth-child(4)').textContent.split(': ')[1]; 
+            const idItem = itemElement.querySelector('span:nth-child(1)').textContent.split(': ')[1];
+            const codigo = itemElement.querySelector('span:nth-child(2)').textContent.split(': ')[1];
+            const color = itemElement.querySelector('span:nth-child(3)').textContent.split(': ')[1];
+            const talle = itemElement.querySelector('span:nth-child(4)').textContent.split(': ')[1];
             const cantidad = itemElement.querySelector('span:nth-child(5)').textContent.split(': ')[1];
 
             items.push({
-                idItem: parseInt(idItem), 
+                idItem: parseInt(idItem),
                 codigo: codigo,
                 color: color,
                 talle: talle,
-                cantidad: parseInt(cantidad) 
+                cantidad: parseInt(cantidad)
             });
         });
-    
+
         const orderData = {
             idOrdenDeCompra: parseInt(orderId),
             codigoTienda: codigoTienda,
@@ -118,7 +118,7 @@ document.getElementById('procesarOrdenes').addEventListener('click', function() 
             estado: estado,
             observaciones: observaciones,
             ordenDeDespacho: {
-                idOrdenDeDespacho: parseInt(ordenDeDespachoId),  
+                idOrdenDeDespacho: parseInt(ordenDeDespachoId),
                 idOrdenDeCompra: parseInt(ordenDeDespachoOrdenCompraId),
                 fechaEstimada: fechaEstimadaRecepcion
             },
@@ -141,5 +141,5 @@ document.getElementById('procesarOrdenes').addEventListener('click', function() 
         .catch((error) => console.error('Error:', error));
     } else {
         alert('No orders selected');
-    } 
+    }
 });

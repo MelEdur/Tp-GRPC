@@ -42,7 +42,7 @@ public class FiltroService {
                         filtroAux.setCodigoProducto(filtro.getCodigoProducto());
                         filtroAux.setFechaDesde(filtro.getFechaDesde().toString());
                         filtroAux.setFechaHasta(filtro.getFechaHasta().toString());
-                        filtroAux.setEstado(filtro.isEstado());
+                        filtroAux.setEstado(filtro.getEstado());
                         filtroAux.setCodigoTienda(filtro.getCodigoTienda());
 
                         response.getFiltros().add(filtroAux);
@@ -52,7 +52,7 @@ public class FiltroService {
         }
 
         @Transactional
-        public GuardarFiltroResponse guardarFiltro(String codigoProducto, String fechaDesde, String fechaHasta, boolean estado, String codigoTienda, int idUsuario) {
+        public GuardarFiltroResponse guardarFiltro(String codigoProducto, String fechaDesde, String fechaHasta, String estado, String codigoTienda, int idUsuario) {
 
                 GuardarFiltroResponse response = new GuardarFiltroResponse();
 
@@ -89,7 +89,7 @@ public class FiltroService {
                 filtroAux.setCodigoProducto(filtroGuardado.getCodigoProducto());
                 filtroAux.setFechaDesde(filtroGuardado.getFechaDesde().toString());
                 filtroAux.setFechaHasta(filtroGuardado.getFechaHasta().toString());
-                filtroAux.setEstado(filtroGuardado.isEstado());
+                filtroAux.setEstado(filtroGuardado.getEstado());
                 filtroAux.setCodigoTienda(filtroGuardado.getCodigoTienda());
                 
                 response.setFiltro(filtroAux);
@@ -98,7 +98,7 @@ public class FiltroService {
         }
 
         @Transactional
-        public EditarFiltroResponse editarFiltro(String codigoProducto, String fechaDesde, String fechaHasta, boolean estado, String codigoTienda, int idFiltro) {
+        public EditarFiltroResponse editarFiltro(String codigoProducto, String fechaDesde, String fechaHasta, String estado, String codigoTienda, int idFiltro) {
 
                 EditarFiltroResponse response = new EditarFiltroResponse();
 

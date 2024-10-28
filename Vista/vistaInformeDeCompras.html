@@ -32,29 +32,36 @@
 
     <div class="container mt-5">
         <h1 id="errores" style="display: none;color:crimson;" class="text-center mb-4">Errores</h1>
-        <h1 class="text-center mb-4">Informes </h1>
+        <h1 class="text-center mb-4">Informes de Orden De Compra </h1>
         <form id="searchInformes" class="mb-4 search-field">
-            <div class="input-group">
             <div class="input-group">
                 <div class="input-group input-group-lg">
                     <input class="form-control" type="search" id="searchInformeCodProducto" placeholder="Cod. Producto"
                         aria-label="Search1">
                     <input class="form-control" type="search" id="searchInformeCodTienda" placeholder="Cod. Tienda"
                         aria-label="Search2">
-                    <input class="form-control" type="search" id="searchInformeEstado" placeholder="Estado"
-                    aria-label="Search2">   
+                    <input class="form-control" type="date" id="searchInformeFechaDesde" aria-label="Search2">
+                    <input class="form-control" type="date" id="searchInformeFechaHasta" aria-label="Search2">
+                    <div class="form-floating">
+                        <select class="form-select" id="searchInformeEstado" aria-label="Floating label select example">
+                        <option selected></option>
+                        <!-- //Despegar con filtros cargados -->
+                        <option value="SOLICITADA">SOLICITADA</option>
+                        <option value="RECHAZADA">RECHAZADA</option>
+                        <option value="ACEPTADA">ACEPTADA</option>
+                        <option value="recibido">recibido</option>
+                        </select>
+                        <label for="floatingSelectGrid">Elegir estado</label>
+                    </div>
                     <!-- //AGREGAR FILTRO FECHAS -->
                     <div class="form-floating">
                         <select class="form-select" id="floatingSelectGrid" aria-label="Floating label select example">
                         <option selected></option>
                         <!-- //Despegar con filtros cargados -->
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
                         </select>
                         <label for="floatingSelectGrid">Elegir filtro guardado</label>
                     </div>
-                        
+
                     <button class="fas fa-search btn btn-outline-success" type="submit" id="botonBuscarInformes"></button>
                 </div>
 
@@ -63,55 +70,24 @@
             <!-- Checkboxes -->
 
             <div class="d-flex align-items-center mt-3">
-                <div class="form-check me-3">
-                    Filtrar por:
-                </div>
-                <!-- Primer checkbox -->
-                <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" checked="checkboxInformeNombre"
-                        onchange="checkboxInput('searchUsarioNombre', this.checked)">
-                    <label class="form-check-label" for="checkbox1">
-                        Cod. Producto
-                    </label>
-                </div>
 
-                <!-- Segundo checkbox -->
-                <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" checked id="checkbox2" id="checkboxInformeTienda"
-                        onchange="checkboxInput('searchUsarioTienda', this.checked)">
-                    <label class="form-check-label" for="checkbox2">
-                        Cod. Tienda
-                    </label>
-                </div>
-
-                <!-- Tercer checkbox -->
-                <div class="form-check ms-2 me-3">
-                    <input class="form-check-input" type="checkbox" checked id="checkbox2" id="checkboxInformeTienda"
-                        onchange="checkboxInput('searchUsarioTienda', this.checked)">
-                    <label class="form-check-label" for="checkbox2">
-                        Estado
-                    </label>
-                </div>
 
                 <div class="ms-auto">
                     <button type="button" class="btn btn-secondary" id="botonAgregarFiltro">
                         Agregar Filtro
                     </button>
-                </div>
-
-                <div class="ms-auto">
                     <button type="button" class="btn btn-secondary" id="botonEditarFiltro">
                         Editar Filtro
                     </button>
-                </div>
-
-                <div class="ms-auto">
                     <button type="button" class="btn btn-secondary" id="botonBorrarFiltro">
                         Borrar Filtro
                     </button>
                 </div>
+
+
             </div>
         </form>
+
 
         <br>
         <div>
@@ -133,8 +109,13 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="src/InformenDeCompras.js"></script>
+    <script src="src/Filtros.js"></script>
 
     <script>
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('searchInformeFechaDesde').value = today;
+        document.getElementById('searchInformeFechaHasta').value = today;
 
         function logout() {
             localStorage.clear();

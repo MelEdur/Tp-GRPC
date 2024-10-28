@@ -175,6 +175,7 @@ message LoginResponse{
   string usuario = 2;
   string rol = 3;
   string codigoTienda = 4;
+  int32 idUsuario= 5;
 }
 
 message Codigo{

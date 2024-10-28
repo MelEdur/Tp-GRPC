@@ -150,11 +150,11 @@
     <xs:element name="getInformeDeCompraRequest">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="codigoProducto" type="xs:string" minOccurs="0" />
-                <xs:element name="fechaDesde" type="xs:string" minOccurs="0" />
-                <xs:element name="fechaHasta" type="xs:string" minOccurs="0" />
-                <xs:element name="estado" type="xs:string" minOccurs="0" />
-                <xs:element name="codigoTienda" type="xs:string" minOccurs="0" />
+                <xs:element name="codigoProducto" type="xs:string" minOccurs="0"/>
+                <xs:element name="fechaDesde" type="xs:string" minOccurs="0"/>
+                <xs:element name="fechaHasta" type="xs:string" minOccurs="0"/>
+                <xs:element name="estado" type="xs:string" minOccurs="0"/>
+                <xs:element name="codigoTienda" type="xs:string" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -175,7 +175,7 @@
             <xs:element name="codigoProducto" type="xs:string" />
             <xs:element name="fechaDesde" type="xs:string" />
             <xs:element name="fechaHasta" type="xs:string" />
-            <xs:element name="estado" type="xs:boolean" />
+            <xs:element name="estado" type="xs:string" />
             <xs:element name="codigoTienda" type="xs:string" />
         </xs:sequence>
     </xs:complexType>
@@ -202,7 +202,7 @@
                 <xs:element name="codigoProducto" type="xs:string" />
                 <xs:element name="fechaDesde" type="xs:string" />
                 <xs:element name="fechaHasta" type="xs:string" />
-                <xs:element name="estado" type="xs:boolean" />
+                <xs:element name="estado" type="xs:string" />
                 <xs:element name="codigoTienda" type="xs:string" />
                 <xs:element name="idUsuario" type="xs:int" />
             </xs:sequence>
@@ -212,7 +212,7 @@
     <xs:element name="guardarFiltroResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="filtro" type="tns:filtro" />
+                <xs:element name="filtro" type="tns:filtro"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -223,7 +223,7 @@
                 <xs:element name="codigoProducto" type="xs:string" />
                 <xs:element name="fechaDesde" type="xs:string" />
                 <xs:element name="fechaHasta" type="xs:string" />
-                <xs:element name="estado" type="xs:boolean" />
+                <xs:element name="estado" type="xs:string" />
                 <xs:element name="codigoTienda" type="xs:string" />
                 <xs:element name="idFiltro" type="xs:int" />
             </xs:sequence>
@@ -266,12 +266,12 @@
 
     <xs:complexType name="informeDeCompra">
         <xs:sequence>
-            <xs:element name="idOrdenDeCompra" type="xs:int" minOccurs="0" />
-            <xs:element name="codigoTienda" type="xs:string" minOccurs="0" />
+            <xs:element name="idOrdenDeCompra" type="xs:int" />
+            <xs:element name="codigoTienda" type="xs:string" />
             <xs:element name="items" type="tns:productoInforme" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="estado" type="xs:string" minOccurs="0" />
-            <xs:element name="fechaDeSolicitud" type="xs:string" minOccurs="0" />
-            <xs:element name="fechaDeRecepcion" type="xs:string" minOccurs="0" />
+            <xs:element name="estado" type="xs:string" />
+            <xs:element name="fechaDeSolicitud" type="xs:string" />
+            <xs:element name="fechaDeRecepcion" type="xs:string" />
         </xs:sequence>
     </xs:complexType>
 

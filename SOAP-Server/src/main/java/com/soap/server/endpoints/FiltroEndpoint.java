@@ -38,13 +38,13 @@ public class FiltroEndpoint {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "guardarFiltroRequest")
     @ResponsePayload
     public GuardarFiltroResponse guardarFiltro(@RequestPayload GuardarFiltroRequest request){
-        return filtroService.guardarFiltro(request.getCodigoProducto(), request.getFechaDesde(), request.getFechaHasta(), request.isEstado(), request.getCodigoTienda(), request.getIdUsuario());
+        return filtroService.guardarFiltro(request.getCodigoProducto(), request.getFechaDesde(), request.getFechaHasta(), request.getEstado(), request.getCodigoTienda(), request.getIdUsuario());
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "editarFiltroRequest")
     @ResponsePayload
     public EditarFiltroResponse editarFiltro(@RequestPayload EditarFiltroRequest request){
-        return filtroService.editarFiltro(request.getCodigoProducto(), request.getFechaDesde(), request.getFechaHasta(), request.isEstado(), request.getCodigoTienda(), request.getIdFiltro());
+        return filtroService.editarFiltro(request.getCodigoProducto(), request.getFechaDesde(), request.getFechaHasta(), request.getEstado(), request.getCodigoTienda(), request.getIdFiltro());
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "eliminarFiltroRequest")

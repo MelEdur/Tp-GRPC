@@ -24,6 +24,7 @@ document.getElementById('formularioLogIn').addEventListener('submit', async (eve
         const data = await response.json();
         localStorage.setItem('jwt',data.jwt);
         localStorage.setItem('usuario',data.usuario);
+        localStorage.setItem('idUsuario',data.idUsuario);
         localStorage.setItem('rol',data.rol);
         localStorage.setItem('codigoTienda',data.codigoTienda);
         console.log(data);
