@@ -14,11 +14,11 @@ import com.soap.server.entity.OrdenDeCompra;
 public interface IOrdenDeCompraRepository extends JpaRepository<OrdenDeCompra,Integer> {
 
      @Query("SELECT o FROM OrdenDeCompra o JOIN o.items i " +
-           "WHERE (:codigoTienda IS NULL OR o.codigoTienda = :codigoTienda) " +
-           "AND (:estado IS NULL OR o.estado = :estado) " +
+           "WHERE (:codigoTienda IS NULL OR :codigoTienda = '' OR o.codigoTienda = :codigoTienda) " +
+           "AND (:estado IS NULL OR :estado = '' OR o.estado = :estado) " +
            "AND (:fechaDesde IS NULL OR o.fechaDeSolicitud >= :fechaDesde) " +
            "AND (:fechaHasta IS NULL OR o.fechaDeSolicitud <= :fechaHasta) " +
-           "AND (:codigoItem IS NULL OR i.codigo = :codigoItem)")
+           "AND (:codigoItem IS NULL OR :codigoItem = '' OR i.codigo = :codigoItem)")
     List<OrdenDeCompra> findByFilters(
             @Param("codigoTienda") String codigoTienda,
             @Param("estado") String estado,

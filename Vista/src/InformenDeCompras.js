@@ -33,6 +33,7 @@ document.getElementById('botonBuscarInformes').addEventListener('click', async (
                 console.log("entrasd");
 
                 const li = document.createElement('li');
+                li.style.width = "100%";
                 li.innerHTML = `
                 <span>Informe De Compra: ${informe.idOrdenDeCompra}</span>
                 <span>Codigo de Producto: ${producto.codigoProducto}</span>

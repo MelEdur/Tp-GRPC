@@ -24,7 +24,6 @@ def soapAObjeto(response):
         informeDeCompraAux = {
             'idOrdenDeCompra': informeDeCompraResponse.idOrdenDeCompra,
             'codigoTienda': informeDeCompraResponse.codigoTienda,
-            'codigoTienda': informeDeCompraResponse.codigoTienda,
             'estado': informeDeCompraResponse.estado,
             'fechaDeSolicitud': informeDeCompraResponse.fechaDeSolicitud,
             'productos': []

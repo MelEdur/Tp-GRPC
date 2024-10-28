@@ -49,7 +49,11 @@ public class OrdenDeCompraService {
             }
 
             auxInformeDeCompra.setIdOrdenDeCompra(ordenDeCompraDB.getIdOrdenDeCompra());   
-            auxInformeDeCompra.setCodigoTienda(ordenDeCompraDB.getCodigoTienda());
+            if(ordenDeCompraDB.getCodigoTienda() != null){
+                auxInformeDeCompra.setCodigoTienda(ordenDeCompraDB.getCodigoTienda());
+            }else{
+                auxInformeDeCompra.setCodigoTienda("");
+            }
             auxInformeDeCompra.setEstado(ordenDeCompraDB.getEstado());
 
             if(ordenDeCompraDB.getFechaDeRecepcion() != null){
@@ -62,7 +66,7 @@ public class OrdenDeCompraService {
 
             response.getInformeDeCompraResponse().add(auxInformeDeCompra);
         }
-
+        
         return response;
     };
     
