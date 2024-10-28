@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import com.soap.server.entity.CatalogoEntity;
-import com.soap.server.entity.ProductoEntity;
-import com.soap.server.entity.TiendaEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 
@@ -24,6 +21,9 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.soap.server.entity.CatalogoEntity;
+import com.soap.server.entity.ProductoEntity;
+import com.soap.server.entity.TiendaEntity;
 import com.soap.server.repository.ICatalogoRepository;
 import com.soap.server.repository.IProductoRepository;
 import com.soap.server.repository.ITiendaRepository;
@@ -31,7 +31,14 @@ import com.soap.server.repository.ITiendaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import stockeate.*;
+import stockeate.AgregarCatalogoResponse;
+import stockeate.Catalogo;
+import stockeate.EliminarCatalogoResponse;
+import stockeate.ModificarCatalogoResponse;
+import stockeate.PdfCatalogoRequest;
+import stockeate.PdfCatalogoResponse;
+import stockeate.Producto;
+import stockeate.TraerCatalogosResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -131,7 +138,7 @@ public class CatalogoService {
 
 
             for(ProductoEntity producto : catalogo.getProductos()){
-
+                
                 PdfPTable table = new PdfPTable(2);
                 table.setWidthPercentage(100);
                 table.setWidths(new float[]{1,2});

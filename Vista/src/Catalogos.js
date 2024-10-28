@@ -46,21 +46,13 @@ document.getElementById('botonBuscarCatalogos').addEventListener('click',async (
             pdfButton.textContent = 'PDF';
             pdfButton.addEventListener('click', async () => {
                 const idCatalogo = catalogo.idCatalogo;
-                //REVISAR 
-                //TALVEZ METODO POST
-                /*
-                try {
-                    await fetch(`http://localhost:5050/catalogos/pdf/${catalogo.idCatalogo}`, {
-                        method: 'GET',
-                        headers:{
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({idCatalogo})
-                    });
-                    const data = await response;
-                } catch (error) {
-                    console.error(`Error creating pdf catalogo ${catalogo.idCatalogo}:`, error);
-                }*/
+                const link = document.createElement('a');
+                    link.href = `http://localhost:5050/catalogos/pdf/${catalogo.idCatalogo}`;
+                    link.target = '_blank'; // opcional: abre el archivo en una nueva pestaña
+                    link.download = `catalogo_${catalogo.idCatalogo}.pdf`; // opcional: nombre sugerido para la descarga
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
             });
             catalogoItem.appendChild(pdfButton);
 
