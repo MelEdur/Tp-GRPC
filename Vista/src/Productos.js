@@ -53,42 +53,6 @@ document.getElementById('botonBuscarProductos').addEventListener('click', async 
     }
 });
 
-document.getElementById('botonAgregarProducto').addEventListener('click', async (event)=>{
-    event.preventDefault();
-    const nombreProducto = document.getElementById('nombreProducto').value;
-    const talle = document.getElementById('talle').value;
-    const color = document.getElementById('color').value;
-    const foto = document.getElementById('foto').value;
-    const ids = [ { id:Number(document.getElementById('id1').value) },{id:Number(document.getElementById('id2').value)}];
-    try {
-        const response = await fetch('http://localhost:5000/productos',{
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('jwt')}`
-            },
-            body: JSON.stringify({nombreProducto,talle,color,foto,ids})
-        });
-
-        if(!response.ok){
-            const errorData = await response.json();
-            throw new Error(errorData.error.message || 'Ocurrió un error');
-        }
-
-        const data = await response.json();
-        document.getElementById('mensajeCrearProducto').innerText = `Producto Agregado correctamente`;
-        document.getElementById('mensajeCrearProducto').style.color = 'green';
-        document.getElementById('mensajeCrearProducto').style.display = 'block';
-        ul.innerHTML = '';
-    } catch (error) {
-        document.getElementById('mensajeCrearProducto').innerText = `Error: ${error.message}`;
-        document.getElementById('mensajeCrearProducto').style.color = 'crimson';
-        document.getElementById('mensajeCrearProducto').style.display = 'block';
-    }
-});
-
-
-
 ul.addEventListener('click', function(event){
     if(event.target && event.target.id === 'botonModificarProductoFormulario'){
         const stockCompleto = JSON.parse(event.target.getAttribute('data-producto'));
@@ -164,5 +128,11 @@ document.getElementById('botonModificarProducto').addEventListener('click',async
         document.getElementById('mensajeModificarProducto').innerText = `Error: ${error.message}`;
         document.getElementById('mensajeModificarProducto').style.color = 'crimson';
         document.getElementById('mensajeModificarProducto').style.display = 'block';
+    }
+});
+
+document.getElementById('botonInformeDeCompras').addEventListener('click',async(event)=>{
+    if(event.target && event.target.id === 'botonInformeDeCompras'){
+        window.location.href = "vistaInformeDeCompras.html"    
     }
 });

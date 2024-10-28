@@ -36,7 +36,7 @@
                 <button type="button" id="botonBuscarCatalogos" class="btn btn-secondary" onclick="cambioSearch('searchCatalogos')">Catalogos</button>
                 <button type="button" class="btn btn-secondary" onclick="cambioSearch('searchProductos')">Productos</button>
             </div>
-
+            <ul id="catalogoList"></ul>
         </div>
 
 
@@ -87,13 +87,15 @@
                         Color
                     </label>
                 </div>
-
                 <div class="ms-auto">
                     <button type="button" class="btn btn-secondary" id="botonGenerarOrden">
                         Generar Orden
                     </button>
                     <button type="button" class="btn btn-secondary" id="botonGenerarCatalogo">
                         Generar Catalogo
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="botonInformeDeCompras">
+                        Administrar Informes
                     </button>
                 </div>
 
@@ -171,6 +173,7 @@
         }
 
         function cambioSearch(searchId) {
+            document.getElementById('catalogoList').style.display = 'none'
             // Ocultar todos los campos de búsqueda
             const searchFields = document.querySelectorAll('.search-field');
             searchFields.forEach(field => {

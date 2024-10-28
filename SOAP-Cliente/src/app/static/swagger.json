@@ -17,6 +17,10 @@
     {
       "name": "Catálogos",
       "description": "Manejo de los catalogos de cada tienda"
+    },
+    {
+      "name": "OrdenesDeCompra",
+      "description": "Manejo de las Ordenes de Compra"
     }
   ],
   "paths": {
@@ -130,6 +134,199 @@
             }
           }
         }
+      },
+      "patch": {
+        "tags": [
+          "Catálogos"
+        ],
+        "summary": "Modificar un catálogo de una tienda específica",
+        "requestBody": {
+          "description": "Datos del catálogo que se desea añadir",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "idCatalogo": {
+                    "description": "id del catálogo",
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "nombre": {
+                    "description": "Nombre del catálogo",
+                    "type": "string",
+                    "example": "Remeras"
+                  },
+                  "codigoTienda": {
+                    "description": "Tienda a la que pertenecerá el catálogo",
+                    "type": "string",
+                    "example": "T034"
+                  },
+                  "ids": {
+                    "description": "Ids de los productos que estarán en el catálogo",
+                    "type": "array",
+                    "example": [
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mensaje de estado",
+            "content": {
+              "application/json": {
+                "example": "Catalogo Reebuk cambio nombre del catalogo a Reebok"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogos/{id}": {
+      "delete": {
+        "tags": [
+          "Catálogos"
+        ],
+        "summary": "Eliminar un catálogo de una tienda específica",
+        "requestBody": {
+          "description": "Eliminar Catalogo",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "idCatalogo": {
+                    "description": "id del catálogo",
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mensaje de estado",
+            "content": {
+              "application/json": {
+                "example": "Catalogo Eliminado"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del catálogo a eliminar"
+          }
+        ]
+      }
+    },
+    "/catalogoslista": {
+      "post": {
+        "tags": [
+          "Catálogos"
+        ],
+        "summary": "Traer Catalogos de la tienda especifica",
+        "requestBody": {
+          "description": "Traer Catalogos",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "idCatalogo": {
+                    "description": "CodigoTienda",
+                    "type": "string",
+                    "example": "350"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lista de Catalogos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "linea": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "nombre": {
+                        "description": "Nombre del catálogo",
+                        "type": "string",
+                        "example": "Remeras"
+                      },
+                      "codigoTienda": {
+                        "description": "Tienda a la que pertenecerá el catálogo",
+                        "type": "string",
+                        "example": "350"
+                      },
+                      "productos": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "linea": {
+                              "type": "integer",
+                              "example": 1
+                            },
+                            "nombre": {
+                              "description": "Nombre del producto",
+                              "type": "string",
+                              "example": "buzo nike"
+                            },
+                            "codigo": {
+                              "description": "codigo del producto",
+                              "type": "string",
+                              "example": "FXHGFPHBBE"
+                            },
+                            "talle": {
+                              "description": "talle del producto",
+                              "type": "string",
+                              "example": "m"
+                            },
+                            "color": {
+                              "description": "color del producto",
+                              "type": "string",
+                              "example": "blanco"
+                            },
+                            "foto": {
+                              "description": "url foto del producto",
+                              "type": "string",
+                              "example": "https://i.imgur.com/zIYY6h0.jpeg"
+                            },
+                            "habilitado": {
+                              "description": "boolean habilitado del producto",
+                              "type": "boolean",
+                              "example": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/catalogos/pdf/{id}": {
@@ -165,6 +362,110 @@
             "description": "ID del catálogo a descargar"
           }
         ]
+      }
+    },
+    "/ordenDeCompras": {
+      "post": {
+        "tags": [
+          "OrdenesDeCompra"
+        ],
+        "summary": "Traer ordenDeCompras por filtro",
+        "requestBody": {
+          "description": "Traer ordenes De Compras segun filtro puesto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "codigoProducto": {
+                    "description": "codigoProducto",
+                    "type": "string",
+                    "example": "122"
+                  },
+                  "fechaDesde": {
+                    "description": "fechaDesde",
+                    "type": "string",
+                    "example": "2024-10-22"
+                  },
+                  "fechaHasta": {
+                    "description": "fechaHasta",
+                    "type": "string",
+                    "example": "2024-10-25"
+                  },
+                  "estado": {
+                    "description": "estado",
+                    "type": "string",
+                    "example": "RECHAZADO"
+                  },
+                  "codigoTienda": {
+                    "description": "CodigoTienda",
+                    "type": "string",
+                    "example": "400"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lista de ordenes De Compras",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "codigoTienda": {
+                        "type": "string",
+                        "example": "400"
+                      },
+                      "estado": {
+                        "description": "estado de la orden de compra",
+                        "type": "string",
+                        "example": "RECHAZADO"
+                      },
+                      "fechaDeSolicitud": {
+                        "type": "string",
+                        "example": "2024-10-25"
+                      },
+                      "idOrdenDeCompra": {
+                        "type": "integer",
+                        "example": 10
+                      },
+                      "productos": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "cantidadPedida": {
+                              "type": "integer",
+                              "example": 10
+                            },
+                            "cantidadPedidaTotal": {
+                              "type": "integer",
+                              "example": 50
+                            },
+                            "nombre": {
+                              "description": "Nombre del producto",
+                              "type": "string",
+                              "example": "buzo nike"
+                            },
+                            "codigoProducto": {
+                              "description": "codigo del producto",
+                              "type": "string",
+                              "example": "FXHGFPHBBE"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

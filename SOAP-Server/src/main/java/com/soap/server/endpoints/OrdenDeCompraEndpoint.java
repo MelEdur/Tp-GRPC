@@ -23,10 +23,10 @@ public class OrdenDeCompraEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getInformeDeCompraRequest")
     @ResponsePayload
-    public GetInformeDeCompraResponse traerInformeOrdenDeCompra(@RequestPayload GetInformeDeCompraRequest request){  
+    public GetInformeDeCompraResponse getInformeDeCompra(@RequestPayload GetInformeDeCompraRequest request){  
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
       
         return ordenDeCompraService.GetInformesDeCompraPorFiltro(request.getCodigoTienda(), request.getEstado(),
-            LocalDate.parse(request.getFechaDesde(), formatter), request.getCodigoProducto());
+            LocalDate.parse(request.getFechaDesde(), formatter), LocalDate.parse(request.getFechaHasta(), formatter), request.getCodigoProducto());
     }
 }

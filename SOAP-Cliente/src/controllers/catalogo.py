@@ -29,7 +29,7 @@ def eliminarCatalogo(id):
 
     return jsonify(result),200
 
-@catalogo_blueprint.route('/catalogos', methods=['GET'])
+@catalogo_blueprint.route('/catalogoslista', methods=['POST'])
 def traerCatalogos():
     data = request.get_json()
     result = cliente.traerCatalogos(data)

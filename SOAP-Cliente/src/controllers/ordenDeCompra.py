@@ -9,8 +9,38 @@ ordenDeCompra_blueprint = Blueprint('ordenDeCompra',__name__)
 cliente= Cliente()
 
 @ordenDeCompra_blueprint.route('/ordenDeCompras', methods=['POST'])
-def traerInformeOrdenDeCompra():
+def getInformeDeCompra():
     data = request.get_json()
-    result = cliente.traerInformeOrdenDeCompra(data)
+    result = cliente.getInformeDeCompra(data)
 
-    return result,200
+    return soapAObjeto(result)
+
+def soapAObjeto(response):
+    informeDeCompraList = []
+
+    # Recorremos el response del SOAP para extraer
+    for informeDeCompraResponse in response:
+        #Mapeamos un catálogo
+        informeDeCompraAux = {
+            'idOrdenDeCompra': informeDeCompraResponse.idOrdenDeCompra,
+            'codigoTienda': informeDeCompraResponse.codigoTienda,
+            'codigoTienda': informeDeCompraResponse.codigoTienda,
+            'estado': informeDeCompraResponse.estado,
+            'fechaDeSolicitud': informeDeCompraResponse.fechaDeSolicitud,
+            'productos': []
+        }
+        #Mapeamos los productos
+        for producto in informeDeCompraResponse.items:
+            productoAux = {
+                'codigoProducto': producto.codigoProducto,
+                'nombre': producto.nombre,
+                'cantidadPedida': producto.cantidadPedida,
+                'cantidadPedidaTotal': producto.cantidadPedidaTotal
+            }
+            #Agrego la lista de productos al catálogo mapeado
+            informeDeCompraAux['productos'].append(productoAux)
+
+        #Añado a la lista de catalogo
+        informeDeCompraList.append(informeDeCompraAux)
+
+    return informeDeCompraList
