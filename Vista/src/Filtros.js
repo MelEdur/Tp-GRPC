@@ -1,3 +1,5 @@
+const rolActual = localStorage.getItem('rol');
+
 document.addEventListener("DOMContentLoaded", function() {
     const idUsuario = localStorage.getItem('idUsuario');
 
@@ -34,7 +36,9 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('searchInformeFechaDesde').value= valores.fechaDesde.replace(/\s+/g, '');
             document.getElementById('searchInformeFechaHasta').value= valores.fechaHasta.replace(/\s+/g, '');
             document.getElementById('searchInformeEstado').value= valores.estado.replace(/\s+/g, '');
-            document.getElementById('searchInformeCodTienda').value= valores.codigoTienda;
+            if(rolActual != "USUARIO"){
+                document.getElementById('searchInformeCodTienda').value= valores.codigoTienda;
+            }
         });
     })
     .catch(error => {
@@ -47,7 +51,15 @@ document.getElementById('botonAgregarFiltro').addEventListener('click', async(ev
     const fechaDesde = document.getElementById('searchInformeFechaDesde').value;
     const fechaHasta = document.getElementById('searchInformeFechaHasta').value;
     const estado = document.getElementById('searchInformeEstado').value;
-    const codigoTienda = document.getElementById('searchInformeCodTienda').value;
+
+    const codigoTienda = "";
+    if(rolActual == "USUARIO"){
+        const tiendaActual = localStorage.getItem('codigoTienda');
+        codigoTienda = tiendaActual;
+    }else{
+        codigoTienda = document.getElementById('searchInformeCodTienda').value;
+    }
+
     const idUsuario = localStorage.getItem('idUsuario');
 
     console.log(fechaDesde);
@@ -83,7 +95,14 @@ document.getElementById('botonEditarFiltro').addEventListener('click', function(
     const fechaDesde = document.getElementById('searchInformeFechaDesde').value;
     const fechaHasta = document.getElementById('searchInformeFechaHasta').value;
     const estado = document.getElementById('searchInformeEstado').value;
-    const codigoTienda = document.getElementById('searchInformeCodTienda').value;
+
+    const codigoTienda = "";
+    if(rolActual == "USUARIO"){
+        const tiendaActual = localStorage.getItem('codigoTienda');
+        codigoTienda = tiendaActual;
+    }else{
+        codigoTienda = document.getElementById('searchInformeCodTienda').value;
+    }
 
     const idFiltro = obtenerCamposDeFiltro(selectedOption.value).idFiltro;
 

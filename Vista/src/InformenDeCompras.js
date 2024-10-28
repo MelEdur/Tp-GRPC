@@ -1,8 +1,10 @@
 const ul = document.getElementById('resultados');
+const rolActual = localStorage.getItem('rol');
+
 document.getElementById('botonBuscarInformes').addEventListener('click', async (event)=>{
     event.preventDefault();
     const searchFields = document.querySelector('.results');
-
+    const rolActual = localStorage.getItem('rol');
 
     const codigoProducto =  document.getElementById('searchInformeCodProducto').value;
     const codigoTienda = document.getElementById('searchInformeCodTienda').value;
@@ -53,5 +55,11 @@ document.getElementById('botonBuscarInformes').addEventListener('click', async (
     } catch (error) {
         document.getElementById('errores').innerText = `Error: ${error.message}`;
         document.getElementById('errores').style.display = 'block';
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    if(rolActual == "USUARIO"){
+        document.getElementById('searchInformeCodTienda').style.display = 'none'
     }
 });
